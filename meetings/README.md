@@ -1,2 +1,3 @@
-## meetings
+## Meeting Notes
+
 This folder will hold notes from our team meetings.
