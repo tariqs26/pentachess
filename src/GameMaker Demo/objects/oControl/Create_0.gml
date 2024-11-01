@@ -106,7 +106,9 @@ for (var i = 0; i < 30; i ++) {
     }
     
     for (var j = lb; j <= ub; j ++) {
-        array_push(middleSpaces[i].same_vert_ns, middleSpaces[(30 + i + j) % 30]);
+		if (j != 0) {
+			array_push(middleSpaces[i].same_vert_ns, middleSpaces[(30 + i + j) % 30]);
+		}
     }
     
 }
@@ -132,6 +134,7 @@ for (var i = 0; i < 10; i ++) {
     
 }
 
+// Outer Decagon
 var distance1 = 2 * distance; // Twice the distance from one pointy end to another
 var distance2 = 2 * side_length * (dcos(18) + dcos(54)); // Twice the distance from the pointy end to the middle of the opposite edge
 pos_angle = 198;
@@ -223,7 +226,9 @@ for (var i = 0; i < 50; i ++) {
     }
     
     for (var j = lb; j <= ub; j ++) {
-        array_push(outerSpaces[i].same_vert_ns, outerSpaces[(50 + i + j) % 50]);
+		if (j != 0) {
+			array_push(outerSpaces[i].same_vert_ns, outerSpaces[(50 + i + j) % 50]);
+		}
     }
     
 }
