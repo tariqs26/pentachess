@@ -1,4 +1,4 @@
-function Space(_x, _y, _angle, _colour) constructor {
+function Space(_x, _y, _angle, _colour, _name) constructor {
 	
 	// x and y are coordinates of 'right arm'
 	x = _x;
@@ -6,6 +6,9 @@ function Space(_x, _y, _angle, _colour) constructor {
 	
 	// angle is assuming that 'arms' pointing up is 0
 	angle = _angle;
+	
+	// Name
+	name = _name
 	
 	// Default colour is used to go back after changing colour
 	default_colour = _colour;
@@ -122,6 +125,15 @@ function Space(_x, _y, _angle, _colour) constructor {
 		draw_line_width(triangles[2][0], triangles[2][1], triangles[2][2], triangles[2][3], width);
 		draw_line_width(triangles[2][2], triangles[2][3], triangles[2][4], triangles[2][5], width);
 		
+	}
+	
+	draw_name = function() {
+		draw_set_colour(c_black);
+		draw_set_halign(fa_center);
+		draw_set_valign(fa_middle);
+		var _centerX = (triangles[1][0] + triangles[1][2] + triangles[1][4]) / 3;
+		var _centerY = (triangles[1][1] + triangles[1][3] + triangles[1][5]) / 3;
+		draw_text(_centerX, _centerY, name);
 	}
 	
 	rook_move = function() {
@@ -299,7 +311,7 @@ function Space(_x, _y, _angle, _colour) constructor {
 				return e.default_colour != default_colour;
 			}
 		}
-		return array_filter(arr, f);
+		return array_filter(arr, f);
 	}
 	
 }
