@@ -188,7 +188,7 @@ function Space(_x, _y, _angle, _colour) constructor {
 	
 	king_move = function() {
 		
-		var spaces = [next_edge_n, prev_edge_n, next_vert_n, prev_vert_n];
+		var spaces = [next_edge_n, prev_edge_n];
 		
 		if (in_edge_n != noone) {
 			array_push(spaces, in_edge_n);
@@ -199,6 +199,9 @@ function Space(_x, _y, _angle, _colour) constructor {
 		
 		var inout_spaces = filter_colour(inout_vert_ns, true);
 		spaces = array_concat(spaces, inout_spaces);
+		
+		var same_spaces = filter_colour(same_vert_ns, true);
+		spaces = array_concat(spaces, same_spaces);
 		
 		return spaces;
 		
