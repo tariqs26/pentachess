@@ -24,7 +24,7 @@ global.piece = PIECE.ROOK;
 innerSpaces = array_create(10);
 for (var i = 0; i < 10; i ++) {
     var colour = (i % 2 == 0) ? c_gray : c_white; // Alternate colours
-    innerSpaces[i] = new Space(x, y, 18 + 36 * i, colour); // Change the angle by 36 degrees each time
+    innerSpaces[i] = new Space(x, y, 18 + 36 * i, colour, "C" + string((i + 8) % 10)); // Change the angle by 36 degrees each time
 }
 // Connect each space to the spaces in front of and behind it
 for (var i = 0; i < 10; i ++) {
@@ -75,7 +75,7 @@ for (var i = 0; i < 30; i ++) {
             break;
     }
     
-    middleSpaces[i] = new Space(_x, _y, angle, colour);
+    middleSpaces[i] = new Space(_x, _y, angle, colour, "B" + string((i + 24) % 30));
     
 }
 for (var i = 0; i < 30; i ++) {
@@ -183,7 +183,7 @@ for (var i = 0; i < 50; i ++) {
             break;
     }
     
-    outerSpaces[i] = new Space(_x, _y, angle, colour);
+    outerSpaces[i] = new Space(_x, _y, angle, colour, "A" + string((i + 40) % 50));
 }
 for (var i = 0; i < 50; i ++) {
     
