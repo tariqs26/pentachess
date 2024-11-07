@@ -1,4 +1,4 @@
-# <yyyy-mm-dd> Meeting
+# yyyy-mm-dd Meeting
 
 ## Attendance
 
