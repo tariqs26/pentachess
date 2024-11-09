@@ -1,6 +1,6 @@
 import type { Board, Cell } from "../board/types"
 
-// TODO: figure out integrating check state to limit moves
+// TODO
 export const getAvailableMoves = (board: Board, cell: Cell): Cell[] => {
   const cells: Cell[] = []
 

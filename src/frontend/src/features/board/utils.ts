@@ -1,5 +1,5 @@
 import { DECAGON_SIDES, RING_SIZES } from "./constants"
-import type { Board, Cell } from "./types"
+import type { Board } from "./types"
 
 // TODO
 export const generateInitialBoard = (): Board => {
@@ -7,30 +7,18 @@ export const generateInitialBoard = (): Board => {
 
   for (let i = 0; i < RING_SIZES.length; i++) {
     const size = RING_SIZES[i]
-    const ring: Cell[] = []
+    const ring = []
 
     for (let j = 0; j < size; j++) {
-      const cell: Cell = {
+      const cell = {
         id: `${i === 0 ? "A" : i === 1 ? "B" : "C"}${j + 1}`,
         colour: j % 2 === 0 ? "white" : "black",
         side: Math.floor(j / (size / DECAGON_SIDES)) + 1,
-        adjacent: {
-          prev: ring[j > 0 ? j - 1 : size - 1],
-          next: ring[j < size - 1 ? j + 1 : 0],
-          in: null,
-          out: null,
-        },
-        vertices: {
-          in: [],
-          out: [],
-        },
         piece: null,
       }
 
       ring.push(cell)
     }
-
-    board.push(ring)
   }
 
   return board

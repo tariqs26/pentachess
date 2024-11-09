@@ -1,10 +1,8 @@
-import type { PieceColour, PieceType } from "./types"
+import type { PieceColour, PieceType, Piece } from "./types"
 
 export const INITIAL_PIECES: Record<
   PieceType,
-  {
-    image: string
-    value: number
+  Pick<Piece, "value" | "image"> & {
     startingPositions: Record<PieceColour, { x: number; y: number }[]>
   }
 > = {

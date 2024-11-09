@@ -12,4 +12,6 @@ export type PieceType =
 export type Piece = {
   type: PieceType
   colour: PieceColour
+  image: string
+  value: number
 }
