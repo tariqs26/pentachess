@@ -13,6 +13,9 @@ type Move = {
   from: Cell
   to: Cell
   pieceCaptured: PieceType | null
+  piecePromoted: PieceType | null
+  check: boolean
+  checkmate: boolean
 }
 
 type GameStatus =
