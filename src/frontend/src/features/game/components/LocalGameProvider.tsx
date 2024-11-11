@@ -1,4 +1,7 @@
+"use client"
+
 import { type Dispatch, createContext, useReducer } from "react"
+import { generateInitialBoard } from "@/features/board/utils"
 import { localGameReducer } from "../reducer"
 import type { LocalGameAction, LocalGameState } from "../types"
 
@@ -13,8 +16,9 @@ const initialState: LocalGameState = {
   capturedPieces: { white: [], black: [] },
   boardState: {
     disabled: false,
-    board: [],
+    board: generateInitialBoard(),
     selectedCell: null,
+    overCell: null,
   },
 }
 
