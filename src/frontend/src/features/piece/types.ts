@@ -1,4 +1,4 @@
-export type PieceColour = "black" | "white"
+export type PieceColour = "white" | "black"
 
 export type PieceType =
   | "king"
@@ -6,8 +6,10 @@ export type PieceType =
   | "rook"
   | "bishop"
   | "knight"
-  | "pawn"
-  | "bPawn"
+  | "pawn-cw"
+  | "pawn-ccw"
+  | "berolina-pawn-cw"
+  | "berolina-pawn-ccw"
 
 export type Piece = {
   type: PieceType
