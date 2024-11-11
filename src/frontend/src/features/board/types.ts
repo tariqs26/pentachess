@@ -42,9 +42,11 @@ export type BoardState = {
     cell: Cell
     availableMoves: Cell[]
   } | null
+  overCell: Cell | null
 }
 
 export type BoardAction =
   | { type: "SELECT_CELL"; payload: { cell: Cell } }
+  | { type: "SET_OVER_CELL"; payload: { cell: Cell } }
   | { type: "MOVE_PIECE"; payload: { cell: Cell } }
   | { type: "SET_DISABLED"; payload: { disabled: boolean } }
