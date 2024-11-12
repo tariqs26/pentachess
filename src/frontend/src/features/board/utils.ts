@@ -1,7 +1,10 @@
 import { DECAGON_SIDES, RING_SIZES } from "./constants"
 import type { Board, Cell } from "./types"
+import { PIECE_POSITIONS } from "../piece/constants"
+import { makePiece } from "../piece/utils"
+import { PieceColour, PieceType } from "../piece/types"
 
-// TODO: Demo MVP
+// TODO: Demo MVP (adjacent in/out, vertices in/out)
 export const generateInitialBoard = (): Board => {
   const board: Board = []
 
@@ -34,6 +37,18 @@ export const generateInitialBoard = (): Board => {
 
     board.push(ring)
   }
+
+  // assign pieces to cells
+  Object.entries(PIECE_POSITIONS).forEach(([type, colours]) => {
+    Object.entries(colours).forEach(([colour, positions]) => {
+      positions.forEach((position) => {
+        board[position.i][position.j].piece = makePiece(
+          type as PieceType,
+          colour as PieceColour
+        )
+      })
+    })
+  })
 
   return board
 }
