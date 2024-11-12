@@ -1,10 +1,21 @@
 import type { Board, Cell } from "../board/types"
+import { Piece, PieceColour, PieceType } from "./types"
+import { PIECE_DATA } from "./constants"
 
-// TODO: figure out integrating check state to limit moves
+export const makePiece = (type: PieceType, colour: PieceColour): Piece => ({
+  type,
+  colour,
+  value: PIECE_DATA[type].value,
+  image: PIECE_DATA[type].image[colour],
+})
+
+// TODO: Demo MVP
 export const getAvailableMoves = (board: Board, cell: Cell): Cell[] => {
   const cells: Cell[] = []
 
   if (cell.piece === null) return cells
+
+  // We could look at using strategy pattern instead of the switch statement
 
   switch (cell.piece.type) {
     case "king":
@@ -15,18 +26,14 @@ export const getAvailableMoves = (board: Board, cell: Cell): Cell[] => {
       break
     case "bishop":
       break
-    case "knight":
-      break
-    case "pawn":
-      break
-    case "bPawn":
+    default:
       break
   }
 
   return cells
 }
 
-// TODO
+// TODO: Demo MVP
 export const movePiece = (board: Board, from: Cell, to: Cell) => {
   console.info(board, from, to)
 }

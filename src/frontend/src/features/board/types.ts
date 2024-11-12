@@ -1,14 +1,17 @@
 import type { Piece } from "../piece/types"
 
 // TODO: improve colour type
-type CellColour = "white" | "black"
+export type CellColour = "primary" | "secondary"
 
-export type CellId = `${"A" | "B" | "C"}${number}`
+export type RingId = "A" | "B" | "C"
+
+export type CellId = `${RingId}${number}`
 
 export type Cell = {
   id: CellId // A0, A1 ...
   colour: CellColour
   side: number // 1, 2, 3..
+  position: { i: number; j: number }
   // adjacent neighbours
   adjacent: {
     // left
@@ -31,3 +34,19 @@ export type Cell = {
 export type Ring = Cell[]
 
 export type Board = Ring[]
+
+export type BoardState = {
+  board: Board
+  disabled: boolean
+  selectedCell: {
+    cell: Cell
+    availableMoves: Cell[]
+  } | null
+  overCell: Cell | null
+}
+
+export type BoardAction =
+  | { type: "SELECT_CELL"; payload: { cell: Cell } }
+  | { type: "SET_OVER_CELL"; payload: { cell: Cell } }
+  | { type: "MOVE_PIECE"; payload: { cell: Cell } }
+  | { type: "SET_DISABLED"; payload: { disabled: boolean } }
