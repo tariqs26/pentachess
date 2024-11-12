@@ -13,7 +13,8 @@
     "next": "14.2.16",
     "react": "^18",
     "react-dom": "^18",
-    "react-hook-form": "^7.53.1"
+    "react-hook-form": "^7.53.1",
+    "sharp": "^0.33.5"
   },
   "devDependencies": {
     "@types/node": "^20",
