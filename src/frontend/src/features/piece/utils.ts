@@ -1,4 +1,13 @@
 import type { Board, Cell } from "../board/types"
+import { Piece, PieceColour, PieceType } from "./types"
+import { PIECE_DATA } from "./constants"
+
+export const makePiece = (type: PieceType, colour: PieceColour): Piece => ({
+  type,
+  colour,
+  value: PIECE_DATA[type].value,
+  image: PIECE_DATA[type].image[colour],
+})
 
 // TODO: Demo MVP
 export const getAvailableMoves = (board: Board, cell: Cell): Cell[] => {
