@@ -67,11 +67,11 @@ export function initializeBoard(): Board {
 }
 
 function initializePieces(board: Board) {
-  for (const decagon of Object.keys(INITIAL_PIECES)) {
-    const x = parseInt(decagon)
-    for (const tile of Object.keys(INITIAL_PIECES[x])) {
+  for (const [ring, tiles] of Object.entries(INITIAL_PIECES)) {
+    const x = parseInt(ring)
+    for (const [tile, piece] of Object.entries(tiles)) {
       const y = parseInt(tile)
-      board[x][y].piece = makePiece(...INITIAL_PIECES[x][y])
+      board[x][y].piece = makePiece(...piece)
     }
   }
 }
