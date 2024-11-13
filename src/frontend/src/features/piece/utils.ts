@@ -1,49 +1,58 @@
-import type { Board, Cell } from "../board/types"
+import type { Board } from "../board/types"
+import type { Cell } from "@/features/board/cell"
 import { Piece, PieceColour, PieceType } from "./types"
 import { PIECE_DATA } from "./constants"
 
-export const makePiece = (type: PieceType, colour: PieceColour): Piece => ({
-  type,
-  colour,
-  value: PIECE_DATA[type].value,
-  image: PIECE_DATA[type].image[colour],
-})
-
+export function makePiece(type: PieceType, colour: PieceColour): Piece {
+  return {
+    type,
+    colour,
+    value: PIECE_DATA[type].value,
+    image: PIECE_DATA[type].image[colour],
+  }
+}
 // TODO: Demo MVP
-export const getAvailableMoves = (board: Board, cell: Cell): Cell[] => {
-  const cells: Cell[] = []
+export function getPossibleMoves(cell: Cell, board: Cell[][]): Cell[] {
+  const possibleMoves: Cell[] = []
 
-  if (cell.piece === null) return cells
+  switch (cell.piece?.type) {
+    case "knight":
+      console.log(cell.color)
+      for (const [x, y] of cell.vertices) {
+        const vertex = board[x][y]
+        console.log(x, vertex.color)
 
-  // We could look at using strategy pattern instead of the switch statement
-
-  switch (cell.piece.type) {
-    case "king":
-      break
+        if (vertex.color !== cell.color) {
+          possibleMoves.push(vertex)
+        }
+      }
+      console.log("\nPossible Moves:")
     case "queen":
       break
     case "rook":
       break
     case "bishop":
       break
-    default:
+    case "king":
+      break
+    case "berolina-pawn-cw":
+      break
+    case "berolina-pawn-ccw":
+      break
+    case "pawn-cw":
+      break
+    case "pawn-ccw":
       break
   }
-
-  return cells
+  return possibleMoves
 }
 
-// TODO: Demo MVP
-export const movePiece = (board: Board, from: Cell, to: Cell) => {
+// TODO
+export function capturePiece(board: Board, from: Cell, to: Cell) {
   console.info(board, from, to)
 }
 
 // TODO
-export const capturePiece = (board: Board, from: Cell, to: Cell) => {
-  console.info(board, from, to)
-}
-
-// TODO
-export const promotePawn = (board: Board, cell: Cell) => {
+export function promotePawn(board: Board, cell: Cell) {
   console.info(board, cell)
 }

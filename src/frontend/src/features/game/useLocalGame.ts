@@ -1,7 +1,7 @@
 import { useContext } from "react"
 import { LocalGameContext } from "./components/LocalGameProvider"
 
-export const useLocalGame = () => {
+export function useLocalGame() {
   const context = useContext(LocalGameContext)
 
   if (context === null) {

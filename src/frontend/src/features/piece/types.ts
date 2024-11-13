@@ -1,6 +1,6 @@
 import type { StaticImageData } from "next/image"
 
-export type PieceColour = "white" | "black"
+export type PieceColour = "w" | "b" // white | black
 
 export type PieceType =
   | "king"
