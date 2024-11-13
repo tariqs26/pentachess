@@ -1,4 +1,4 @@
-import type { Piece } from "../piece/types"
+import { INITIAL_PIECES } from "../piece/constants"
 import { getPossibleMoves, makePiece } from "../piece/utils"
 import { Cell } from "./cell"
 import type { Board } from "./types"
@@ -67,54 +67,11 @@ export function initializeBoard(): Board {
 }
 
 function initializePieces(board: Board) {
-  const initialPieces: Record<number, Record<number, Piece>> = {
-    1: {
-      0: makePiece("berolina-pawn-ccw", "w"),
-      1: makePiece("pawn-ccw", "w"),
-      2: makePiece("pawn-ccw", "w"),
-      12: makePiece("pawn-cw", "b"),
-      13: makePiece("pawn-cw", "b"),
-      14: makePiece("berolina-pawn-cw", "b"),
-      15: makePiece("berolina-pawn-ccw", "b"),
-      16: makePiece("pawn-ccw", "b"),
-      17: makePiece("pawn-ccw", "b"),
-      27: makePiece("pawn-cw", "w"),
-      28: makePiece("pawn-cw", "w"),
-      29: makePiece("berolina-pawn-cw", "w"),
-    },
-    2: {
-      0: makePiece("king", "w"),
-      1: makePiece("knight", "w"),
-      2: makePiece("rook", "w"),
-      3: makePiece("bishop", "w"),
-      4: makePiece("berolina-pawn-ccw", "w"),
-      5: makePiece("pawn-ccw", "w"),
-      19: makePiece("pawn-cw", "b"),
-      20: makePiece("berolina-pawn-cw", "b"),
-      21: makePiece("bishop", "b"),
-      22: makePiece("rook", "b"),
-      23: makePiece("knight", "b"),
-      24: makePiece("queen", "b"),
-      25: makePiece("king", "b"),
-      26: makePiece("knight", "b"),
-      27: makePiece("rook", "b"),
-      28: makePiece("bishop", "b"),
-      29: makePiece("berolina-pawn-ccw", "b"),
-      30: makePiece("pawn-ccw", "b"),
-      44: makePiece("pawn-cw", "w"),
-      45: makePiece("berolina-pawn-cw", "w"),
-      46: makePiece("bishop", "w"),
-      47: makePiece("rook", "w"),
-      48: makePiece("knight", "w"),
-      49: makePiece("queen", "w"),
-    },
-  }
-
-  for (const decagon of Object.keys(initialPieces)) {
+  for (const decagon of Object.keys(INITIAL_PIECES)) {
     const x = parseInt(decagon)
-    for (const tile of Object.keys(initialPieces[x])) {
+    for (const tile of Object.keys(INITIAL_PIECES[x])) {
       const y = parseInt(tile)
-      board[x][y].piece = initialPieces[x][y]
+      board[x][y].piece = makePiece(...INITIAL_PIECES[x][y])
     }
   }
 }

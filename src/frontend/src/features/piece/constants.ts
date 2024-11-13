@@ -50,4 +50,50 @@ export const PIECE_DATA: Record<
   "pawn-ccw": pawn,
   "berolina-pawn-cw": berolinaPawn,
   "berolina-pawn-ccw": berolinaPawn,
-}
+} as const
+
+export const INITIAL_PIECES: Record<
+  number,
+  Record<number, [PieceType, PieceColour]>
+> = {
+  1: {
+    0: ["berolina-pawn-ccw", "w"],
+    1: ["pawn-ccw", "w"],
+    2: ["pawn-ccw", "w"],
+    12: ["pawn-cw", "b"],
+    13: ["pawn-cw", "b"],
+    14: ["berolina-pawn-cw", "b"],
+    15: ["berolina-pawn-ccw", "b"],
+    16: ["pawn-ccw", "b"],
+    17: ["pawn-ccw", "b"],
+    27: ["pawn-cw", "w"],
+    28: ["pawn-cw", "w"],
+    29: ["berolina-pawn-cw", "w"],
+  },
+  2: {
+    0: ["king", "w"],
+    1: ["knight", "w"],
+    2: ["rook", "w"],
+    3: ["bishop", "w"],
+    4: ["berolina-pawn-ccw", "w"],
+    5: ["pawn-ccw", "w"],
+    19: ["pawn-cw", "b"],
+    20: ["berolina-pawn-cw", "b"],
+    21: ["bishop", "b"],
+    22: ["rook", "b"],
+    23: ["knight", "b"],
+    24: ["queen", "b"],
+    25: ["king", "b"],
+    26: ["knight", "b"],
+    27: ["rook", "b"],
+    28: ["bishop", "b"],
+    29: ["berolina-pawn-ccw", "b"],
+    30: ["pawn-ccw", "b"],
+    44: ["pawn-cw", "w"],
+    45: ["berolina-pawn-cw", "w"],
+    46: ["bishop", "w"],
+    47: ["rook", "w"],
+    48: ["knight", "w"],
+    49: ["queen", "w"],
+  },
+} as const
