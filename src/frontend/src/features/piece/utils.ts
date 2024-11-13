@@ -12,7 +12,7 @@ export function makePiece(type: PieceType, colour: PieceColour): Piece {
   }
 }
 // TODO: Demo MVP
-export function getPossibleMoves(cell: Cell, board: Cell[][]): Cell[] {
+export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
   const possibleMoves: Cell[] = []
 
   switch (cell.piece?.type) {
