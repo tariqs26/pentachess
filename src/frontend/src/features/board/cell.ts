@@ -31,7 +31,7 @@ const [MID_OUT_EDGES, REVERSE_MID_OUT_EDGES] = getReverseMidOutEdges()
 
 export class Cell {
   id: string
-  color: string
+  color: "b" | "w"
   x: number
   y: number
   side: number
