@@ -1,10 +1,6 @@
-import type { BoardState, BoardAction, Cell } from "../board/types"
+import type { BoardState, BoardAction } from "../board/types"
+import type { Cell } from "../board/cell"
 import type { Piece, PieceColour, PieceType } from "../piece/types"
-
-export type User = {
-  id: string
-  username: string
-}
 
 type Move = {
   notation: string

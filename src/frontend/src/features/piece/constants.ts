@@ -16,8 +16,8 @@ import queenW from "/public/pieces/queen-w.png"
 import rookB from "/public/pieces/rook-b.png"
 import rookW from "/public/pieces/rook-w.png"
 
-const pawn = { value: 1, image: { white: pawnW, black: pawnB } }
-const berolinaPawn = { value: 1, image: { white: berolinaW, black: berolinaB } }
+const pawn = { value: 1, image: { w: pawnW, b: pawnB } }
+const berolinaPawn = { value: 1, image: { w: berolinaW, b: berolinaB } }
 
 export const PIECE_DATA: Record<
   PieceType,
@@ -28,114 +28,72 @@ export const PIECE_DATA: Record<
 > = {
   king: {
     value: 9999,
-    image: { white: kingW, black: kingB },
+    image: { w: kingW, b: kingB },
   },
   queen: {
     value: 9,
-    image: { white: queenW, black: queenB },
+    image: { w: queenW, b: queenB },
   },
   rook: {
     value: 5,
-    image: { white: rookW, black: rookB },
+    image: { w: rookW, b: rookB },
   },
   bishop: {
     value: 3,
-    image: { white: bishopW, black: bishopB },
+    image: { w: bishopW, b: bishopB },
   },
   knight: {
     value: 3,
-    image: { white: knightW, black: knightB },
+    image: { w: knightW, b: knightB },
   },
   "pawn-cw": pawn,
   "pawn-ccw": pawn,
   "berolina-pawn-cw": berolinaPawn,
   "berolina-pawn-ccw": berolinaPawn,
-}
+} as const
 
-export const PIECE_POSITIONS: Record<
-  PieceType,
-  Record<PieceColour, { i: number; j: number }[]>
+export const INITIAL_PIECES: Record<
+  number,
+  Record<number, [PieceType, PieceColour]>
 > = {
-  king: {
-    white: [{ i: 2, j: 0 }],
-    black: [{ i: 2, j: 25 }],
+  1: {
+    0: ["berolina-pawn-ccw", "w"],
+    1: ["pawn-ccw", "w"],
+    2: ["pawn-ccw", "w"],
+    12: ["pawn-cw", "b"],
+    13: ["pawn-cw", "b"],
+    14: ["berolina-pawn-cw", "b"],
+    15: ["berolina-pawn-ccw", "b"],
+    16: ["pawn-ccw", "b"],
+    17: ["pawn-ccw", "b"],
+    27: ["pawn-cw", "w"],
+    28: ["pawn-cw", "w"],
+    29: ["berolina-pawn-cw", "w"],
   },
-  queen: {
-    white: [{ i: 2, j: 49 }],
-    black: [{ i: 2, j: 24 }],
+  2: {
+    0: ["king", "w"],
+    1: ["knight", "w"],
+    2: ["rook", "w"],
+    3: ["bishop", "w"],
+    4: ["berolina-pawn-ccw", "w"],
+    5: ["pawn-ccw", "w"],
+    19: ["pawn-cw", "b"],
+    20: ["berolina-pawn-cw", "b"],
+    21: ["bishop", "b"],
+    22: ["rook", "b"],
+    23: ["knight", "b"],
+    24: ["queen", "b"],
+    25: ["king", "b"],
+    26: ["knight", "b"],
+    27: ["rook", "b"],
+    28: ["bishop", "b"],
+    29: ["berolina-pawn-ccw", "b"],
+    30: ["pawn-ccw", "b"],
+    44: ["pawn-cw", "w"],
+    45: ["berolina-pawn-cw", "w"],
+    46: ["bishop", "w"],
+    47: ["rook", "w"],
+    48: ["knight", "w"],
+    49: ["queen", "w"],
   },
-  rook: {
-    white: [
-      { i: 2, j: 2 },
-      { i: 2, j: 47 },
-    ],
-    black: [
-      { i: 2, j: 22 },
-      { i: 2, j: 27 },
-    ],
-  },
-  bishop: {
-    white: [
-      { i: 2, j: 3 },
-      { i: 2, j: 46 },
-    ],
-    black: [
-      { i: 2, j: 21 },
-      { i: 2, j: 28 },
-    ],
-  },
-  knight: {
-    white: [
-      { i: 2, j: 1 },
-      { i: 2, j: 48 },
-    ],
-    black: [
-      { i: 2, j: 23 },
-      { i: 2, j: 26 },
-    ],
-  },
-  "pawn-cw": {
-    white: [
-      { i: 1, j: 27 },
-      { i: 1, j: 28 },
-      { i: 2, j: 44 },
-    ],
-    black: [
-      { i: 1, j: 12 },
-      { i: 1, j: 13 },
-      { i: 2, j: 19 },
-    ],
-  },
-  "pawn-ccw": {
-    white: [
-      { i: 1, j: 1 },
-      { i: 1, j: 2 },
-      { i: 2, j: 5 },
-    ],
-    black: [
-      { i: 1, j: 16 },
-      { i: 1, j: 17 },
-      { i: 2, j: 30 },
-    ],
-  },
-  "berolina-pawn-cw": {
-    white: [
-      { i: 1, j: 29 },
-      { i: 2, j: 45 },
-    ],
-    black: [
-      { i: 1, j: 14 },
-      { i: 2, j: 20 },
-    ],
-  },
-  "berolina-pawn-ccw": {
-    white: [
-      { i: 1, j: 0 },
-      { i: 2, j: 4 },
-    ],
-    black: [
-      { i: 1, j: 15 },
-      { i: 2, j: 29 },
-    ],
-  },
-}
+} as const
