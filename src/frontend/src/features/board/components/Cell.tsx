@@ -7,11 +7,14 @@ export const CellComponent = (cell: Omit<Cell, "setVertices">) => {
       style={{
         backgroundColor: cell.color === "w" ? "yellowgreen" : "green",
         height: "100px",
-        width: "56px",
+        width: "100px",
         outline: "1px solid black",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
+        clipPath: "polygon(0% 43.43%,20% 100%,80% 100%,100% 43.43%,50% 76.7%)",
+        rotate: Number(cell.id.slice(1)) % 2 == 0 ? "-70deg" : "-103deg",
+        marginLeft: "-70px"
       }}
     >
       {cell.piece ? (
