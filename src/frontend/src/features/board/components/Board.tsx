@@ -1,23 +1,70 @@
 import { useLocalGame } from "@/features/game/useLocalGame"
 import { DECAGON_SIDES } from "../constants"
-import { CellComponent } from "./Cell"
 import { getSides } from "../utils"
-import { Side } from "./Side"
+
+import type { Cell } from "../cell"
+import Image from "next/image"
+
+const CellComponent = (cell: Omit<Cell, "setVertices">) => {
+  return (
+    <span
+      className="cell"
+      style={{
+        width: "64px",
+        height: "64px",
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        border: "1px solid black",
+      }}
+    >
+      {cell.piece ? (
+        <Image
+          src={cell.piece.image}
+          alt={cell.piece.type}
+          priority
+          style={{
+            width: "50px",
+            height: "50px",
+            rotate: `${cell.side === 0 ? "-90" : "0"}deg`,
+          }}
+        />
+      ) : (
+        cell.id
+      )}
+    </span>
+  )
+}
 
 export const Board = () => {
   const { state } = useLocalGame()
 
   return (
-    <div className="board">
+    <div
+      style={{
+        backgroundColor: "gray",
+        margin: "auto",
+        height: "1000px",
+        width: "1000px",
+        position: "relative",
+      }}
+    >
       {state.boardState.board.map((ring, i) => (
-        <div key={i} className="ring">
-          {getSides(ring, ring.length / DECAGON_SIDES).map((side, j) => (
-            <Side key={j} ring={i} side={j}>
-              {side.map((cell) => (
-                <CellComponent key={cell.id} {...cell} />
-              ))}
-            </Side>
-          ))}
+        <div
+          key={i}
+          style={{
+            display: "flex",
+          }}
+        >
+          {getSides(ring, ring.length / DECAGON_SIDES).map((side, j) => {
+            return (
+              <div className="flex" key={j}>
+                {side.map((cell) => (
+                  <CellComponent key={cell.id} {...cell} />
+                ))}
+              </div>
+            )
+          })}
         </div>
       ))}
     </div>
