@@ -1,6 +1,16 @@
 import Image from "next/image"
 import type { Cell } from "../cell"
 
+const getTransformation = (cell: Omit<Cell, "setVertices">) => {
+  const ring = cell.id.slice(0, 1)
+  const side = cell.side
+  const id = Number(cell.id.slice(1))
+  if (ring != 'A' && side % 2 != 0) {
+    return id % 2 != 0 ? "-70deg" : "-103deg"
+  }
+  return id % 2 == 0 ? "-70deg" : "-103deg"
+}
+
 export const CellComponent = (cell: Omit<Cell, "setVertices">) => {
   return (
     <div
@@ -13,7 +23,7 @@ export const CellComponent = (cell: Omit<Cell, "setVertices">) => {
         justifyContent: "center",
         alignItems: "center",
         clipPath: "polygon(0% 43.43%,20% 100%,80% 100%,100% 43.43%,50% 76.7%)",
-        rotate: Number(cell.id.slice(1)) % 2 == 0 ? "-70deg" : "-103deg",
+        rotate: getTransformation(cell),
         marginLeft: "-70px"
       }}
     >

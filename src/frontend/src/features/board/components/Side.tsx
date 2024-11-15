@@ -5,9 +5,19 @@ type SideProps = React.PropsWithChildren<{
   side: number
 }>
 
-function rotationStyle(side: number): number {
-  const [step, baseAngle] = [36, -18]
-  return (baseAngle - step * side) % 360
+function rotationStyle(ring: number, side: number): number {
+  const rotations_ring_0 = [0, 0, -70, -73, -140, -142, 150, 148, 75, 70]
+  const rotations_ring_1 = [-5, -40, -75, -110, -145, -180, 145, 110, 75, 38]
+  const rotations_ring_2 = [-5, -35, -75, -112, -145, -185, 140, 105, 70, 38]
+
+  switch (ring) {
+    case 0:
+      return rotations_ring_0[side]
+    case 1:
+      return rotations_ring_1[side]
+    default:
+      return rotations_ring_2[side]
+  }
 }
 
 // left and top are based on the top/left position of the ring currently 50% top, 50% left
@@ -16,36 +26,34 @@ const leftStyle = (ring: number): Array<number> => {
   switch (ring) {
     case 0:
       // TODO fix inner ring positioning
-      return [-8, 48, 68, 48, -8, -92, -102, -122, -122, -72]
+      return [0, 30, 30, 35, -12, -38, -70, -92, -63, -50]
     case 1:
       // pattern, -18, -18, 87, 87, -148, -148, -253, -253
-      return [-18, 87, 127, 87, -18, -148, -253, -293, -253, -148]
+      return [-33, 45, 83, 65, 10, -65, -140, -185, -180, -120]
     default:
       // pattern, -20, -20, 171, 171, -256, -256, -447, -447
-      return [-20, 171, 244, 171, -20, -256, -447, -520, -447, -256]
+      return [-60, 70, 137, 115, 30, -100, -225, -295, -285, -200]
   }
 }
 
 const topStyle = (ring: number): Array<number> => {
-  // 0, 1, 2, 3, 4
-  // TODO fix inner ring positioning
-  let firstHalf = [50, 30, -38, -110, -160]
-
-  if (ring === 1) {
-    // pattern diff (0,1) = 76, diff (1,2) = 122, diff (2,3) = 122, diff (3,4) = 76
-    firstHalf = [146, 70, -52, -174, -250]
-  } else if (ring === 2) {
-    // pattern diff (0,1) = 140, diff (1,2) = 224, diff (2,3) = 224, diff (3,4) = 140
-    firstHalf = [312, 172, -52, -276, -416]
+  switch (ring) {
+    case 0:
+      // TODO fix inner ring positioning
+      return [0, -2, -55, -85, -102, -117, -75, -55, -11, 18]
+    case 1:
+      // pattern, -18, -18, 87, 87, -148, -148, -253, -253
+      return [88, 50, -28, -110, -170, -185, -150, -80, 8, 78]
+    default:
+      // pattern, -20, -20, 171, 171, -256, -256, -447, -447
+      return [177, 120, -2, -140, -245, -270, -210, -90, 50, 150]
   }
-
-  return [...firstHalf, ...firstHalf.toReversed()]
 }
 
 const getSideStyle = (ring: number, side: number): CSSProperties => ({
   display: "flex",
   position: "absolute",
-  rotate: `${rotationStyle(side)}deg`,
+  rotate: `${rotationStyle(ring, side)}deg`,
   top: `${topStyle(ring)[side]}px`,
   left: `${leftStyle(ring)[side]}px`,
   zIndex: side,
