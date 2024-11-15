@@ -2,7 +2,6 @@ import type { Board } from "../board/types"
 import type { Cell } from "@/features/board/cell"
 import { Piece, PieceColor, PieceType } from "./types"
 import { PIECE_DATA } from "./constants"
-import { count } from "console"
 
 export function makePiece(type: PieceType, color: PieceColor): Piece {
   return {
@@ -45,13 +44,13 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
 
     case "queen":
       // Rook Moves
-      let rook_swap: Board = board
+      const rook_swap: Board = board
       rook_swap[cell.x][cell.y].piece = makePiece("rook", cell.piece.color)
       possibleMoves = possibleMoves.concat(
         getPossibleMoves(rook_swap[cell.x][cell.y], rook_swap)
       )
       // Bishop Moves
-      let bishop_swap: Board = board
+      const bishop_swap: Board = board
       bishop_swap[cell.x][cell.y].piece = makePiece("bishop", cell.piece.color)
       possibleMoves = possibleMoves.concat(
         getPossibleMoves(bishop_swap[cell.x][cell.y], bishop_swap)
