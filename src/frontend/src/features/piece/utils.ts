@@ -12,10 +12,14 @@ export function makePiece(type: PieceType, color: PieceColor): Piece {
   }
 }
 
-export function removeDups(list: Cell[]): Cell[] {
-  return Array.from(new Set(list.map((list) => JSON.stringify(list)))).map(
-    (str) => JSON.parse(str)
-  )
+export function removeDuplicates(list: Cell[]): Cell[] {
+  const seen = new Set<string>()
+
+  return list.filter((cell) => {
+    if (seen.has(cell.id)) return false
+    seen.add(cell.id)
+    return true
+  })
 }
 
 // TODO: Demo MVP
