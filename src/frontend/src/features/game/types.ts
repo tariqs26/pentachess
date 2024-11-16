@@ -1,6 +1,6 @@
 import type { BoardState, BoardAction } from "../board/types"
 import type { Cell } from "../board/cell"
-import type { Piece, PieceColour, PieceType } from "../piece/types"
+import type { Piece, PieceColor, PieceType } from "../piece/types"
 
 type Move = {
   notation: string
@@ -22,13 +22,13 @@ type GameStatus =
   | "resigned"
 
 export type LocalGameState = {
-  player: PieceColour
-  opponent: PieceColour
-  turn: PieceColour
-  timer: Record<PieceColour, number>
+  player: PieceColor
+  opponent: PieceColor
+  turn: PieceColor
+  timer: Record<PieceColor, number>
   previousMoves: Move[]
-  capturedPieces: Record<PieceColour, Piece[]>
-  check: PieceColour | null
+  capturedPieces: Record<PieceColor, Piece[]>
+  check: PieceColor | null
   status: GameStatus
   boardState: BoardState
 }
@@ -43,6 +43,6 @@ export type LocalGameAction =
     }
   | {
       type: "ADD_MOVE"
-      payload: { player: PieceColour; move: Move }
+      payload: { player: PieceColor; move: Move }
     }
   | BoardAction
