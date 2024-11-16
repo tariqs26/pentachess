@@ -1,5 +1,5 @@
 import type { StaticImageData } from "next/image"
-import type { PieceColour, PieceType } from "./types"
+import type { PieceColor, PieceType } from "./types"
 
 import berolinaB from "/public/pieces/berolina-b.png"
 import berolinaW from "/public/pieces/berolina-w.png"
@@ -23,7 +23,7 @@ export const PIECE_DATA: Record<
   PieceType,
   {
     value: number
-    image: Record<PieceColour, StaticImageData>
+    image: Record<PieceColor, StaticImageData>
   }
 > = {
   king: {
@@ -54,7 +54,7 @@ export const PIECE_DATA: Record<
 
 export const INITIAL_PIECES: Record<
   number,
-  Record<number, [PieceType, PieceColour]>
+  Record<number, [PieceType, PieceColor]>
 > = {
   1: {
     0: ["berolina-pawn-ccw", "w"],

@@ -51,7 +51,7 @@ export class Cell {
     this.edges = []
     this.vertices = []
 
-    // edges
+    // edges - [front, back, side(if exists)]
     if (this.x === 0) {
       // inner ring
       this.edges.push([this.x, (this.y + 1) % 10])
