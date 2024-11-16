@@ -28,12 +28,12 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
 
   if (cell.piece == null) return []
 
-  let next_cell
-  let capt_cell
-  let temp_cell
+  let nextCell: Cell
+  let captCell: Cell
+  let tempCell: Cell
 
   switch (cell.piece.type) {
-    case "knight":
+    case "knight": {
       for (const [x, y] of cell.vertices) {
         const vertex = board[x][y]
 
@@ -45,44 +45,44 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
         }
       }
       break
-
+    }
     case "queen":
       // Rook Moves
-      const rook_swap: Board = board
-      rook_swap[cell.x][cell.y].piece = makePiece("rook", cell.piece.color)
+      const rookSwap: Board = board
+      rookSwap[cell.x][cell.y].piece = makePiece("rook", cell.piece.color)
       possibleMoves = possibleMoves.concat(
-        getPossibleMoves(rook_swap[cell.x][cell.y], rook_swap)
+        getPossibleMoves(rookSwap[cell.x][cell.y], rookSwap)
       )
       // Bishop Moves
-      const bishop_swap: Board = board
-      bishop_swap[cell.x][cell.y].piece = makePiece("bishop", cell.piece.color)
+      const bishopSwap: Board = board
+      bishopSwap[cell.x][cell.y].piece = makePiece("bishop", cell.piece.color)
       possibleMoves = possibleMoves.concat(
-        getPossibleMoves(bishop_swap[cell.x][cell.y], bishop_swap)
+        getPossibleMoves(bishopSwap[cell.x][cell.y], bishopSwap)
       )
       break
 
     case "rook":
       if (cell.edges.length == 3) {
-        temp_cell = board[cell.edges[2][0]][cell.edges[2][1]]
-        if (temp_cell.piece != null) {
-          if (temp_cell.piece.color != cell.piece.color) {
-            possibleMoves.push(temp_cell)
+        tempCell = board[cell.edges[2][0]][cell.edges[2][1]]
+        if (tempCell.piece != null) {
+          if (tempCell.piece.color != cell.piece.color) {
+            possibleMoves.push(tempCell)
           }
-        } else possibleMoves.push(temp_cell)
+        } else possibleMoves.push(tempCell)
       }
       for (let i = 0; i < 2; i++) {
-        if (i == 0) temp_cell = board[cell.edges[0][0]][cell.edges[0][1]]
-        else temp_cell = board[cell.edges[1][0]][cell.edges[1][1]]
-        while (temp_cell != cell) {
-          if (temp_cell.piece != null) {
-            if (temp_cell.piece.color != cell.piece.color) {
-              possibleMoves.push(temp_cell)
+        if (i == 0) tempCell = board[cell.edges[0][0]][cell.edges[0][1]]
+        else tempCell = board[cell.edges[1][0]][cell.edges[1][1]]
+        while (tempCell != cell) {
+          if (tempCell.piece != null) {
+            if (tempCell.piece.color != cell.piece.color) {
+              possibleMoves.push(tempCell)
             }
             break
-          } else possibleMoves.push(temp_cell)
+          } else possibleMoves.push(tempCell)
           if (i == 0)
-            temp_cell = board[temp_cell.edges[0][0]][temp_cell.edges[0][1]]
-          else temp_cell = board[temp_cell.edges[1][0]][temp_cell.edges[1][1]]
+            tempCell = board[tempCell.edges[0][0]][tempCell.edges[0][1]]
+          else tempCell = board[tempCell.edges[1][0]][tempCell.edges[1][1]]
         }
       }
       break
@@ -98,31 +98,31 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
 
           if (vertex.angle === cell.angle && vertex.piece === null) {
             for (const [x, y] of vertex.vertices) {
-              const attached_vertex = board[x][y]
+              const attachedVertex = board[x][y]
               if (
-                attached_vertex.angle === vertex.angle &&
-                attached_vertex.color === vertex.color &&
-                (attached_vertex.piece?.color !== cell.piece?.color ||
+                attachedVertex.angle === vertex.angle &&
+                attachedVertex.color === vertex.color &&
+                (attachedVertex.piece?.color !== cell.piece?.color ||
                   vertex.piece === null) &&
                 cell.x !== 1
               ) {
                 if (cell.x === 0) {
                   if (
-                    attached_vertex.x === 2 &&
-                    (attached_vertex.y + 48) % 5 !== 0 &&
-                    (attached_vertex.y + 47) % 5 !== 0
+                    attachedVertex.x === 2 &&
+                    (attachedVertex.y + 48) % 5 !== 0 &&
+                    (attachedVertex.y + 47) % 5 !== 0
                   ) {
-                    possibleMoves.push(attached_vertex)
+                    possibleMoves.push(attachedVertex)
                     break
                   }
                 } else {
                   // cell.x = 2
                   if (
-                    attached_vertex.x === 0 &&
+                    attachedVertex.x === 0 &&
                     (cell.y + 48) % 5 !== 0 &&
                     (cell.y + 47) % 5 !== 0
                   ) {
-                    possibleMoves.push(attached_vertex)
+                    possibleMoves.push(attachedVertex)
                     break
                   }
                 }
@@ -141,12 +141,12 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
         }
 
         while (counter < 28) {
-          const current_cell = board[cell.x][(cell.y + counter) % 30]
-          if (current_cell.piece === null) {
-            possibleMoves.push(current_cell)
+          const currentCell = board[cell.x][(cell.y + counter) % 30]
+          if (currentCell.piece === null) {
+            possibleMoves.push(currentCell)
           } else {
-            if (current_cell.piece.color !== cell.piece?.color) {
-              possibleMoves.push(current_cell)
+            if (currentCell.piece.color !== cell.piece?.color) {
+              possibleMoves.push(currentCell)
             }
             break
           }
@@ -162,16 +162,16 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
           }
 
           while (counter < 28) {
-            const current_cell = board[cell.x][(cell.y - counter + 30) % 30]
-            if (possibleMoves.includes(current_cell)) {
+            const currentCell = board[cell.x][(cell.y - counter + 30) % 30]
+            if (possibleMoves.includes(currentCell)) {
               break
             }
 
-            if (current_cell.piece === null) {
-              possibleMoves.push(current_cell)
+            if (currentCell.piece === null) {
+              possibleMoves.push(currentCell)
             } else {
-              if (current_cell.piece.color !== cell.piece?.color) {
-                possibleMoves.push(current_cell)
+              if (currentCell.piece.color !== cell.piece?.color) {
+                possibleMoves.push(currentCell)
               }
               break
             }
@@ -186,12 +186,12 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
         }
 
         while (counter < 48) {
-          const current_cell = board[cell.x][(cell.y + counter) % 50]
-          if (current_cell.piece === null) {
-            possibleMoves.push(current_cell)
+          const currentCell = board[cell.x][(cell.y + counter) % 50]
+          if (currentCell.piece === null) {
+            possibleMoves.push(currentCell)
           } else {
-            if (current_cell.piece.color !== cell.piece?.color) {
-              possibleMoves.push(current_cell)
+            if (currentCell.piece.color !== cell.piece?.color) {
+              possibleMoves.push(currentCell)
             }
             break
           }
@@ -207,16 +207,16 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
           }
 
           while (counter < 48) {
-            const current_cell = board[cell.x][(cell.y - counter + 50) % 50]
-            if (possibleMoves.includes(current_cell)) {
+            const currentCell = board[cell.x][(cell.y - counter + 50) % 50]
+            if (possibleMoves.includes(currentCell)) {
               break
             }
 
-            if (current_cell.piece === null) {
-              possibleMoves.push(current_cell)
+            if (currentCell.piece === null) {
+              possibleMoves.push(currentCell)
             } else {
-              if (current_cell.piece.color !== cell.piece?.color) {
-                possibleMoves.push(current_cell)
+              if (currentCell.piece.color !== cell.piece?.color) {
+                possibleMoves.push(currentCell)
               }
               break
             }
@@ -229,21 +229,21 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
     case "king":
       // Need to prevent moves that put the king in danger (for demo this is good enough though) - Karl
       for (const [x, y] of cell.edges) {
-        temp_cell = board[x][y]
-        if (temp_cell.piece != null) {
-          if (temp_cell.piece.color != cell.piece.color) {
-            possibleMoves.push(temp_cell)
+        tempCell = board[x][y]
+        if (tempCell.piece != null) {
+          if (tempCell.piece.color != cell.piece.color) {
+            possibleMoves.push(tempCell)
           }
-        } else possibleMoves.push(temp_cell)
+        } else possibleMoves.push(tempCell)
       }
       for (const [x, y] of cell.vertices) {
-        temp_cell = board[x][y]
-        if (temp_cell.color == cell.color) {
-          if (temp_cell.piece != null) {
-            if (temp_cell.piece.color != cell.piece.color) {
-              possibleMoves.push(temp_cell)
+        tempCell = board[x][y]
+        if (tempCell.color == cell.color) {
+          if (tempCell.piece != null) {
+            if (tempCell.piece.color != cell.piece.color) {
+              possibleMoves.push(tempCell)
             }
-          } else possibleMoves.push(temp_cell)
+          } else possibleMoves.push(tempCell)
         }
       }
       break
@@ -256,30 +256,30 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
       //   cell.piece.firstMove = false
       // } else { stuff below
       // }
-      capt_cell = board[cell.edges[1][0]][cell.edges[1][1]] // coords of next cell in cw direction
-      if (capt_cell.piece != null) {
-        if (capt_cell.piece.color != cell.piece.color) {
-          possibleMoves.push(capt_cell)
+      captCell = board[cell.edges[1][0]][cell.edges[1][1]] // coords of next cell in cw direction
+      if (captCell.piece != null) {
+        if (captCell.piece.color != cell.piece.color) {
+          possibleMoves.push(captCell)
         }
       }
       if (cell.edges.length == 3) {
-        next_cell = board[cell.edges[2][0]][cell.edges[2][1]] // coords of edge adjacent cell in different decagon
-        if (next_cell.piece != null) {
-          if (next_cell.piece.color != cell.piece.color) {
-            possibleMoves.push(next_cell)
+        nextCell = board[cell.edges[2][0]][cell.edges[2][1]] // coords of edge adjacent cell in different decagon
+        if (nextCell.piece != null) {
+          if (nextCell.piece.color != cell.piece.color) {
+            possibleMoves.push(nextCell)
           }
         }
       }
-      next_cell = board[cell.x][(cell.y - 2) % board[cell.x].length] // next vertex adjacent cell in the same decagon in the cw direction
-      if (next_cell.piece == null) {
-        possibleMoves.push(next_cell)
+      nextCell = board[cell.x][(cell.y - 2) % board[cell.x].length] // next vertex adjacent cell in the same decagon in the cw direction
+      if (nextCell.piece == null) {
+        possibleMoves.push(nextCell)
       }
       for (const [x, y] of cell.vertices) {
         // vertex adjacent
-        next_cell = board[x][y]
-        if (next_cell.x != cell.x) {
-          if (next_cell.piece == null) {
-            possibleMoves.push(next_cell)
+        nextCell = board[x][y]
+        if (nextCell.x != cell.x) {
+          if (nextCell.piece == null) {
+            possibleMoves.push(nextCell)
           }
         }
       }
@@ -293,30 +293,30 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
       //   cell.piece.firstMove = false
       // } else { stuff below
       // }
-      capt_cell = board[cell.edges[0][0]][cell.edges[0][1]] // coords of next cell in cw direction
-      if (capt_cell.piece != null) {
-        if (capt_cell.piece.color != cell.piece.color) {
-          possibleMoves.push(capt_cell)
+      captCell = board[cell.edges[0][0]][cell.edges[0][1]] // coords of next cell in cw direction
+      if (captCell.piece != null) {
+        if (captCell.piece.color != cell.piece.color) {
+          possibleMoves.push(captCell)
         }
       }
       if (cell.edges.length == 3) {
-        next_cell = board[cell.edges[2][0]][cell.edges[2][1]] // coords of edge adjacent cell in different decagon
-        if (next_cell.piece != null) {
-          if (next_cell.piece.color != cell.piece.color) {
-            possibleMoves.push(next_cell)
+        nextCell = board[cell.edges[2][0]][cell.edges[2][1]] // coords of edge adjacent cell in different decagon
+        if (nextCell.piece != null) {
+          if (nextCell.piece.color != cell.piece.color) {
+            possibleMoves.push(nextCell)
           }
         }
       }
-      next_cell = board[cell.x][(cell.y + 2) % board[cell.x].length] // next vertex adjacent cell in the same decagon in the cw direction
-      if (next_cell.piece == null) {
-        possibleMoves.push(next_cell)
+      nextCell = board[cell.x][(cell.y + 2) % board[cell.x].length] // next vertex adjacent cell in the same decagon in the cw direction
+      if (nextCell.piece == null) {
+        possibleMoves.push(nextCell)
       }
       for (const [x, y] of cell.vertices) {
         // vertex adjacent
-        next_cell = board[x][y]
-        if (next_cell.x != cell.x) {
-          if (next_cell.piece == null) {
-            possibleMoves.push(next_cell)
+        nextCell = board[x][y]
+        if (nextCell.x != cell.x) {
+          if (nextCell.piece == null) {
+            possibleMoves.push(nextCell)
           }
         }
       }
@@ -330,29 +330,29 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
       //   cell.piece.firstMove = false
       // } else { stuff below
       // }
-      next_cell = board[cell.edges[1][0]][cell.edges[1][1]] // coords of next cell in cw direction
-      if (next_cell.piece == null) {
-        possibleMoves.push(next_cell)
+      nextCell = board[cell.edges[1][0]][cell.edges[1][1]] // coords of next cell in cw direction
+      if (nextCell.piece == null) {
+        possibleMoves.push(nextCell)
       }
       if (cell.edges.length == 3) {
-        next_cell = board[cell.edges[2][0]][cell.edges[2][1]] // coords of edge adjacent cell in different decagon
-        if (next_cell.piece == null) {
-          possibleMoves.push(next_cell)
+        nextCell = board[cell.edges[2][0]][cell.edges[2][1]] // coords of edge adjacent cell in different decagon
+        if (nextCell.piece == null) {
+          possibleMoves.push(nextCell)
         }
       }
-      capt_cell = board[cell.x][(cell.y - 2) % board[cell.x].length] // next vertex adjacent cell in the same decagon in the cw direction
-      if (capt_cell.piece != null) {
-        if (capt_cell.piece.color != cell.piece.color) {
-          possibleMoves.push(capt_cell)
+      captCell = board[cell.x][(cell.y - 2) % board[cell.x].length] // next vertex adjacent cell in the same decagon in the cw direction
+      if (captCell.piece != null) {
+        if (captCell.piece.color != cell.piece.color) {
+          possibleMoves.push(captCell)
         }
       }
       for (const [x, y] of cell.vertices) {
         // vertex adjacent
-        capt_cell = board[x][y]
-        if (capt_cell.x != cell.x) {
-          if (capt_cell.piece != null) {
-            if (capt_cell.piece.color != cell.piece.color) {
-              possibleMoves.push(capt_cell)
+        captCell = board[x][y]
+        if (captCell.x != cell.x) {
+          if (captCell.piece != null) {
+            if (captCell.piece.color != cell.piece.color) {
+              possibleMoves.push(captCell)
             }
           }
         }
@@ -367,36 +367,36 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
       //   cell.piece.firstMove = false
       // } else { stuff below
       // }
-      next_cell = board[cell.edges[0][0]][cell.edges[0][1]] // coords of next cell in cw direction
-      if (next_cell.piece == null) {
-        possibleMoves.push(next_cell)
+      nextCell = board[cell.edges[0][0]][cell.edges[0][1]] // coords of next cell in cw direction
+      if (nextCell.piece == null) {
+        possibleMoves.push(nextCell)
       }
       if (cell.edges.length == 3) {
-        next_cell = board[cell.edges[2][0]][cell.edges[2][1]] // coords of edge adjacent cell in different decagon
-        if (next_cell.piece == null) {
-          possibleMoves.push(next_cell)
+        nextCell = board[cell.edges[2][0]][cell.edges[2][1]] // coords of edge adjacent cell in different decagon
+        if (nextCell.piece == null) {
+          possibleMoves.push(nextCell)
         }
       }
-      capt_cell = board[cell.x][(cell.y + 2) % board[cell.x].length] // next vertex adjacent cell in the same decagon in the cw direction
-      if (capt_cell.piece != null) {
-        if (capt_cell.piece.color != cell.piece.color) {
-          possibleMoves.push(capt_cell)
+      captCell = board[cell.x][(cell.y + 2) % board[cell.x].length] // next vertex adjacent cell in the same decagon in the cw direction
+      if (captCell.piece != null) {
+        if (captCell.piece.color != cell.piece.color) {
+          possibleMoves.push(captCell)
         }
       }
       for (const [x, y] of cell.vertices) {
         // vertex adjacent
-        capt_cell = board[x][y]
-        if (capt_cell.x != cell.x) {
-          if (capt_cell.piece != null) {
-            if (capt_cell.piece.color != cell.piece.color) {
-              possibleMoves.push(capt_cell)
+        captCell = board[x][y]
+        if (captCell.x != cell.x) {
+          if (captCell.piece != null) {
+            if (captCell.piece.color != cell.piece.color) {
+              possibleMoves.push(captCell)
             }
           }
         }
       }
       break
   }
-  return removeDups(possibleMoves)
+  return removeDuplicates(possibleMoves)
 }
 
 // TODO
