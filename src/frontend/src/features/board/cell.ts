@@ -1,6 +1,6 @@
 import { DECAGON_SIDES, RING_SIZES } from "@/features/board/constants"
 import type { Piece } from "@/features/piece/types"
-import { Board } from "./types"
+import type { Board } from "./types"
 
 function getReverseMidOutEdges() {
   let mid_x = 0
