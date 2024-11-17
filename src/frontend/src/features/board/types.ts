@@ -1,8 +1,6 @@
-import { Cell } from "@/features/board/cell"
+import type { Cell } from "@/features/board/cell"
 
-export type Ring = Cell[]
-
-export type Board = Ring[]
+export type Board = Cell[][]
 
 export type BoardState = {
   board: Board
