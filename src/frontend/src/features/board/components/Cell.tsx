@@ -30,7 +30,7 @@ export const CellComponent = (cell: Omit<Cell, "setVertices">) => {
         <Image
           className="absolute top-5 size-[50px]"
           src={cell.piece.image}
-          alt={`${cell.piece.colour === "w" ? "white" : "black"} ${cell.piece.type}`}
+          alt={`${cell.piece.color === "w" ? "white" : "black"} ${cell.piece.type}`}
           priority
         />
       ) : (
