@@ -15,8 +15,8 @@ export function initializeBoard(): Board {
   for (let ring = 0; ring < rings.length; ring++) {
     const tiles = rings[ring]
     let angle = 0
-    let flip_counter_2 = 2
-    let flip_counter_4 = 4
+    let flipCounter2 = 2
+    let flipCounter4 = 4
 
     // loop through loopRange
     for (let tile = 0; tile < tiles.length; tile++) {
@@ -27,30 +27,30 @@ export function initializeBoard(): Board {
       if (ring === 0) {
         angle = (angle + 36) % 360
       } else if (ring === 1) {
-        if (flip_counter_2 === 2) {
-          flip_counter_2 = 0
+        if (flipCounter2 === 2) {
+          flipCounter2 = 0
           angle = (angle + 36) % 360
         } else {
-          if (flip_counter_2 === 0) {
+          if (flipCounter2 === 0) {
             angle = (angle - 36 + 360) % 360 // must add 360 so negative angle is not returned
           } else {
             angle = (angle + 36) % 360
           }
 
-          flip_counter_2 += 1
+          flipCounter2 += 1
         }
       } else {
-        if (flip_counter_4 === 4) {
-          flip_counter_4 = 0
+        if (flipCounter4 === 4) {
+          flipCounter4 = 0
           angle = (angle + 36) % 360
         } else {
-          if (flip_counter_4 % 2 === 0) {
+          if (flipCounter4 % 2 === 0) {
             angle = (angle - 36 + 360) % 360 // must add 360 so negative angle is not returned
           } else {
             angle = (angle + 36) % 360
           }
 
-          flip_counter_4 += 1
+          flipCounter4 += 1
         }
       }
     }

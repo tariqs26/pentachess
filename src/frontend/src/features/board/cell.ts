@@ -3,21 +3,21 @@ import type { Piece } from "@/features/piece/types"
 import type { Board } from "./types"
 
 function getReverseMidOutEdges() {
-  let mid_x = 0
-  let out_y = 1
-  let count_x = 2
-  let count_y = 2
+  let midX = 0
+  let outY = 1
+  let countX = 2
+  let countY = 2
 
   const midOutEdges: { [key: number]: number } = { 0: 1 }
 
   for (let i = 0; i < 19; i++) {
-    midOutEdges[mid_x + count_x] = out_y + count_y
+    midOutEdges[midX + countX] = outY + countY
 
-    mid_x += count_x
-    out_y += count_y
+    midX += countX
+    outY += countY
 
-    count_x = count_x === 2 ? 1 : 2
-    count_y = count_y === 2 ? 3 : 2
+    countX = countX === 2 ? 1 : 2
+    countY = countY === 2 ? 3 : 2
   }
 
   const reverseMidOutEdges: { [key: number]: number } = {}
