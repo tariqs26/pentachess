@@ -31,7 +31,7 @@ const [MID_OUT_EDGES, REVERSE_MID_OUT_EDGES] = getReverseMidOutEdges()
 
 export class Cell {
   id: string
-  color: string
+  color: "b" | "w"
   x: number
   y: number
   side: number
@@ -44,7 +44,7 @@ export class Cell {
     this.piece = null
     this.color = tile % 2 === 0 ? "b" : "w" // 'b' for black, 'w' for white
     this.id = `${"ABC"[ring]}${tile}`
-    this.side = Math.floor(tile / (RING_SIZES[ring] / DECAGON_SIDES)) + 1
+    this.side = Math.floor(tile / (RING_SIZES[ring] / DECAGON_SIDES))
     this.x = ring
     this.y = tile
     this.angle = angle

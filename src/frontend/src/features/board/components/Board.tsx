@@ -1,16 +1,16 @@
 import { useLocalGame } from "@/features/game/useLocalGame"
 import { DECAGON_SIDES } from "../constants"
-import { CellComponent } from "./Cell"
 import { getSides } from "../utils"
+import { CellComponent } from "./Cell"
 import { Side } from "./Side"
 
 export const Board = () => {
   const { state } = useLocalGame()
 
   return (
-    <div className="board">
+    <div className="relative m-auto size-[800px] bg-gray-800">
       {state.boardState.board.map((ring, i) => (
-        <div key={i} className="ring">
+        <div key={i} className="absolute left-1/2 top-1/2">
           {getSides(ring, ring.length / DECAGON_SIDES).map((side, j) => (
             <Side key={j} ring={i} side={j}>
               {side.map((cell) => (
