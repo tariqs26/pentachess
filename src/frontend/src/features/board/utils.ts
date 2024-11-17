@@ -68,9 +68,9 @@ export function initializeBoard(): Board {
 
 function initializePieces(board: Board) {
   for (const [ring, tiles] of Object.entries(INITIAL_PIECES)) {
-    const x = parseInt(ring)
+    const x = Number.parseInt(ring)
     for (const [tile, piece] of Object.entries(tiles)) {
-      const y = parseInt(tile)
+      const y = Number.parseInt(tile)
       board[x][y].piece = makePiece(...piece)
     }
   }
