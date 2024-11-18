@@ -1,5 +1,5 @@
-import type { LocalGameAction, LocalGameState } from "./types"
 import { getPossibleMoves } from "../piece/utils"
+import type { LocalGameAction, LocalGameState } from "./types"
 
 export function localGameReducer(
   state: LocalGameState,
