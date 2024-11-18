@@ -6,7 +6,7 @@ export function localGameReducer(
   action: LocalGameAction
 ): LocalGameState {
   switch (action.type) {
-    case "SELECT_CELL":
+    case "SELECT_CELL": {
       return {
         ...state,
         boardState: {
@@ -22,6 +22,7 @@ export function localGameReducer(
             : null,
         },
       }
+    }
     case "SET_OVER_CELL":
       return {
         ...state,
@@ -30,7 +31,7 @@ export function localGameReducer(
           overCell: action.payload,
         },
       }
-    case "MOVE_PIECE":
+    case "MOVE_PIECE": {
       const { to, from, piece } = action.payload
 
       const capturedPiece = to.piece
@@ -57,7 +58,7 @@ export function localGameReducer(
                 ],
               },
       }
-
+    }
     default:
       return state
   }
