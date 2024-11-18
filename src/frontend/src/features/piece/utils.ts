@@ -35,7 +35,7 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
 
         if (
           vertex.color !== cell.color &&
-          (vertex.piece?.color !== cell.piece.color || vertex.piece === null)
+          (vertex.piece === null || vertex.piece.color !== cell.piece.color)
         ) {
           possibleMoves.push(vertex)
         }
