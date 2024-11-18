@@ -1,4 +1,5 @@
 import type { Cell } from "@/features/board/cell"
+import type { Piece } from "../piece/types"
 
 export type Board = Cell[][]
 
@@ -13,7 +14,14 @@ export type BoardState = {
 }
 
 export type BoardAction =
-  | { type: "SELECT_CELL"; payload: { cell: Cell } }
-  | { type: "SET_OVER_CELL"; payload: { cell: Cell } }
-  | { type: "MOVE_PIECE"; payload: { cell: Cell } }
+  | { type: "SELECT_CELL"; payload: Cell | null }
+  | { type: "SET_OVER_CELL"; payload: Cell | null }
+  | {
+      type: "MOVE_PIECE"
+      payload: {
+        to: { x: number; y: number; piece: Piece | null }
+        from: { x: number; y: number; piece: Piece }
+        piece: Piece
+      }
+    }
   | { type: "SET_DISABLED"; payload: { disabled: boolean } }
