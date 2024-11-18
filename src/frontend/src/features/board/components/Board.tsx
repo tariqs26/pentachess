@@ -14,7 +14,6 @@ export const Board = () => {
           {getSides(ring, ring.length / DECAGON_SIDES).map((side, j) => (
             <Side key={j} ring={i} side={j}>
               {side.map((cell) => (
-                // @ts-expect-error: issue with destructuring function from class object
                 <CellComponent key={cell.id} {...cell} />
               ))}
             </Side>
