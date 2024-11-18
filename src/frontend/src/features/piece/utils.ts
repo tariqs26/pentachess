@@ -55,6 +55,9 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
       possibleMoves = possibleMoves.concat(
         getPossibleMoves(bishopSwap[cell.x][cell.y], bishopSwap)
       )
+
+      board[cell.x][cell.y].piece = makePiece("queen", cell.piece.color)
+
       break
     }
     case "rook": {
