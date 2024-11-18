@@ -1,6 +1,6 @@
 import { INITIAL_PIECES } from "../piece/constants"
 import { getPossibleMoves, makePiece } from "../piece/utils"
-import { makeCell, setCellVertices } from "./cell"
+import { cloneCell, makeCell, setCellVertices } from "./cell"
 import type { Board, Cell } from "./types"
 
 export function initializeBoard(): Board {
@@ -77,13 +77,7 @@ function initializePieces(board: Board) {
 }
 
 export function cloneBoard(board: Board): Board {
-  return board.map((ring) =>
-    ring.map((cell) => ({
-      ...cell,
-      edges: cell.edges.map((edge) => [...edge]),
-      vertices: cell.vertices.map((vertex) => [...vertex]),
-    }))
-  )
+  return board.map((ring) => ring.map(cloneCell))
 }
 
 // display the board state for debugging
