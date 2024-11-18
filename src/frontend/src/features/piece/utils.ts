@@ -1,8 +1,7 @@
-import type { Board } from "../board/types"
-import type { Cell } from "@/features/board/cell"
-import type { Piece, PieceColor, PieceType } from "./types"
-import { PIECE_DATA } from "./constants"
+import type { Board, Cell } from "../board/types"
 import { cloneBoard } from "../board/utils"
+import { PIECE_DATA } from "./constants"
+import type { Piece, PieceColor, PieceType } from "./types"
 
 export function makePiece(type: PieceType, color: PieceColor): Piece {
   return {

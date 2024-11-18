@@ -1,6 +1,6 @@
 import Image from "next/image"
-import type { Cell } from "../cell"
 import { useLocalGame } from "@/features/game/useLocalGame"
+import type { Cell } from "../types"
 import { sideRotation } from "./Side"
 
 const cellRotation = (cell: Cell) => {

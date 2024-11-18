@@ -1,6 +1,5 @@
 import { DECAGON_SIDES, RING_SIZES } from "@/features/board/constants"
-import type { Piece } from "@/features/piece/types"
-import type { Board } from "./types"
+import type { Board, Cell } from "./types"
 
 function getReverseMidOutEdges() {
   let midX = 0
@@ -28,18 +27,6 @@ function getReverseMidOutEdges() {
 }
 
 const [MID_OUT_EDGES, REVERSE_MID_OUT_EDGES] = getReverseMidOutEdges()
-
-export type Cell = {
-  id: string
-  color: "b" | "w"
-  x: number
-  y: number
-  side: number
-  angle: number
-  piece: Piece | null
-  edges: Array<[number, number]>
-  vertices: Array<[number, number]>
-}
 
 export function makeCell(x: number, y: number, angle: number): Cell {
   const id = `${"CBA"[x]}${y}`

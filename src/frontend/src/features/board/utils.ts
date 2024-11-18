@@ -1,7 +1,7 @@
 import { INITIAL_PIECES } from "../piece/constants"
 import { getPossibleMoves, makePiece } from "../piece/utils"
-import { type Cell, makeCell, setCellVertices } from "./cell"
-import type { Board } from "./types"
+import { makeCell, setCellVertices } from "./cell"
+import type { Board, Cell } from "./types"
 
 export function initializeBoard(): Board {
   const rings = [

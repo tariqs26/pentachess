@@ -1,5 +1,16 @@
-import type { Cell } from "@/features/board/cell"
 import type { Piece } from "../piece/types"
+
+export type Cell = {
+  id: string
+  color: "b" | "w"
+  x: number
+  y: number
+  side: number
+  angle: number
+  piece: Piece | null
+  edges: Array<[number, number]>
+  vertices: Array<[number, number]>
+}
 
 export type Board = Cell[][]
 
