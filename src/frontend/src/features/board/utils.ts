@@ -1,6 +1,6 @@
 import { INITIAL_PIECES } from "../piece/constants"
 import { getPossibleMoves, makePiece } from "../piece/utils"
-import { Cell } from "./cell"
+import { type Cell, makeCell, setCellVertices } from "./cell"
 import type { Board } from "./types"
 
 export function initializeBoard(): Board {
@@ -20,7 +20,7 @@ export function initializeBoard(): Board {
 
     // loop through loopRange
     for (let tile = 0; tile < tiles.length; tile++) {
-      const cell = new Cell(ring, tile, angle)
+      const cell = makeCell(ring, tile, angle)
       board[ring].push(cell)
 
       // logic for angle and counters...
@@ -58,7 +58,7 @@ export function initializeBoard(): Board {
 
   // set cell vertices
   for (const ring of board) {
-    for (const cell of ring) cell.setVertices(board)
+    for (const cell of ring) setCellVertices(cell, board)
   }
 
   initializePieces(board)
@@ -78,14 +78,11 @@ function initializePieces(board: Board) {
 
 export function cloneBoard(board: Board): Board {
   return board.map((ring) =>
-    ring.map(
-      (cell) =>
-        ({
-          ...cell,
-          edges: cell.edges.map((edge) => [...edge]),
-          vertices: cell.vertices.map((vertex) => [...vertex]),
-        }) as Cell
-    )
+    ring.map((cell) => ({
+      ...cell,
+      edges: cell.edges.map((edge) => [...edge]),
+      vertices: cell.vertices.map((vertex) => [...vertex]),
+    }))
   )
 }
 
@@ -108,16 +105,6 @@ export function getSides<T>(arr: T[], size: number) {
 export function pieceClick(cell: Cell, board: Board): Cell[] {
   // memoize moves here and reset in the movePiece func
   return getPossibleMoves(cell, board)
-}
-
-// handle the movement of pieces (once move is confirmed)
-export function movePiece(
-  fromPos: [number, number],
-  toPos: [number, number]
-): boolean {
-  console.log(fromPos, toPos)
-  // movement logic can be implemented here
-  return true
 }
 
 // TODO
