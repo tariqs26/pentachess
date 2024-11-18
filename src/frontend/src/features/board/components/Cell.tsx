@@ -96,7 +96,7 @@ export const CellComponent = (cell: Cell) => {
       <div
         style={{
           backgroundColor: isCellHighlighted
-            ? "blue"
+            ? "green"
             : isCellSelected
               ? "red"
               : cell.color === "w"
