@@ -25,9 +25,9 @@ export function removeDuplicates(list: Cell[]): Cell[] {
 
 // TODO: Demo MVP
 export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
-  let possibleMoves: Cell[] = []
-
   if (cell.piece == null) return []
+
+  const possibleMoves: Cell[] = []
 
   switch (cell.piece.type) {
     case "knight": {
@@ -47,14 +47,14 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
       // get rook moves
       const rookSwap: Board = cloneBoard(board)
       rookSwap[cell.x][cell.y].piece = makePiece("rook", cell.piece.color)
-      possibleMoves = possibleMoves.concat(
-        getPossibleMoves(rookSwap[cell.x][cell.y], rookSwap)
+      possibleMoves.push(
+        ...getPossibleMoves(rookSwap[cell.x][cell.y], rookSwap)
       )
       // get bishop moves
       const bishopSwap: Board = cloneBoard(board)
       bishopSwap[cell.x][cell.y].piece = makePiece("bishop", cell.piece.color)
-      possibleMoves = possibleMoves.concat(
-        getPossibleMoves(bishopSwap[cell.x][cell.y], bishopSwap)
+      possibleMoves.push(
+        ...getPossibleMoves(bishopSwap[cell.x][cell.y], bishopSwap)
       )
       break
     }
