@@ -28,8 +28,16 @@ function getReverseMidOutEdges() {
 
 const [MID_OUT_EDGES, REVERSE_MID_OUT_EDGES] = getReverseMidOutEdges()
 
+export function cellId(x: number, y: number): string {
+  return `${"CBA"[x]}${y}`
+}
+
+export function cellCoords(id: string): [number, number] {
+  return [id.charCodeAt(0) - 65, parseInt(id.slice(1))]
+}
+
 export function makeCell(x: number, y: number, angle: number): Cell {
-  const id = `${"CBA"[x]}${y}`
+  const id = cellId(x, y)
   const color = y % 2 === 0 ? "b" : "w"
   const edges: Cell["edges"] = []
   const side = Math.floor(y / (RING_SIZES[x] / DECAGON_SIDES))
