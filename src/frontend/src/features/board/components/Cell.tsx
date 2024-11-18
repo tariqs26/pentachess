@@ -16,10 +16,16 @@ const pieceRotation = (cell: Cell) =>
 export const CellComponent = (cell: Cell) => {
   const { state, dispatch } = useLocalGame()
 
+  const isCellSelected = state.boardState.selectedCell?.cell.id === cell.id
+  const isAvailableMove =
+    state.boardState.selectedCell?.availableMoves.find(
+      (move) => move.id === cell.id
+    ) !== undefined
+
   const handlePieceMouseDown = () => {
     if (state.boardState.disabled) return
     if (cell.piece === null || cell.piece.color !== state.turn) return
-    if (state.boardState.selectedCell?.cell.id === cell.id) return
+    if (isCellSelected) return
     dispatch({ type: "SELECT_CELL", payload: cell })
   }
 
@@ -51,38 +57,16 @@ export const CellComponent = (cell: Cell) => {
 
   const handleCellMouseEnter = () => {
     if (state.boardState.disabled) return
-    if (!state.boardState.selectedCell) return
-    if (state.boardState.selectedCell.cell.id === cell.id) return
-    if (
-      !state.boardState.selectedCell.availableMoves.find(
-        (move) => move.id === cell.id
-      )
-    )
+    if (!state.boardState.selectedCell || isCellSelected || !isAvailableMove)
       return
-
     dispatch({ type: "SET_OVER_CELL", payload: cell })
   }
 
   const handleCellMouseLeave = () => {
     if (state.boardState.disabled) return
-    if (!state.boardState.selectedCell) return
-    if (
-      !state.boardState.selectedCell.availableMoves.find(
-        (move) => move.id === cell.id
-      )
-    )
-      return
-
+    if (!state.boardState.selectedCell || !isAvailableMove) return
     dispatch({ type: "SET_OVER_CELL", payload: null })
   }
-
-  const isCellHighlighted =
-    state.boardState.selectedCell &&
-    state.boardState.selectedCell.availableMoves.find(
-      (move) => move.id === cell.id
-    ) !== undefined
-
-  const isCellSelected = state.boardState.selectedCell?.cell.id === cell.id
 
   return (
     <div
@@ -95,7 +79,7 @@ export const CellComponent = (cell: Cell) => {
     >
       <div
         style={{
-          backgroundColor: isCellHighlighted
+          backgroundColor: isAvailableMove
             ? "green"
             : isCellSelected
               ? "red"
