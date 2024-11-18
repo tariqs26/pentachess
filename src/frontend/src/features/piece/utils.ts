@@ -90,7 +90,7 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
         const vertex = board[x][y]
         if (
           vertex.color === cell.color &&
-          (vertex.piece?.color !== cell.piece?.color || vertex.piece === null)
+          (vertex.piece === null || vertex.piece.color !== cell.piece.color)
         ) {
           possibleMoves.push(vertex)
 
@@ -100,8 +100,8 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
               if (
                 attachedVertex.angle === vertex.angle &&
                 attachedVertex.color === vertex.color &&
-                (attachedVertex.piece?.color !== cell.piece?.color ||
-                  vertex.piece === null) &&
+                (attachedVertex.piece === null ||
+                  attachedVertex.piece.color !== cell.piece.color) &&
                 cell.x !== 1
               ) {
                 if (cell.x === 0) {
