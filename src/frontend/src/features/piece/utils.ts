@@ -249,10 +249,7 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
       for (const [x, y] of cell.vertices) {
         const vertex = board[x][y]
 
-        if (
-          vertex.color === cell.color &&
-          (vertex.piece?.color !== cell.piece.color || vertex.piece === null)
-        ) {
+        if (vertex.color === cell.color && vertex.piece === null) {
           console.log(vertex.x, vertex.y)
           if (cell.x === 2) {
             if ((cell.y + 2) % 50 !== vertex.y) {
@@ -270,16 +267,31 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
         }
       }
 
+      if (cell.edges.length === 3) {
+        const [x, y] = cell.edges[2]
+        const curr_edge = board[x][y]
+        if (curr_edge.piece !== null) {
+          if (curr_edge.piece.color !== cell.piece.color) {
+            possibleMoves.push(curr_edge)
+          }
+        }
+      }
+
+      const [x, y] = cell.edges[1]
+      const curr_edge = board[x][y]
+      if (curr_edge.piece !== null) {
+        if (curr_edge.piece.color !== cell.piece.color) {
+          possibleMoves.push(curr_edge)
+        }
+      }
+
       break
     }
     case "berolina-pawn-ccw": {
       for (const [x, y] of cell.vertices) {
         const vertex = board[x][y]
 
-        if (
-          vertex.color === cell.color &&
-          (vertex.piece?.color !== cell.piece.color || vertex.piece === null)
-        ) {
+        if (vertex.color === cell.color && vertex.piece === null) {
           console.log(vertex.x, vertex.y)
           if (cell.x === 2) {
             if ((cell.y + 48) % 50 !== vertex.y) {
@@ -297,6 +309,24 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
         }
       }
 
+      if (cell.edges.length === 3) {
+        const [x, y] = cell.edges[2]
+        const curr_edge = board[x][y]
+        if (curr_edge.piece !== null) {
+          if (curr_edge.piece.color !== cell.piece.color) {
+            possibleMoves.push(curr_edge)
+          }
+        }
+      }
+
+      const [x, y] = cell.edges[0]
+      const curr_edge = board[x][y]
+      if (curr_edge.piece !== null) {
+        if (curr_edge.piece.color !== cell.piece.color) {
+          possibleMoves.push(curr_edge)
+        }
+      }
+
       break
     }
     case "pawn-cw": {
@@ -307,33 +337,43 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
       //   cell.piece.firstMove = false
       // } else { stuff below
       // }
-      const nextCell = board[cell.edges[1][0]][cell.edges[1][1]] // coords of next cell in cw direction
-      if (nextCell.piece == null) {
-        possibleMoves.push(nextCell)
-      }
-      if (cell.edges.length == 3) {
-        const nextCell = board[cell.edges[2][0]][cell.edges[2][1]] // coords of edge adjacent cell in different decagon
-        if (nextCell.piece == null) {
-          possibleMoves.push(nextCell)
+
+      if (cell.edges.length === 3) {
+        const [x, y] = cell.edges[2]
+        const curr_edge = board[x][y]
+        if (curr_edge.piece === null) {
+          possibleMoves.push(curr_edge)
         }
       }
-      const captCell = board[cell.x][(cell.y - 2) % board[cell.x].length] // next vertex adjacent cell in the same decagon in the cw direction
-      if (captCell.piece != null) {
-        if (captCell.piece.color != cell.piece.color) {
-          possibleMoves.push(captCell)
-        }
+
+      const [x, y] = cell.edges[1]
+      const curr_edge = board[x][y]
+      if (curr_edge.piece === null) {
+        possibleMoves.push(curr_edge)
       }
+
       for (const [x, y] of cell.vertices) {
-        // vertex adjacent
-        const captCell = board[x][y]
-        if (captCell.x != cell.x) {
-          if (captCell.piece != null) {
-            if (captCell.piece.color != cell.piece.color) {
-              possibleMoves.push(captCell)
+        const vertex = board[x][y]
+
+        if (vertex.color === cell.color && vertex.piece !== null) {
+          if (vertex.piece.color !== cell.piece.color) {
+            if (cell.x === 2) {
+              if ((cell.y + 2) % 50 !== vertex.y) {
+                possibleMoves.push(vertex)
+              }
+            } else if (cell.x === 1) {
+              if ((cell.y + 2) % 30 !== vertex.y) {
+                possibleMoves.push(vertex)
+              }
+            } else {
+              if ((cell.y + 2) % 10 !== vertex.y) {
+                possibleMoves.push(vertex)
+              }
             }
           }
         }
       }
+
       break
     }
     case "pawn-ccw": {
@@ -344,33 +384,43 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
       //   cell.piece.firstMove = false
       // } else { stuff below
       // }
-      const nextCell = board[cell.edges[0][0]][cell.edges[0][1]] // coords of next cell in cw direction
-      if (nextCell.piece == null) {
-        possibleMoves.push(nextCell)
-      }
-      if (cell.edges.length == 3) {
-        const nextCell = board[cell.edges[2][0]][cell.edges[2][1]] // coords of edge adjacent cell in different decagon
-        if (nextCell.piece == null) {
-          possibleMoves.push(nextCell)
+
+      if (cell.edges.length === 3) {
+        const [x, y] = cell.edges[2]
+        const curr_edge = board[x][y]
+        if (curr_edge.piece === null) {
+          possibleMoves.push(curr_edge)
         }
       }
-      const captCell = board[cell.x][(cell.y + 2) % board[cell.x].length] // next vertex adjacent cell in the same decagon in the cw direction
-      if (captCell.piece != null) {
-        if (captCell.piece.color != cell.piece.color) {
-          possibleMoves.push(captCell)
-        }
+
+      const [x, y] = cell.edges[0]
+      const curr_edge = board[x][y]
+      if (curr_edge.piece === null) {
+        possibleMoves.push(curr_edge)
       }
+
       for (const [x, y] of cell.vertices) {
-        // vertex adjacent
-        const captCell = board[x][y]
-        if (captCell.x != cell.x) {
-          if (captCell.piece != null) {
-            if (captCell.piece.color != cell.piece.color) {
-              possibleMoves.push(captCell)
+        const vertex = board[x][y]
+
+        if (vertex.color === cell.color && vertex.piece !== null) {
+          if (vertex.piece.color !== cell.piece.color) {
+            if (cell.x === 2) {
+              if ((cell.y + 48) % 50 !== vertex.y) {
+                possibleMoves.push(vertex)
+              }
+            } else if (cell.x === 1) {
+              if ((cell.y + 28) % 30 !== vertex.y) {
+                possibleMoves.push(vertex)
+              }
+            } else {
+              if ((cell.y + 8) % 10 !== vertex.y) {
+                possibleMoves.push(vertex)
+              }
             }
           }
         }
       }
+
       break
     }
   }
