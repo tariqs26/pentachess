@@ -33,7 +33,7 @@ export function cellId(x: number, y: number): string {
 }
 
 export function cellCoords(id: string): [number, number] {
-  return [id.charCodeAt(0) - 65, parseInt(id.slice(1))]
+  return [id.charCodeAt(0) - 65, Number.parseInt(id.slice(1))]
 }
 
 export function makeCell(x: number, y: number, angle: number): Cell {
