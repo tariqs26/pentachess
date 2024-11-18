@@ -251,17 +251,23 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
 
         if (vertex.color === cell.color && vertex.piece === null) {
           if (cell.x === 2) {
-            if ((cell.y + 2) % 50 !== vertex.y) {
-              possibleMoves.push(vertex)
-            }
+            if (cell.x === vertex.x) {
+              if ((cell.y + 2) % 50 !== vertex.y) {
+                possibleMoves.push(vertex)
+              }
+            } else possibleMoves.push(vertex)
           } else if (cell.x === 1) {
-            if ((cell.y + 2) % 30 !== vertex.y) {
-              possibleMoves.push(vertex)
-            }
+            if (cell.x === vertex.x) {
+              if ((cell.y + 2) % 30 !== vertex.y) {
+                possibleMoves.push(vertex)
+              }
+            } else possibleMoves.push(vertex)
           } else {
-            if ((cell.y + 2) % 10 !== vertex.y) {
-              possibleMoves.push(vertex)
-            }
+            if (cell.x === vertex.x) {
+              if ((cell.y + 2) % 10 !== vertex.y) {
+                possibleMoves.push(vertex)
+              }
+            } else possibleMoves.push(vertex)
           }
         }
       }
@@ -292,17 +298,23 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
 
         if (vertex.color === cell.color && vertex.piece === null) {
           if (cell.x === 2) {
-            if ((cell.y + 48) % 50 !== vertex.y) {
-              possibleMoves.push(vertex)
-            }
+            if (cell.x === vertex.x) {
+              if ((cell.y + 48) % 50 !== vertex.y) {
+                possibleMoves.push(vertex)
+              }
+            } else possibleMoves.push(vertex)
           } else if (cell.x === 1) {
-            if ((cell.y + 28) % 30 !== vertex.y) {
-              possibleMoves.push(vertex)
-            }
+            if (cell.x === vertex.x) {
+              if ((cell.y + 28) % 30 !== vertex.y) {
+                possibleMoves.push(vertex)
+              }
+            } else possibleMoves.push(vertex)
           } else {
-            if ((cell.y + 8) % 10 !== vertex.y) {
-              possibleMoves.push(vertex)
-            }
+            if (cell.x === vertex.x) {
+              if ((cell.y + 8) % 10 !== vertex.y) {
+                possibleMoves.push(vertex)
+              }
+            } else possibleMoves.push(vertex)
           }
         }
       }
@@ -356,17 +368,23 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
         if (vertex.color === cell.color && vertex.piece !== null) {
           if (vertex.piece.color !== cell.piece.color) {
             if (cell.x === 2) {
-              if ((cell.y + 2) % 50 !== vertex.y) {
-                possibleMoves.push(vertex)
-              }
+              if (cell.x === vertex.x) {
+                if ((cell.y + 2) % 50 !== vertex.y) {
+                  possibleMoves.push(vertex)
+                }
+              } else possibleMoves.push(vertex)
             } else if (cell.x === 1) {
-              if ((cell.y + 2) % 30 !== vertex.y) {
-                possibleMoves.push(vertex)
-              }
+              if (cell.x === vertex.x) {
+                if ((cell.y + 2) % 30 !== vertex.y) {
+                  possibleMoves.push(vertex)
+                }
+              } else possibleMoves.push(vertex)
             } else {
-              if ((cell.y + 2) % 10 !== vertex.y) {
-                possibleMoves.push(vertex)
-              }
+              if (cell.x === vertex.x) {
+                if ((cell.y + 2) % 10 !== vertex.y) {
+                  possibleMoves.push(vertex)
+                }
+              } else possibleMoves.push(vertex)
             }
           }
         }
@@ -403,17 +421,23 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
         if (vertex.color === cell.color && vertex.piece !== null) {
           if (vertex.piece.color !== cell.piece.color) {
             if (cell.x === 2) {
-              if ((cell.y + 48) % 50 !== vertex.y) {
-                possibleMoves.push(vertex)
-              }
+              if (cell.x === vertex.x) {
+                if ((cell.y + 48) % 50 !== vertex.y) {
+                  possibleMoves.push(vertex)
+                }
+              } else possibleMoves.push(vertex)
             } else if (cell.x === 1) {
-              if ((cell.y + 28) % 30 !== vertex.y) {
-                possibleMoves.push(vertex)
-              }
+              if (cell.x === vertex.x) {
+                if ((cell.y + 28) % 30 !== vertex.y) {
+                  possibleMoves.push(vertex)
+                }
+              } else possibleMoves.push(vertex)
             } else {
-              if ((cell.y + 8) % 10 !== vertex.y) {
-                possibleMoves.push(vertex)
-              }
+              if (cell.x === vertex.x) {
+                if ((cell.y + 8) % 10 !== vertex.y) {
+                  possibleMoves.push(vertex)
+                }
+              } else possibleMoves.push(vertex)
             }
           }
         }
