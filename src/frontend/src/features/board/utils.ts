@@ -76,6 +76,19 @@ function initializePieces(board: Board) {
   }
 }
 
+export function cloneBoard(board: Board): Board {
+  return board.map((ring) =>
+    ring.map(
+      (cell) =>
+        ({
+          ...cell,
+          edges: cell.edges.map((edge) => [...edge]),
+          vertices: cell.vertices.map((vertex) => [...vertex]),
+        }) as Cell
+    )
+  )
+}
+
 // display the board state for debugging
 export function logBoard(board: Board) {
   board.forEach((ring) => {
