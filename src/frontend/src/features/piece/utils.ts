@@ -1,7 +1,7 @@
-import type { Board } from "../board/types"
-import type { Cell } from "@/features/board/cell"
-import { Piece, PieceColor, PieceType } from "./types"
+import type { Board, Cell } from "../board/types"
+import { cloneBoard } from "../board/utils"
 import { PIECE_DATA } from "./constants"
+import type { Piece, PieceColor, PieceType } from "./types"
 
 export function makePiece(type: PieceType, color: PieceColor): Piece {
   return {
@@ -24,9 +24,9 @@ export function removeDuplicates(list: Cell[]): Cell[] {
 
 // TODO: Demo MVP
 export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
-  let possibleMoves: Cell[] = []
-
   if (cell.piece == null) return []
+
+  const possibleMoves: Cell[] = []
 
   switch (cell.piece.type) {
     case "knight": {
@@ -35,7 +35,7 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
 
         if (
           vertex.color !== cell.color &&
-          (vertex.piece?.color !== cell.piece.color || vertex.piece === null)
+          (vertex.piece === null || vertex.piece.color !== cell.piece.color)
         ) {
           possibleMoves.push(vertex)
         }
@@ -43,17 +43,17 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
       break
     }
     case "queen": {
-      // Rook Moves
-      const rookSwap: Board = board
+      // get rook moves
+      const rookSwap: Board = cloneBoard(board)
       rookSwap[cell.x][cell.y].piece = makePiece("rook", cell.piece.color)
-      possibleMoves = possibleMoves.concat(
-        getPossibleMoves(rookSwap[cell.x][cell.y], rookSwap)
+      possibleMoves.push(
+        ...getPossibleMoves(rookSwap[cell.x][cell.y], rookSwap)
       )
-      // Bishop Moves
-      const bishopSwap: Board = board
+      // get bishop moves
+      const bishopSwap: Board = cloneBoard(board)
       bishopSwap[cell.x][cell.y].piece = makePiece("bishop", cell.piece.color)
-      possibleMoves = possibleMoves.concat(
-        getPossibleMoves(bishopSwap[cell.x][cell.y], bishopSwap)
+      possibleMoves.push(
+        ...getPossibleMoves(bishopSwap[cell.x][cell.y], bishopSwap)
       )
       break
     }
@@ -89,7 +89,7 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
         const vertex = board[x][y]
         if (
           vertex.color === cell.color &&
-          (vertex.piece?.color !== cell.piece?.color || vertex.piece === null)
+          (vertex.piece === null || vertex.piece.color !== cell.piece.color)
         ) {
           possibleMoves.push(vertex)
 
@@ -99,8 +99,8 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
               if (
                 attachedVertex.angle === vertex.angle &&
                 attachedVertex.color === vertex.color &&
-                (attachedVertex.piece?.color !== cell.piece?.color ||
-                  vertex.piece === null) &&
+                (attachedVertex.piece === null ||
+                  attachedVertex.piece.color !== cell.piece.color) &&
                 cell.x !== 1
               ) {
                 if (cell.x === 0) {

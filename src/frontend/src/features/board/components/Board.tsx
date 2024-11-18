@@ -8,7 +8,7 @@ export const Board = () => {
   const { state } = useLocalGame()
 
   return (
-    <div className="relative m-auto size-[800px] bg-gray-800">
+    <div className="relative mx-auto size-[650px]">
       {state.boardState.board.map((ring, i) => (
         <div key={i} className="absolute left-1/2 top-1/2">
           {getSides(ring, ring.length / DECAGON_SIDES).map((side, j) => (

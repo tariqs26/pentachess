@@ -5,7 +5,7 @@ type SideProps = React.PropsWithChildren<{
   side: number
 }>
 
-const sideRotation = (ring: number) => {
+export const sideRotation = (ring: number) => {
   switch (ring) {
     case 0:
       return [0, 0, -70, -73, -140, -142, 150, 148, 75, 70]
@@ -16,7 +16,7 @@ const sideRotation = (ring: number) => {
   }
 }
 
-const sideLeft = (ring: number) => {
+export const sideLeft = (ring: number) => {
   switch (ring) {
     case 0:
       return [0, 30, 30, 35, -12, -38, -70, -92, -63, -50]
@@ -27,7 +27,7 @@ const sideLeft = (ring: number) => {
   }
 }
 
-const sideTop = (ring: number) => {
+export const sideTop = (ring: number) => {
   switch (ring) {
     case 0:
       return [0, -2, -55, -85, -102, -117, -75, -55, -11, 18]

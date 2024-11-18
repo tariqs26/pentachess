@@ -1,8 +1,18 @@
-import { Cell } from "@/features/board/cell"
+import type { Piece } from "../piece/types"
 
-export type Ring = Cell[]
+export type Cell = {
+  id: string
+  color: "b" | "w"
+  x: number
+  y: number
+  side: number
+  angle: number
+  piece: Piece | null
+  edges: Array<[number, number]>
+  vertices: Array<[number, number]>
+}
 
-export type Board = Ring[]
+export type Board = Cell[][]
 
 export type BoardState = {
   board: Board
@@ -15,7 +25,14 @@ export type BoardState = {
 }
 
 export type BoardAction =
-  | { type: "SELECT_CELL"; payload: { cell: Cell } }
-  | { type: "SET_OVER_CELL"; payload: { cell: Cell } }
-  | { type: "MOVE_PIECE"; payload: { cell: Cell } }
+  | { type: "SELECT_CELL"; payload: Cell | null }
+  | { type: "SET_OVER_CELL"; payload: Cell | null }
+  | {
+      type: "MOVE_PIECE"
+      payload: {
+        to: { x: number; y: number; piece: Piece | null }
+        from: { x: number; y: number; piece: Piece }
+        piece: Piece
+      }
+    }
   | { type: "SET_DISABLED"; payload: { disabled: boolean } }

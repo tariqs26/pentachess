@@ -1,5 +1,4 @@
-import type { BoardState, BoardAction } from "../board/types"
-import type { Cell } from "../board/cell"
+import type { BoardAction, BoardState, Cell } from "../board/types"
 import type { Piece, PieceColor, PieceType } from "../piece/types"
 
 type Move = {
