@@ -19,9 +19,9 @@ export default function LocalGamePage() {
   return (
     <main className="grid min-h-screen place-items-center">
       <div className="w-full max-w-4xl bg-gray-800">
-        <CapturedPieces pieces={state.capturedPieces["w"]} />
+        <CapturedPieces pieces={state.capturedPieces.w} />
         <Board />
-        <CapturedPieces pieces={state.capturedPieces["b"]} />
+        <CapturedPieces pieces={state.capturedPieces.b} />
       </div>
     </main>
   )
