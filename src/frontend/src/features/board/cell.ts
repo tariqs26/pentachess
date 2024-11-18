@@ -43,7 +43,7 @@ export class Cell {
   constructor(ring: number, tile: number, angle: number) {
     this.piece = null
     this.color = tile % 2 === 0 ? "b" : "w" // 'b' for black, 'w' for white
-    this.id = `${"ABC"[ring]}${tile}`
+    this.id = `${"CBA"[ring]}${tile}`
     this.side = Math.floor(tile / (RING_SIZES[ring] / DECAGON_SIDES))
     this.x = ring
     this.y = tile
