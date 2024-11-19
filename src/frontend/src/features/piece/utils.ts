@@ -29,7 +29,7 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
   const possibleMoves: Cell[] = []
 
   switch (cell.piece.type) {
-    case "knight": {
+    case "knight": { // Could replace with filter (depending on how you do it, it might be both clearer and more concise)
       for (const [x, y] of cell.vertices) {
         const vertex = board[x][y]
 
@@ -59,15 +59,16 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
     }
     case "rook": {
       if (cell.edges.length == 3) {
-        const tempCell = board[cell.edges[2][0]][cell.edges[2][1]]
+        const tempCell = board[cell.edges[2][0]][cell.edges[2][1]] // This is a good example of why we shouldn't just put all the edges in an array.  People shouldn't have to go on a side quest to figure out what this line does.
         if (tempCell.piece != null) {
           if (tempCell.piece.color != cell.piece.color) {
             possibleMoves.push(tempCell)
           }
         } else possibleMoves.push(tempCell)
       }
+      
       let tempCell: Cell
-      for (let i = 0; i < 2; i++) {
+      for (let i = 0; i < 2; i++) { // I don't think it's worth the few lines of code saved by doing a loop, when it's so much less readable
         if (i == 0) tempCell = board[cell.edges[0][0]][cell.edges[0][1]]
         else tempCell = board[cell.edges[1][0]][cell.edges[1][1]]
         while (tempCell != cell) {
@@ -85,7 +86,7 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
       break
     }
     case "bishop": {
-      for (const [x, y] of cell.vertices) {
+      for (const [x, y] of cell.vertices) { // We should switch vertices from <Array[number, number]> to Array<Cell> so that we can do const vertex of cell.vertices
         const vertex = board[x][y]
         if (
           vertex.color === cell.color &&
@@ -106,7 +107,7 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
                 if (cell.x === 0) {
                   if (
                     attachedVertex.x === 2 &&
-                    (attachedVertex.y + 48) % 5 !== 0 &&
+                    (attachedVertex.y + 48) % 5 !== 0 && // Where do these magic numbers come from?
                     (attachedVertex.y + 47) % 5 !== 0
                   ) {
                     possibleMoves.push(attachedVertex)
@@ -133,11 +134,11 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
       if (cell.x === 1) {
         // counter clockwise check
         let counter = 30
-        if (possibleMoves.includes(board[cell.x][(cell.y + 2) % 30])) {
+        if (possibleMoves.includes(board[cell.x][(cell.y + 2) % 30])) { // Isn't this always true?
           counter = 4
         }
 
-        while (counter < 28) {
+        while (counter < 28) { // Instead of using a counter, we should use a while loop checking id, as with Rooks
           const currentCell = board[cell.x][(cell.y + counter) % 30]
           if (currentCell.piece === null) {
             possibleMoves.push(currentCell)
@@ -225,9 +226,10 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
     }
     case "king": {
       // Need to prevent moves that put the king in danger (for demo this is good enough though) - Karl
+      // I think we need to prevent moves for all pieces that put the king in danger, so this wouldn't be king-specific - Brandon
       for (const [x, y] of cell.edges) {
         const tempCell = board[x][y]
-        if (tempCell.piece != null) {
+        if (tempCell.piece != null) { // This double if-statement can be converted into a single if with or (see lines 103-104)
           if (tempCell.piece.color != cell.piece.color) {
             possibleMoves.push(tempCell)
           }
@@ -250,7 +252,7 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
         const vertex = board[x][y]
 
         if (vertex.color === cell.color && vertex.piece === null) {
-          if (cell.x === 2) {
+          if (cell.x === 2) { // There's gotta be a better way of doing this than splitting on cell.x
             if (cell.x === vertex.x) {
               if ((cell.y + 2) % 50 !== vertex.y) {
                 possibleMoves.push(vertex)

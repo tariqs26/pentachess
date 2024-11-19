@@ -8,8 +8,8 @@ export type Cell = {
   side: number
   angle: number
   piece: Piece | null
-  edges: Array<[number, number]>
-  vertices: Array<[number, number]>
+  edges: Array<[number, number]> // I think we should switch this to next, prev, in, and out, to increase code clarity
+  vertices: Array<[number, number]> //TODO: change this to Array<Cell>
 }
 
 export type Board = Cell[][]
