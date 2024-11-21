@@ -30,8 +30,7 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
 
   switch (cell.piece.type) {
     case "knight": {
-      for (const [x, y] of cell.vertices) {
-        const vertex = board[x][y]
+      for (const vertex of cell.vertices) {
 
         if (
           vertex.color !== cell.color &&
@@ -85,8 +84,8 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
       break
     }
     case "bishop": {
-      for (const [x, y] of cell.vertices) {
-        const vertex = board[x][y]
+      for (const vertex of cell.vertices) {
+
         if (
           vertex.color === cell.color &&
           (vertex.piece === null || vertex.piece.color !== cell.piece.color)
@@ -94,8 +93,7 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
           possibleMoves.push(vertex)
 
           if (vertex.angle === cell.angle && vertex.piece === null) {
-            for (const [x, y] of vertex.vertices) {
-              const attachedVertex = board[x][y]
+            for (const attachedVertex of vertex.vertices) {
               if (
                 attachedVertex.angle === vertex.angle &&
                 attachedVertex.color === vertex.color &&
@@ -233,8 +231,7 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
           }
         } else possibleMoves.push(tempCell)
       }
-      for (const [x, y] of cell.vertices) {
-        const tempCell = board[x][y]
+      for (const tempCell of cell.vertices) {
         if (tempCell.color == cell.color) {
           if (tempCell.piece != null) {
             if (tempCell.piece.color != cell.piece.color) {
@@ -246,8 +243,7 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
       break
     }
     case "berolina-pawn-cw": {
-      for (const [x, y] of cell.vertices) {
-        const vertex = board[x][y]
+      for (const vertex of cell.vertices) {
 
         if (vertex.color === cell.color && vertex.piece === null) {
           if (cell.x === 2) {
@@ -293,8 +289,7 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
       break
     }
     case "berolina-pawn-ccw": {
-      for (const [x, y] of cell.vertices) {
-        const vertex = board[x][y]
+      for (const vertex of cell.vertices) {
 
         if (vertex.color === cell.color && vertex.piece === null) {
           if (cell.x === 2) {
@@ -362,8 +357,7 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
         possibleMoves.push(curr_edge)
       }
 
-      for (const [x, y] of cell.vertices) {
-        const vertex = board[x][y]
+      for (const vertex of cell.vertices) {
 
         if (vertex.color === cell.color && vertex.piece !== null) {
           if (vertex.piece.color !== cell.piece.color) {
@@ -415,8 +409,7 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
         possibleMoves.push(curr_edge)
       }
 
-      for (const [x, y] of cell.vertices) {
-        const vertex = board[x][y]
+      for (const vertex of cell.vertices) {
 
         if (vertex.color === cell.color && vertex.piece !== null) {
           if (vertex.piece.color !== cell.piece.color) {
