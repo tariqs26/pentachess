@@ -42,42 +42,46 @@ export function makeCell(x: number, y: number, angle: number): Cell {
   const edges: Cell["edges"] = []
   const side = Math.floor(y / (RING_SIZES[x] / DECAGON_SIDES))
 
+  return { id, color, x, y, side, angle, piece: null, edges, vertices: [] }
+}
+
+export function setCellEdges({ x, y, edges}: Cell, board: Board) {
+
   // edges - [front, back, side(if exists)]
   if (x === 0) {
     // inner ring
-    edges.push([x, (y + 1) % 10])
-    edges.push([x, (y + 9) % 10])
-    edges.push([x + 1, 3 * y + 1])
+    edges.push(board[x][(y + 1) % 10])
+    edges.push(board[x][(y + 9) % 10])
+    edges.push(board[x + 1][3 * y + 1])
   } else if (x === 1) {
     // middle ring
-    edges.push([x, (y + 1) % 30])
-    edges.push([x, (y + 29) % 30])
+    edges.push(board[x][(y + 1) % 30])
+    edges.push(board[x][(y + 29) % 30])
 
     if ((y - 1) % 3 === 0) {
-      edges.push([x - 1, Math.floor((y - 1) / 3)])
+      edges.push(board[x - 1][Math.floor((y - 1) / 3)])
     } else {
-      edges.push([x + 1, MID_OUT_EDGES[y]])
+      edges.push(board[x + 1][MID_OUT_EDGES[y]])
     }
   } else {
     // outer ring
-    edges.push([x, (y + 1) % 50])
-    edges.push([x, (y + 49) % 50])
+    edges.push(board[x][(y + 1) % 50])
+    edges.push(board[x][(y + 49) % 50])
 
     const possibleEdge = REVERSE_MID_OUT_EDGES[y]
     if (possibleEdge !== undefined) {
-      edges.push([x - 1, possibleEdge])
+      edges.push(board[x - 1][possibleEdge])
     }
   }
 
-  return { id, color, x, y, side, angle, piece: null, edges, vertices: [] }
 }
 
 export function setCellVertices({ x, y, edges, vertices }: Cell, board: Board) {
   // iterate through the edges and collect the vertices based on the rules
   for (const edge of edges) {
-    for (const coords of board[edge[0]][edge[1]].edges) {
-      if (!(coords[0] === x && coords[1] === y)) {
-        vertices.push(board[coords[0]][coords[1]])
+    for (const edge_edge of edge.edges) {
+      if (!(edge_edge.x === x && edge_edge.y === y)) {
+        vertices.push(edge_edge)
       }
     }
   }
@@ -95,51 +99,51 @@ export function setCellVertices({ x, y, edges, vertices }: Cell, board: Board) {
   if (x === 1) {
     if (y % 3 === 0) {
       let tmp = board[x][(y + 28) % 30].edges[2]
-      vertices.push(board[tmp[0]][tmp[1]])
+      vertices.push(board[tmp.x][tmp.y])
 
       tmp = board[x][(y + 29) % 30].edges[2]
-      vertices.push(board[tmp[0]][(tmp[1] + 1) % 50])
+      vertices.push(board[tmp.x][(tmp.x + 1) % 50])
 
       tmp = board[x][(y + 29) % 30].edges[2]
-      vertices.push(board[tmp[0]][(tmp[1] + 5) % 50])
+      vertices.push(board[tmp.x][(tmp.y + 5) % 50])
     } else if ((y - 1) % 3 === 0) {
       vertices.push(board[1][(y + 3) % 30])
       vertices.push(board[1][(y + 27) % 30])
 
       const tmp = board[x][(y + 1) % 30].edges[2]
-      vertices.push(board[tmp[0]][(tmp[1] + 29) % 30])
+      vertices.push(board[tmp.x][(tmp.y + 29) % 30])
     } else {
       let tmp = board[x][(y + 2) % 30].edges[2]
-      vertices.push(board[tmp[0]][tmp[1]])
+      vertices.push(board[tmp.x][tmp.y])
 
       tmp = board[x][(y + 28) % 30].edges[2]
-      vertices.push(board[tmp[0]][tmp[1]])
+      vertices.push(board[tmp.x][tmp.y])
 
       tmp = board[x][(y + 28) % 30].edges[2]
-      vertices.push(board[tmp[0]][(tmp[1] + 4) % 50])
+      vertices.push(board[tmp.x][(tmp.y + 4) % 50])
     }
   }
 
   if (x === 2) {
     if (y % 5 === 0) {
       const tmp = board[x][(y + 48) % 50].edges[2]
-      vertices.push(board[tmp[0]][tmp[1]])
+      vertices.push(board[tmp.x][tmp.y])
     } else if ((y - 1) % 5 === 0) {
       vertices.push(board[x][(y + 47) % 50])
 
       const tmp = board[x][(y + 2) % 50].edges[2]
-      vertices.push(board[tmp[0]][tmp[1]])
+      vertices.push(board[tmp.x][tmp.y])
     } else if ((y - 2) % 5 === 0) {
       const tmp = board[x][(y + 1) % 50].edges[2]
-      vertices.push(board[tmp[0]][(tmp[1] + 29) % 30])
+      vertices.push(board[tmp.x][(tmp.y + 29) % 30])
     } else if ((y - 3) % 5 === 0) {
       vertices.push(board[x][(y + 3) % 50])
 
       const tmp = board[x][(y + 48) % 50].edges[2]
-      vertices.push(board[tmp[0]][tmp[1]])
+      vertices.push(board[tmp.x][tmp.y])
     } else {
       const tmp = board[x][(y + 2) % 50].edges[2]
-      vertices.push(board[tmp[0]][tmp[1]])
+      vertices.push(board[tmp.x][tmp.y])
     }
   }
 }
@@ -147,7 +151,7 @@ export function setCellVertices({ x, y, edges, vertices }: Cell, board: Board) {
 export function cloneCell(cell: Cell): Cell {
   return {
     ...cell,
-    edges: cell.edges.map((edge) => [...edge]),
+    edges: cell.edges.map((edge) => edge),
     vertices: cell.vertices.map((vertex) => vertex)
   }
 }

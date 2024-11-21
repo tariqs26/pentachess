@@ -58,7 +58,7 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
     }
     case "rook": {
       if (cell.edges.length == 3) {
-        const tempCell = board[cell.edges[2][0]][cell.edges[2][1]]
+        const tempCell = cell.edges[2]
         if (tempCell.piece != null) {
           if (tempCell.piece.color != cell.piece.color) {
             possibleMoves.push(tempCell)
@@ -67,8 +67,8 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
       }
       let tempCell: Cell
       for (let i = 0; i < 2; i++) {
-        if (i == 0) tempCell = board[cell.edges[0][0]][cell.edges[0][1]]
-        else tempCell = board[cell.edges[1][0]][cell.edges[1][1]]
+        if (i == 0) tempCell = cell.edges[0]
+        else tempCell = cell.edges[1]
         while (tempCell != cell) {
           if (tempCell.piece != null) {
             if (tempCell.piece.color != cell.piece.color) {
@@ -77,8 +77,8 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
             break
           } else possibleMoves.push(tempCell)
           if (i == 0)
-            tempCell = board[tempCell.edges[0][0]][tempCell.edges[0][1]]
-          else tempCell = board[tempCell.edges[1][0]][tempCell.edges[1][1]]
+            tempCell = tempCell.edges[0]
+          else tempCell = tempCell.edges[1]
         }
       }
       break
@@ -223,8 +223,7 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
     }
     case "king": {
       // Need to prevent moves that put the king in danger (for demo this is good enough though) - Karl
-      for (const [x, y] of cell.edges) {
-        const tempCell = board[x][y]
+      for (const tempCell of cell.edges) {
         if (tempCell.piece != null) {
           if (tempCell.piece.color != cell.piece.color) {
             possibleMoves.push(tempCell)
@@ -269,8 +268,7 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
       }
 
       if (cell.edges.length === 3) {
-        const [x, y] = cell.edges[2]
-        const curr_edge = board[x][y]
+        const curr_edge = cell.edges[2]
         if (curr_edge.piece !== null) {
           if (curr_edge.piece.color !== cell.piece.color) {
             possibleMoves.push(curr_edge)
@@ -278,8 +276,7 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
         }
       }
 
-      const [x, y] = cell.edges[1]
-      const curr_edge = board[x][y]
+      const curr_edge = cell.edges[1]
       if (curr_edge.piece !== null) {
         if (curr_edge.piece.color !== cell.piece.color) {
           possibleMoves.push(curr_edge)
@@ -315,8 +312,7 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
       }
 
       if (cell.edges.length === 3) {
-        const [x, y] = cell.edges[2]
-        const curr_edge = board[x][y]
+        const curr_edge = cell.edges[2]
         if (curr_edge.piece !== null) {
           if (curr_edge.piece.color !== cell.piece.color) {
             possibleMoves.push(curr_edge)
@@ -324,8 +320,7 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
         }
       }
 
-      const [x, y] = cell.edges[0]
-      const curr_edge = board[x][y]
+      const curr_edge = cell.edges[0]
       if (curr_edge.piece !== null) {
         if (curr_edge.piece.color !== cell.piece.color) {
           possibleMoves.push(curr_edge)
@@ -344,15 +339,13 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
       // }
 
       if (cell.edges.length === 3) {
-        const [x, y] = cell.edges[2]
-        const curr_edge = board[x][y]
+        const curr_edge = cell.edges[2]
         if (curr_edge.piece === null) {
           possibleMoves.push(curr_edge)
         }
       }
 
-      const [x, y] = cell.edges[1]
-      const curr_edge = board[x][y]
+      const curr_edge = cell.edges[1]
       if (curr_edge.piece === null) {
         possibleMoves.push(curr_edge)
       }
@@ -396,15 +389,13 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
       // }
 
       if (cell.edges.length === 3) {
-        const [x, y] = cell.edges[2]
-        const curr_edge = board[x][y]
+        const curr_edge = cell.edges[2]
         if (curr_edge.piece === null) {
           possibleMoves.push(curr_edge)
         }
       }
 
-      const [x, y] = cell.edges[0]
-      const curr_edge = board[x][y]
+      const curr_edge = cell.edges[0]
       if (curr_edge.piece === null) {
         possibleMoves.push(curr_edge)
       }
