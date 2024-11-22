@@ -19,7 +19,7 @@ export type BoardState = {
   disabled: boolean
   selectedCell: {
     cell: Cell
-    availableMoves: Cell[]
+    availableMoves: Set<Cell>
   } | null
   overCell: Cell | null
 }

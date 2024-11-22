@@ -101,7 +101,7 @@ export function getSides<T>(arr: T[], size: number) {
 }
 
 // handle piece click (user interaction)
-export function pieceClick(cell: Cell, board: Board): Cell[] {
+export function pieceClick(cell: Cell, board: Board): Set<Cell> {
   // memoize moves here and reset in the movePiece func
   return getPossibleMoves(cell, board)
 }

@@ -12,21 +12,11 @@ export function makePiece(type: PieceType, color: PieceColor): Piece {
   }
 }
 
-export function removeDuplicates(list: Cell[]): Cell[] {
-  const seen = new Set<string>()
-
-  return list.filter((cell) => {
-    if (seen.has(cell.id)) return false
-    seen.add(cell.id)
-    return true
-  })
-}
-
 // TODO: Demo MVP
-export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
-  if (cell.piece == null) return []
+export function getPossibleMoves(cell: Cell, board: Board): Set<Cell> {
+  if (cell.piece == null) return new Set<Cell>()
 
-  const possibleMoves: Cell[] = []
+  let possibleMoves: Set<Cell> = new Set<Cell>()
 
   switch (cell.piece.type) {
     case "knight": {
@@ -35,7 +25,7 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
           vertex.color !== cell.color &&
           (vertex.piece === null || vertex.piece.color !== cell.piece.color)
         ) {
-          possibleMoves.push(vertex)
+          possibleMoves.add(vertex)
         }
       }
       break
@@ -46,13 +36,13 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
         { ...cell, piece: makePiece("rook", cell.piece.color) },
         board
       )
-      possibleMoves.push(...rookMoves)
+      possibleMoves = possibleMoves.union(rookMoves)
       // get bishop moves
       const bishopMoves = getPossibleMoves(
         { ...cell, piece: makePiece("bishop", cell.piece.color) },
         board
       )
-      possibleMoves.push(...bishopMoves)
+      possibleMoves = possibleMoves.union(bishopMoves)
       break
     }
     case "rook": {
@@ -60,9 +50,9 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
         const tempCell = cell.edges[2]
         if (tempCell.piece != null) {
           if (tempCell.piece.color != cell.piece.color) {
-            possibleMoves.push(tempCell)
+            possibleMoves.add(tempCell)
           }
-        } else possibleMoves.push(tempCell)
+        } else possibleMoves.add(tempCell)
       }
       let tempCell: Cell
       for (let i = 0; i < 2; i++) {
@@ -71,10 +61,10 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
         while (tempCell != cell) {
           if (tempCell.piece != null) {
             if (tempCell.piece.color != cell.piece.color) {
-              possibleMoves.push(tempCell)
+              possibleMoves.add(tempCell)
             }
             break
-          } else possibleMoves.push(tempCell)
+          } else possibleMoves.add(tempCell)
           if (i == 0)
             tempCell = tempCell.edges[0]
           else tempCell = tempCell.edges[1]
@@ -88,7 +78,7 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
           vertex.color === cell.color &&
           (vertex.piece === null || vertex.piece.color !== cell.piece.color)
         ) {
-          possibleMoves.push(vertex)
+          possibleMoves.add(vertex)
 
           if (vertex.angle === cell.angle && vertex.piece === null) {
             for (const attachedVertex of vertex.vertices) {
@@ -105,7 +95,7 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
                     (attachedVertex.y + 48) % 5 !== 0 &&
                     (attachedVertex.y + 47) % 5 !== 0
                   ) {
-                    possibleMoves.push(attachedVertex)
+                    possibleMoves.add(attachedVertex)
                     break
                   }
                 } else {
@@ -115,7 +105,7 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
                     (cell.y + 48) % 5 !== 0 &&
                     (cell.y + 47) % 5 !== 0
                   ) {
-                    possibleMoves.push(attachedVertex)
+                    possibleMoves.add(attachedVertex)
                     break
                   }
                 }
@@ -129,17 +119,17 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
       if (cell.x === 1) {
         // counter clockwise check
         let counter = 30
-        if (possibleMoves.includes(board[cell.x][(cell.y + 2) % 30])) {
+        if (possibleMoves.has(board[cell.x][(cell.y + 2) % 30])) {
           counter = 4
         }
 
         while (counter < 28) {
           const currentCell = board[cell.x][(cell.y + counter) % 30]
           if (currentCell.piece === null) {
-            possibleMoves.push(currentCell)
+            possibleMoves.add(currentCell)
           } else {
             if (currentCell.piece.color !== cell.piece?.color) {
-              possibleMoves.push(currentCell)
+              possibleMoves.add(currentCell)
             }
             break
           }
@@ -148,7 +138,7 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
 
         // clockwise check
         if (counter < 28) {
-          if (possibleMoves.includes(board[cell.x][(cell.y - 2 + 30) % 30])) {
+          if (possibleMoves.has(board[cell.x][(cell.y - 2 + 30) % 30])) {
             counter = 4
           } else {
             counter = 30
@@ -156,15 +146,15 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
 
           while (counter < 28) {
             const currentCell = board[cell.x][(cell.y - counter + 30) % 30]
-            if (possibleMoves.includes(currentCell)) {
+            if (possibleMoves.has(currentCell)) {
               break
             }
 
             if (currentCell.piece === null) {
-              possibleMoves.push(currentCell)
+              possibleMoves.add(currentCell)
             } else {
               if (currentCell.piece.color !== cell.piece?.color) {
-                possibleMoves.push(currentCell)
+                possibleMoves.add(currentCell)
               }
               break
             }
@@ -174,17 +164,17 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
       } else if (cell.x === 2) {
         // counter clockwise check
         let counter = 50
-        if (possibleMoves.includes(board[cell.x][(cell.y + 2) % 50])) {
+        if (possibleMoves.has(board[cell.x][(cell.y + 2) % 50])) {
           counter = 4
         }
 
         while (counter < 48) {
           const currentCell = board[cell.x][(cell.y + counter) % 50]
           if (currentCell.piece === null) {
-            possibleMoves.push(currentCell)
+            possibleMoves.add(currentCell)
           } else {
             if (currentCell.piece.color !== cell.piece?.color) {
-              possibleMoves.push(currentCell)
+              possibleMoves.add(currentCell)
             }
             break
           }
@@ -193,7 +183,7 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
 
         // clockwise check
         if (counter < 48) {
-          if (possibleMoves.includes(board[cell.x][(cell.y - 2 + 50) % 50])) {
+          if (possibleMoves.has(board[cell.x][(cell.y - 2 + 50) % 50])) {
             counter = 4
           } else {
             counter = 50
@@ -201,15 +191,15 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
 
           while (counter < 48) {
             const currentCell = board[cell.x][(cell.y - counter + 50) % 50]
-            if (possibleMoves.includes(currentCell)) {
+            if (possibleMoves.has(currentCell)) {
               break
             }
 
             if (currentCell.piece === null) {
-              possibleMoves.push(currentCell)
+              possibleMoves.add(currentCell)
             } else {
               if (currentCell.piece.color !== cell.piece?.color) {
-                possibleMoves.push(currentCell)
+                possibleMoves.add(currentCell)
               }
               break
             }
@@ -224,17 +214,17 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
       for (const tempCell of cell.edges) {
         if (tempCell.piece != null) {
           if (tempCell.piece.color != cell.piece.color) {
-            possibleMoves.push(tempCell)
+            possibleMoves.add(tempCell)
           }
-        } else possibleMoves.push(tempCell)
+        } else possibleMoves.add(tempCell)
       }
       for (const tempCell of cell.vertices) {
         if (tempCell.color == cell.color) {
           if (tempCell.piece != null) {
             if (tempCell.piece.color != cell.piece.color) {
-              possibleMoves.push(tempCell)
+              possibleMoves.add(tempCell)
             }
-          } else possibleMoves.push(tempCell)
+          } else possibleMoves.add(tempCell)
         }
       }
       break
@@ -245,21 +235,21 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
           if (cell.x === 2) {
             if (cell.x === vertex.x) {
               if ((cell.y + 2) % 50 !== vertex.y) {
-                possibleMoves.push(vertex)
+                possibleMoves.add(vertex)
               }
-            } else possibleMoves.push(vertex)
+            } else possibleMoves.add(vertex)
           } else if (cell.x === 1) {
             if (cell.x === vertex.x) {
               if ((cell.y + 2) % 30 !== vertex.y) {
-                possibleMoves.push(vertex)
+                possibleMoves.add(vertex)
               }
-            } else possibleMoves.push(vertex)
+            } else possibleMoves.add(vertex)
           } else {
             if (cell.x === vertex.x) {
               if ((cell.y + 2) % 10 !== vertex.y) {
-                possibleMoves.push(vertex)
+                possibleMoves.add(vertex)
               }
-            } else possibleMoves.push(vertex)
+            } else possibleMoves.add(vertex)
           }
         }
       }
@@ -268,7 +258,7 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
         const curr_edge = cell.edges[2]
         if (curr_edge.piece !== null) {
           if (curr_edge.piece.color !== cell.piece.color) {
-            possibleMoves.push(curr_edge)
+            possibleMoves.add(curr_edge)
           }
         }
       }
@@ -276,7 +266,7 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
       const curr_edge = cell.edges[1]
       if (curr_edge.piece !== null) {
         if (curr_edge.piece.color !== cell.piece.color) {
-          possibleMoves.push(curr_edge)
+          possibleMoves.add(curr_edge)
         }
       }
 
@@ -288,21 +278,21 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
           if (cell.x === 2) {
             if (cell.x === vertex.x) {
               if ((cell.y + 48) % 50 !== vertex.y) {
-                possibleMoves.push(vertex)
+                possibleMoves.add(vertex)
               }
-            } else possibleMoves.push(vertex)
+            } else possibleMoves.add(vertex)
           } else if (cell.x === 1) {
             if (cell.x === vertex.x) {
               if ((cell.y + 28) % 30 !== vertex.y) {
-                possibleMoves.push(vertex)
+                possibleMoves.add(vertex)
               }
-            } else possibleMoves.push(vertex)
+            } else possibleMoves.add(vertex)
           } else {
             if (cell.x === vertex.x) {
               if ((cell.y + 8) % 10 !== vertex.y) {
-                possibleMoves.push(vertex)
+                possibleMoves.add(vertex)
               }
-            } else possibleMoves.push(vertex)
+            } else possibleMoves.add(vertex)
           }
         }
       }
@@ -311,7 +301,7 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
         const currEdge = cell.edges[2]
         if (currEdge.piece !== null) {
           if (currEdge.piece.color !== cell.piece.color) {
-            possibleMoves.push(currEdge)
+            possibleMoves.add(currEdge)
           }
         }
       }
@@ -319,7 +309,7 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
       const curr_edge = cell.edges[0]
       if (curr_edge.piece !== null) {
         if (curr_edge.piece.color !== cell.piece.color) {
-          possibleMoves.push(curr_edge)
+          possibleMoves.add(curr_edge)
         }
       }
 
@@ -337,13 +327,13 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
       if (cell.edges.length === 3) {
         const curr_edge = cell.edges[2]
         if (curr_edge.piece === null) {
-          possibleMoves.push(curr_edge)
+          possibleMoves.add(curr_edge)
         }
       }
 
       const curr_edge = cell.edges[1]
       if (curr_edge.piece === null) {
-        possibleMoves.push(curr_edge)
+        possibleMoves.add(curr_edge)
       }
 
       for (const vertex of cell.vertices) {
@@ -352,21 +342,21 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
             if (cell.x === 2) {
               if (cell.x === vertex.x) {
                 if ((cell.y + 2) % 50 !== vertex.y) {
-                  possibleMoves.push(vertex)
+                  possibleMoves.add(vertex)
                 }
-              } else possibleMoves.push(vertex)
+              } else possibleMoves.add(vertex)
             } else if (cell.x === 1) {
               if (cell.x === vertex.x) {
                 if ((cell.y + 2) % 30 !== vertex.y) {
-                  possibleMoves.push(vertex)
+                  possibleMoves.add(vertex)
                 }
-              } else possibleMoves.push(vertex)
+              } else possibleMoves.add(vertex)
             } else {
               if (cell.x === vertex.x) {
                 if ((cell.y + 2) % 10 !== vertex.y) {
-                  possibleMoves.push(vertex)
+                  possibleMoves.add(vertex)
                 }
-              } else possibleMoves.push(vertex)
+              } else possibleMoves.add(vertex)
             }
           }
         }
@@ -386,13 +376,13 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
       if (cell.edges.length === 3) {
         const curr_edge = cell.edges[2]
         if (curr_edge.piece === null) {
-          possibleMoves.push(curr_edge)
+          possibleMoves.add(curr_edge)
         }
       }
 
       const curr_edge = cell.edges[0]
       if (curr_edge.piece === null) {
-        possibleMoves.push(curr_edge)
+        possibleMoves.add(curr_edge)
       }
 
       for (const vertex of cell.vertices) {
@@ -401,21 +391,21 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
             if (cell.x === 2) {
               if (cell.x === vertex.x) {
                 if ((cell.y + 48) % 50 !== vertex.y) {
-                  possibleMoves.push(vertex)
+                  possibleMoves.add(vertex)
                 }
-              } else possibleMoves.push(vertex)
+              } else possibleMoves.add(vertex)
             } else if (cell.x === 1) {
               if (cell.x === vertex.x) {
                 if ((cell.y + 28) % 30 !== vertex.y) {
-                  possibleMoves.push(vertex)
+                  possibleMoves.add(vertex)
                 }
-              } else possibleMoves.push(vertex)
+              } else possibleMoves.add(vertex)
             } else {
               if (cell.x === vertex.x) {
                 if ((cell.y + 8) % 10 !== vertex.y) {
-                  possibleMoves.push(vertex)
+                  possibleMoves.add(vertex)
                 }
-              } else possibleMoves.push(vertex)
+              } else possibleMoves.add(vertex)
             }
           }
         }
@@ -424,7 +414,7 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
       break
     }
   }
-  return removeDuplicates(possibleMoves)
+  return possibleMoves
 }
 
 // TODO
