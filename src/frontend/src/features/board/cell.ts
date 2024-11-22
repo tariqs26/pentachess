@@ -149,9 +149,5 @@ export function setCellVertices({ x, y, edges, vertices }: Cell, board: Board) {
 }
 
 export function cloneCell(cell: Cell): Cell {
-  return {
-    ...cell,
-    edges: cell.edges.map((edge) => edge),
-    vertices: cell.vertices.map((vertex) => vertex)
-  }
+  return { ...cell, edges: [...cell.edges], vertices: [...cell.vertices] }
 }

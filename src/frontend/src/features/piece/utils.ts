@@ -31,7 +31,6 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
   switch (cell.piece.type) {
     case "knight": {
       for (const vertex of cell.vertices) {
-
         if (
           vertex.color !== cell.color &&
           (vertex.piece === null || vertex.piece.color !== cell.piece.color)
@@ -43,17 +42,17 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
     }
     case "queen": {
       // get rook moves
-      const rookSwap: Board = cloneBoard(board)
-      rookSwap[cell.x][cell.y].piece = makePiece("rook", cell.piece.color)
-      possibleMoves.push(
-        ...getPossibleMoves(rookSwap[cell.x][cell.y], rookSwap)
+      const rookMoves = getPossibleMoves(
+        { ...cell, piece: makePiece("rook", cell.piece.color) },
+        board
       )
+      possibleMoves.push(...rookMoves)
       // get bishop moves
-      const bishopSwap: Board = cloneBoard(board)
-      bishopSwap[cell.x][cell.y].piece = makePiece("bishop", cell.piece.color)
-      possibleMoves.push(
-        ...getPossibleMoves(bishopSwap[cell.x][cell.y], bishopSwap)
+      const bishopMoves = getPossibleMoves(
+        { ...cell, piece: makePiece("bishop", cell.piece.color) },
+        board
       )
+      possibleMoves.push(...bishopMoves)
       break
     }
     case "rook": {
@@ -85,7 +84,6 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
     }
     case "bishop": {
       for (const vertex of cell.vertices) {
-
         if (
           vertex.color === cell.color &&
           (vertex.piece === null || vertex.piece.color !== cell.piece.color)
@@ -243,7 +241,6 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
     }
     case "berolina-pawn-cw": {
       for (const vertex of cell.vertices) {
-
         if (vertex.color === cell.color && vertex.piece === null) {
           if (cell.x === 2) {
             if (cell.x === vertex.x) {
@@ -287,7 +284,6 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
     }
     case "berolina-pawn-ccw": {
       for (const vertex of cell.vertices) {
-
         if (vertex.color === cell.color && vertex.piece === null) {
           if (cell.x === 2) {
             if (cell.x === vertex.x) {
@@ -312,10 +308,10 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
       }
 
       if (cell.edges.length === 3) {
-        const curr_edge = cell.edges[2]
-        if (curr_edge.piece !== null) {
-          if (curr_edge.piece.color !== cell.piece.color) {
-            possibleMoves.push(curr_edge)
+        const currEdge = cell.edges[2]
+        if (currEdge.piece !== null) {
+          if (currEdge.piece.color !== cell.piece.color) {
+            possibleMoves.push(currEdge)
           }
         }
       }
@@ -351,7 +347,6 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
       }
 
       for (const vertex of cell.vertices) {
-
         if (vertex.color === cell.color && vertex.piece !== null) {
           if (vertex.piece.color !== cell.piece.color) {
             if (cell.x === 2) {
@@ -401,7 +396,6 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
       }
 
       for (const vertex of cell.vertices) {
-
         if (vertex.color === cell.color && vertex.piece !== null) {
           if (vertex.piece.color !== cell.piece.color) {
             if (cell.x === 2) {
