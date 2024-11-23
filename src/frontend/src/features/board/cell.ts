@@ -79,9 +79,9 @@ export function setCellEdges({ x, y, edges}: Cell, board: Board) {
 export function setCellVertices({ x, y, edges, vertices }: Cell, board: Board) {
   // iterate through the edges and collect the vertices based on the rules
   for (const edge of edges) {
-    for (const edge_edge of edge.edges) {
-      if (!(edge_edge.x === x && edge_edge.y === y)) {
-        vertices.push(edge_edge)
+    for (const edgeEdge of edge.edges) {
+      if (!(edgeEdge.x === x && edgeEdge.y === y)) {
+        vertices.push(edgeEdge)
       }
     }
   }
@@ -98,11 +98,10 @@ export function setCellVertices({ x, y, edges, vertices }: Cell, board: Board) {
 
   if (x === 1) {
     if (y % 3 === 0) {
-      let tmp = board[x][(y + 28) % 30].edges[2]
-      vertices.push(board[tmp.x][tmp.y])
+      vertices.push(board[x][(y + 28) % 30].edges[2])
 
-      tmp = board[x][(y + 29) % 30].edges[2]
-      vertices.push(board[tmp.x][(tmp.x + 1) % 50])
+      let tmp = board[x][(y + 29) % 30].edges[2]
+      vertices.push(board[tmp.x][(tmp.y + 1) % 50])
 
       tmp = board[x][(y + 29) % 30].edges[2]
       vertices.push(board[tmp.x][(tmp.y + 5) % 50])
@@ -113,37 +112,28 @@ export function setCellVertices({ x, y, edges, vertices }: Cell, board: Board) {
       const tmp = board[x][(y + 1) % 30].edges[2]
       vertices.push(board[tmp.x][(tmp.y + 29) % 30])
     } else {
-      let tmp = board[x][(y + 2) % 30].edges[2]
-      vertices.push(board[tmp.x][tmp.y])
+      vertices.push(board[x][(y + 2) % 30].edges[2])
+      vertices.push(board[x][(y + 28) % 30].edges[2])
 
-      tmp = board[x][(y + 28) % 30].edges[2]
-      vertices.push(board[tmp.x][tmp.y])
-
-      tmp = board[x][(y + 28) % 30].edges[2]
+      const tmp = board[x][(y + 28) % 30].edges[2]
       vertices.push(board[tmp.x][(tmp.y + 4) % 50])
     }
   }
 
   if (x === 2) {
     if (y % 5 === 0) {
-      const tmp = board[x][(y + 48) % 50].edges[2]
-      vertices.push(board[tmp.x][tmp.y])
+      vertices.push(board[x][(y + 48) % 50].edges[2])
     } else if ((y - 1) % 5 === 0) {
       vertices.push(board[x][(y + 47) % 50])
-
-      const tmp = board[x][(y + 2) % 50].edges[2]
-      vertices.push(board[tmp.x][tmp.y])
+      vertices.push(board[x][(y + 2) % 50].edges[2])
     } else if ((y - 2) % 5 === 0) {
       const tmp = board[x][(y + 1) % 50].edges[2]
       vertices.push(board[tmp.x][(tmp.y + 29) % 30])
     } else if ((y - 3) % 5 === 0) {
       vertices.push(board[x][(y + 3) % 50])
-
-      const tmp = board[x][(y + 48) % 50].edges[2]
-      vertices.push(board[tmp.x][tmp.y])
+      vertices.push(board[x][(y + 48) % 50].edges[2])
     } else {
-      const tmp = board[x][(y + 2) % 50].edges[2]
-      vertices.push(board[tmp.x][tmp.y])
+      vertices.push(board[x][(y + 2) % 50].edges[2])
     }
   }
 }

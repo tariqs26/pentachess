@@ -1,5 +1,4 @@
 import type { Board, Cell } from "../board/types"
-import { cloneBoard } from "../board/utils"
 import { PIECE_DATA } from "./constants"
 import type { Piece, PieceColor, PieceType } from "./types"
 
@@ -16,7 +15,7 @@ export function makePiece(type: PieceType, color: PieceColor): Piece {
 export function getPossibleMoves(cell: Cell, board: Board): Set<Cell> {
   if (cell.piece == null) return new Set<Cell>()
 
-  let possibleMoves: Set<Cell> = new Set<Cell>()
+  let possibleMoves = new Set<Cell>()
 
   switch (cell.piece.type) {
     case "knight": {
@@ -36,38 +35,37 @@ export function getPossibleMoves(cell: Cell, board: Board): Set<Cell> {
         { ...cell, piece: makePiece("rook", cell.piece.color) },
         board
       )
-      possibleMoves = possibleMoves.union(rookMoves)
       // get bishop moves
       const bishopMoves = getPossibleMoves(
         { ...cell, piece: makePiece("bishop", cell.piece.color) },
         board
       )
-      possibleMoves = possibleMoves.union(bishopMoves)
+      possibleMoves = possibleMoves.union(bishopMoves.union(rookMoves))
       break
     }
     case "rook": {
       if (cell.edges.length == 3) {
-        const tempCell = cell.edges[2]
-        if (tempCell.piece != null) {
-          if (tempCell.piece.color != cell.piece.color) {
-            possibleMoves.add(tempCell)
+        const edge = cell.edges[2]
+        if (edge.piece != null) {
+          if (edge.piece.color != cell.piece.color) {
+            possibleMoves.add(edge)
           }
-        } else possibleMoves.add(tempCell)
+        } else possibleMoves.add(edge)
       }
-      let tempCell: Cell
+      let currEdge: Cell
       for (let i = 0; i < 2; i++) {
-        if (i == 0) tempCell = cell.edges[0]
-        else tempCell = cell.edges[1]
-        while (tempCell != cell) {
-          if (tempCell.piece != null) {
-            if (tempCell.piece.color != cell.piece.color) {
-              possibleMoves.add(tempCell)
+        if (i == 0) currEdge = cell.edges[0]
+        else currEdge = cell.edges[1]
+        while (currEdge != cell) {
+          if (currEdge.piece != null) {
+            if (currEdge.piece.color != cell.piece.color) {
+              possibleMoves.add(currEdge)
             }
             break
-          } else possibleMoves.add(tempCell)
+          } else possibleMoves.add(currEdge)
           if (i == 0)
-            tempCell = tempCell.edges[0]
-          else tempCell = tempCell.edges[1]
+            currEdge = currEdge.edges[0]
+          else currEdge = currEdge.edges[1]
         }
       }
       break
@@ -124,12 +122,12 @@ export function getPossibleMoves(cell: Cell, board: Board): Set<Cell> {
         }
 
         while (counter < 28) {
-          const currentCell = board[cell.x][(cell.y + counter) % 30]
-          if (currentCell.piece === null) {
-            possibleMoves.add(currentCell)
+          const currVertex = board[cell.x][(cell.y + counter) % 30]
+          if (currVertex.piece === null) {
+            possibleMoves.add(currVertex)
           } else {
-            if (currentCell.piece.color !== cell.piece?.color) {
-              possibleMoves.add(currentCell)
+            if (currVertex.piece.color !== cell.piece?.color) {
+              possibleMoves.add(currVertex)
             }
             break
           }
@@ -145,16 +143,16 @@ export function getPossibleMoves(cell: Cell, board: Board): Set<Cell> {
           }
 
           while (counter < 28) {
-            const currentCell = board[cell.x][(cell.y - counter + 30) % 30]
-            if (possibleMoves.has(currentCell)) {
+            const currVertex = board[cell.x][(cell.y - counter + 30) % 30]
+            if (possibleMoves.has(currVertex)) {
               break
             }
 
-            if (currentCell.piece === null) {
-              possibleMoves.add(currentCell)
+            if (currVertex.piece === null) {
+              possibleMoves.add(currVertex)
             } else {
-              if (currentCell.piece.color !== cell.piece?.color) {
-                possibleMoves.add(currentCell)
+              if (currVertex.piece.color !== cell.piece?.color) {
+                possibleMoves.add(currVertex)
               }
               break
             }
@@ -169,12 +167,12 @@ export function getPossibleMoves(cell: Cell, board: Board): Set<Cell> {
         }
 
         while (counter < 48) {
-          const currentCell = board[cell.x][(cell.y + counter) % 50]
-          if (currentCell.piece === null) {
-            possibleMoves.add(currentCell)
+          const currVertex = board[cell.x][(cell.y + counter) % 50]
+          if (currVertex.piece === null) {
+            possibleMoves.add(currVertex)
           } else {
-            if (currentCell.piece.color !== cell.piece?.color) {
-              possibleMoves.add(currentCell)
+            if (currVertex.piece.color !== cell.piece?.color) {
+              possibleMoves.add(currVertex)
             }
             break
           }
@@ -190,16 +188,16 @@ export function getPossibleMoves(cell: Cell, board: Board): Set<Cell> {
           }
 
           while (counter < 48) {
-            const currentCell = board[cell.x][(cell.y - counter + 50) % 50]
-            if (possibleMoves.has(currentCell)) {
+            const currVertex = board[cell.x][(cell.y - counter + 50) % 50]
+            if (possibleMoves.has(currVertex)) {
               break
             }
 
-            if (currentCell.piece === null) {
-              possibleMoves.add(currentCell)
+            if (currVertex.piece === null) {
+              possibleMoves.add(currVertex)
             } else {
-              if (currentCell.piece.color !== cell.piece?.color) {
-                possibleMoves.add(currentCell)
+              if (currVertex.piece.color !== cell.piece?.color) {
+                possibleMoves.add(currVertex)
               }
               break
             }
@@ -211,20 +209,20 @@ export function getPossibleMoves(cell: Cell, board: Board): Set<Cell> {
     }
     case "king": {
       // Need to prevent moves that put the king in danger (for demo this is good enough though) - Karl
-      for (const tempCell of cell.edges) {
-        if (tempCell.piece != null) {
-          if (tempCell.piece.color != cell.piece.color) {
-            possibleMoves.add(tempCell)
+      for (const edge of cell.edges) {
+        if (edge.piece != null) {
+          if (edge.piece.color != cell.piece.color) {
+            possibleMoves.add(edge)
           }
-        } else possibleMoves.add(tempCell)
+        } else possibleMoves.add(edge)
       }
-      for (const tempCell of cell.vertices) {
-        if (tempCell.color == cell.color) {
-          if (tempCell.piece != null) {
-            if (tempCell.piece.color != cell.piece.color) {
-              possibleMoves.add(tempCell)
+      for (const vertex of cell.vertices) {
+        if (vertex.color == cell.color) {
+          if (vertex.piece != null) {
+            if (vertex.piece.color != cell.piece.color) {
+              possibleMoves.add(vertex)
             }
-          } else possibleMoves.add(tempCell)
+          } else possibleMoves.add(vertex)
         }
       }
       break
@@ -255,18 +253,18 @@ export function getPossibleMoves(cell: Cell, board: Board): Set<Cell> {
       }
 
       if (cell.edges.length === 3) {
-        const curr_edge = cell.edges[2]
-        if (curr_edge.piece !== null) {
-          if (curr_edge.piece.color !== cell.piece.color) {
-            possibleMoves.add(curr_edge)
+        const edge = cell.edges[2]
+        if (edge.piece !== null) {
+          if (edge.piece.color !== cell.piece.color) {
+            possibleMoves.add(edge)
           }
         }
       }
 
-      const curr_edge = cell.edges[1]
-      if (curr_edge.piece !== null) {
-        if (curr_edge.piece.color !== cell.piece.color) {
-          possibleMoves.add(curr_edge)
+      const edge = cell.edges[1]
+      if (edge.piece !== null) {
+        if (edge.piece.color !== cell.piece.color) {
+          possibleMoves.add(edge)
         }
       }
 
@@ -298,18 +296,18 @@ export function getPossibleMoves(cell: Cell, board: Board): Set<Cell> {
       }
 
       if (cell.edges.length === 3) {
-        const currEdge = cell.edges[2]
-        if (currEdge.piece !== null) {
-          if (currEdge.piece.color !== cell.piece.color) {
-            possibleMoves.add(currEdge)
+        const edge = cell.edges[2]
+        if (edge.piece !== null) {
+          if (edge.piece.color !== cell.piece.color) {
+            possibleMoves.add(edge)
           }
         }
       }
 
-      const curr_edge = cell.edges[0]
-      if (curr_edge.piece !== null) {
-        if (curr_edge.piece.color !== cell.piece.color) {
-          possibleMoves.add(curr_edge)
+      const edge = cell.edges[0]
+      if (edge.piece !== null) {
+        if (edge.piece.color !== cell.piece.color) {
+          possibleMoves.add(edge)
         }
       }
 
@@ -325,15 +323,15 @@ export function getPossibleMoves(cell: Cell, board: Board): Set<Cell> {
       // }
 
       if (cell.edges.length === 3) {
-        const curr_edge = cell.edges[2]
-        if (curr_edge.piece === null) {
-          possibleMoves.add(curr_edge)
+        const edge = cell.edges[2]
+        if (edge.piece === null) {
+          possibleMoves.add(edge)
         }
       }
 
-      const curr_edge = cell.edges[1]
-      if (curr_edge.piece === null) {
-        possibleMoves.add(curr_edge)
+      const edge = cell.edges[1]
+      if (edge.piece === null) {
+        possibleMoves.add(edge)
       }
 
       for (const vertex of cell.vertices) {
@@ -374,15 +372,15 @@ export function getPossibleMoves(cell: Cell, board: Board): Set<Cell> {
       // }
 
       if (cell.edges.length === 3) {
-        const curr_edge = cell.edges[2]
-        if (curr_edge.piece === null) {
-          possibleMoves.add(curr_edge)
+        const edge = cell.edges[2]
+        if (edge.piece === null) {
+          possibleMoves.add(edge)
         }
       }
 
-      const curr_edge = cell.edges[0]
-      if (curr_edge.piece === null) {
-        possibleMoves.add(curr_edge)
+      const edge = cell.edges[0]
+      if (edge.piece === null) {
+        possibleMoves.add(edge)
       }
 
       for (const vertex of cell.vertices) {
