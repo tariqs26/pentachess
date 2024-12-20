@@ -8,7 +8,11 @@ export type Cell = {
   side: number
   angle: number
   piece: Piece | null
-  edges: Array<Cell> // TODO: switch to {next: Cell, prev: Cell, inout: Cell | null}
+  edges: {
+    next: Cell | null
+    prev: Cell | null
+    inout: Cell | null
+  }
   vertices: Array<Cell>
 }
 

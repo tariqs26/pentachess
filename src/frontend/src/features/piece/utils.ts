@@ -44,8 +44,8 @@ export function getPossibleMoves(cell: Cell, board: Board): Set<Cell> {
       break
     }
     case "rook": {
-      if (cell.edges.length == 3) {
-        const edge = cell.edges[2]
+      if (cell.edges.inout !== null) {
+        const edge = cell.edges.inout
         if (edge.piece != null) {
           if (edge.piece.color != cell.piece.color) {
             possibleMoves.add(edge)
@@ -54,8 +54,8 @@ export function getPossibleMoves(cell: Cell, board: Board): Set<Cell> {
       }
       let currEdge: Cell
       for (let i = 0; i < 2; i++) {
-        if (i == 0) currEdge = cell.edges[0]
-        else currEdge = cell.edges[1]
+        if (i == 0) currEdge = cell.edges.next as Cell
+        else currEdge = cell.edges.prev as Cell
         while (currEdge != cell) {
           if (currEdge.piece != null) {
             if (currEdge.piece.color != cell.piece.color) {
@@ -64,8 +64,8 @@ export function getPossibleMoves(cell: Cell, board: Board): Set<Cell> {
             break
           } else possibleMoves.add(currEdge)
           if (i == 0)
-            currEdge = currEdge.edges[0]
-          else currEdge = currEdge.edges[1]
+            currEdge = currEdge.edges.next as Cell
+          else currEdge = currEdge.edges.prev as Cell
         }
       }
       break
@@ -209,12 +209,14 @@ export function getPossibleMoves(cell: Cell, board: Board): Set<Cell> {
     }
     case "king": {
       // Need to prevent moves that put the king in danger (for demo this is good enough though) - Karl
-      for (const edge of cell.edges) {
-        if (edge.piece != null) {
-          if (edge.piece.color != cell.piece.color) {
-            possibleMoves.add(edge)
-          }
-        } else possibleMoves.add(edge)
+      let edges : Array<Cell> = [cell.edges.next as Cell, cell.edges.prev as Cell]
+      if (cell.edges.inout !== null) {
+        edges.push(cell.edges.inout)
+      }
+      for (const edge of edges) {
+        if (edge.piece === null || edge.piece.color != cell.piece.color) {
+          possibleMoves.add(edge)
+        }
       }
       for (const vertex of cell.vertices) {
         if (vertex.color == cell.color) {
@@ -252,20 +254,16 @@ export function getPossibleMoves(cell: Cell, board: Board): Set<Cell> {
         }
       }
 
-      if (cell.edges.length === 3) {
-        const edge = cell.edges[2]
-        if (edge.piece !== null) {
-          if (edge.piece.color !== cell.piece.color) {
-            possibleMoves.add(edge)
-          }
+      if (cell.edges.inout !== null) {
+        const edge = cell.edges.inout
+        if (edge.piece !== null && edge.piece.color !== cell.piece.color) {
+          possibleMoves.add(edge)
         }
       }
 
-      const edge = cell.edges[1]
-      if (edge.piece !== null) {
-        if (edge.piece.color !== cell.piece.color) {
-          possibleMoves.add(edge)
-        }
+      const edge = cell.edges.prev as Cell
+      if (edge.piece !== null && edge.piece.color !== cell.piece.color) {
+        possibleMoves.add(edge)
       }
 
       break
@@ -295,8 +293,8 @@ export function getPossibleMoves(cell: Cell, board: Board): Set<Cell> {
         }
       }
 
-      if (cell.edges.length === 3) {
-        const edge = cell.edges[2]
+      if (cell.edges.inout !== null) {
+        const edge = cell.edges.inout
         if (edge.piece !== null) {
           if (edge.piece.color !== cell.piece.color) {
             possibleMoves.add(edge)
@@ -304,7 +302,7 @@ export function getPossibleMoves(cell: Cell, board: Board): Set<Cell> {
         }
       }
 
-      const edge = cell.edges[0]
+      const edge = cell.edges.next as Cell
       if (edge.piece !== null) {
         if (edge.piece.color !== cell.piece.color) {
           possibleMoves.add(edge)
@@ -322,14 +320,14 @@ export function getPossibleMoves(cell: Cell, board: Board): Set<Cell> {
       // } else { stuff below
       // }
 
-      if (cell.edges.length === 3) {
-        const edge = cell.edges[2]
+      if (cell.edges.inout !== null) {
+        const edge = cell.edges.inout
         if (edge.piece === null) {
           possibleMoves.add(edge)
         }
       }
 
-      const edge = cell.edges[1]
+      const edge = cell.edges.prev as Cell
       if (edge.piece === null) {
         possibleMoves.add(edge)
       }
@@ -371,14 +369,14 @@ export function getPossibleMoves(cell: Cell, board: Board): Set<Cell> {
       // } else { stuff below
       // }
 
-      if (cell.edges.length === 3) {
-        const edge = cell.edges[2]
+      if (cell.edges.inout !== null) {
+        const edge = cell.edges.inout
         if (edge.piece === null) {
           possibleMoves.add(edge)
         }
       }
 
-      const edge = cell.edges[0]
+      const edge = cell.edges.next as Cell
       if (edge.piece === null) {
         possibleMoves.add(edge)
       }
