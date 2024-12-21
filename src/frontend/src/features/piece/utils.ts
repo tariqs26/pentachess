@@ -1,5 +1,4 @@
 import type { Board, Cell } from "../board/types"
-import { cloneBoard } from "../board/utils"
 import { PIECE_DATA } from "./constants"
 import type { Piece, PieceColor, PieceType } from "./types"
 
@@ -12,90 +11,75 @@ export function makePiece(type: PieceType, color: PieceColor): Piece {
   }
 }
 
-export function removeDuplicates(list: Cell[]): Cell[] {
-  const seen = new Set<string>()
-
-  return list.filter((cell) => {
-    if (seen.has(cell.id)) return false
-    seen.add(cell.id)
-    return true
-  })
-}
-
 // TODO: Demo MVP
-export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
-  if (cell.piece == null) return []
+export function getPossibleMoves(cell: Cell, board: Board): Set<Cell> {
+  if (cell.piece == null) return new Set<Cell>()
 
-  const possibleMoves: Cell[] = []
+  let possibleMoves = new Set<Cell>()
 
   switch (cell.piece.type) {
     case "knight": {
-      for (const [x, y] of cell.vertices) {
-        const vertex = board[x][y]
-
+      for (const vertex of cell.vertices) {
         if (
           vertex.color !== cell.color &&
           (vertex.piece === null || vertex.piece.color !== cell.piece.color)
         ) {
-          possibleMoves.push(vertex)
+          possibleMoves.add(vertex)
         }
       }
       break
     }
     case "queen": {
       // get rook moves
-      const rookSwap: Board = cloneBoard(board)
-      rookSwap[cell.x][cell.y].piece = makePiece("rook", cell.piece.color)
-      possibleMoves.push(
-        ...getPossibleMoves(rookSwap[cell.x][cell.y], rookSwap)
+      const rookMoves = getPossibleMoves(
+        { ...cell, piece: makePiece("rook", cell.piece.color) },
+        board
       )
       // get bishop moves
-      const bishopSwap: Board = cloneBoard(board)
-      bishopSwap[cell.x][cell.y].piece = makePiece("bishop", cell.piece.color)
-      possibleMoves.push(
-        ...getPossibleMoves(bishopSwap[cell.x][cell.y], bishopSwap)
+      const bishopMoves = getPossibleMoves(
+        { ...cell, piece: makePiece("bishop", cell.piece.color) },
+        board
       )
+      possibleMoves = possibleMoves.union(bishopMoves.union(rookMoves))
       break
     }
     case "rook": {
       if (cell.edges.length == 3) {
-        const tempCell = board[cell.edges[2][0]][cell.edges[2][1]]
-        if (tempCell.piece != null) {
-          if (tempCell.piece.color != cell.piece.color) {
-            possibleMoves.push(tempCell)
+        const edge = cell.edges[2]
+        if (edge.piece != null) {
+          if (edge.piece.color != cell.piece.color) {
+            possibleMoves.add(edge)
           }
-        } else possibleMoves.push(tempCell)
+        } else possibleMoves.add(edge)
       }
-      let tempCell: Cell
+      let currEdge: Cell
       for (let i = 0; i < 2; i++) {
-        if (i == 0) tempCell = board[cell.edges[0][0]][cell.edges[0][1]]
-        else tempCell = board[cell.edges[1][0]][cell.edges[1][1]]
-        while (tempCell != cell) {
-          if (tempCell.piece != null) {
-            if (tempCell.piece.color != cell.piece.color) {
-              possibleMoves.push(tempCell)
+        if (i == 0) currEdge = cell.edges[0]
+        else currEdge = cell.edges[1]
+        while (currEdge != cell) {
+          if (currEdge.piece != null) {
+            if (currEdge.piece.color != cell.piece.color) {
+              possibleMoves.add(currEdge)
             }
             break
-          } else possibleMoves.push(tempCell)
+          } else possibleMoves.add(currEdge)
           if (i == 0)
-            tempCell = board[tempCell.edges[0][0]][tempCell.edges[0][1]]
-          else tempCell = board[tempCell.edges[1][0]][tempCell.edges[1][1]]
+            currEdge = currEdge.edges[0]
+          else currEdge = currEdge.edges[1]
         }
       }
       break
     }
     case "bishop": {
-      for (const [x, y] of cell.vertices) {
-        const vertex = board[x][y]
+      for (const vertex of cell.vertices) {
         if (
           vertex.color === cell.color &&
           (vertex.piece === null || vertex.piece.color !== cell.piece.color)
         ) {
-          possibleMoves.push(vertex)
+          possibleMoves.add(vertex)
 
           if (vertex.angle === cell.angle && vertex.piece === null) {
-            for (const [x, y] of vertex.vertices) {
-              const attachedVertex = board[x][y]
+            for (const attachedVertex of vertex.vertices) {
               if (
                 attachedVertex.angle === vertex.angle &&
                 attachedVertex.color === vertex.color &&
@@ -109,7 +93,7 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
                     (attachedVertex.y + 48) % 5 !== 0 &&
                     (attachedVertex.y + 47) % 5 !== 0
                   ) {
-                    possibleMoves.push(attachedVertex)
+                    possibleMoves.add(attachedVertex)
                     break
                   }
                 } else {
@@ -119,7 +103,7 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
                     (cell.y + 48) % 5 !== 0 &&
                     (cell.y + 47) % 5 !== 0
                   ) {
-                    possibleMoves.push(attachedVertex)
+                    possibleMoves.add(attachedVertex)
                     break
                   }
                 }
@@ -133,24 +117,24 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
       if (cell.x === 1) {
         // counter clockwise check
         let counter = 30
-        if (possibleMoves.includes(board[cell.x][(cell.y + 2) % 30])) {
+        if (possibleMoves.has(board[cell.x][(cell.y + 2) % 30])) {
           counter = 4
         }
 
         while (counter < 28) {
-          const currentCell = board[cell.x][(cell.y + counter) % 30]
-          if (currentCell.piece === null) {
-            possibleMoves.push(currentCell)
+          const currVertex = board[cell.x][(cell.y + counter) % 30]
+          if (currVertex.piece === null) {
+            possibleMoves.add(currVertex)
           } else {
-            if (currentCell.piece.color !== cell.piece?.color) {
-              possibleMoves.push(currentCell)
+            if (currVertex.piece.color !== cell.piece?.color) {
+              possibleMoves.add(currVertex)
             }
             break
           }
           counter += 2
         }
 
-        if (possibleMoves.includes(board[cell.x][(cell.y + 28) % 30])) {
+        if (possibleMoves.has(board[cell.x][(cell.y + 28) % 30])) {
           counter = 4
         } else {
           counter = 30
@@ -158,16 +142,16 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
         // clockwise check
         if (counter < 28) {
           while (counter < 28) {
-            const currentCell = board[cell.x][(cell.y - counter + 30) % 30]
-            if (possibleMoves.includes(currentCell)) {
+            const currVertex = board[cell.x][(cell.y - counter + 30) % 30]
+            if (possibleMoves.has(currVertex)) {
               break
             }
 
-            if (currentCell.piece === null) {
-              possibleMoves.push(currentCell)
+            if (currVertex.piece === null) {
+              possibleMoves.add(currVertex)
             } else {
-              if (currentCell.piece.color !== cell.piece?.color) {
-                possibleMoves.push(currentCell)
+              if (currVertex.piece.color !== cell.piece?.color) {
+                possibleMoves.add(currVertex)
               }
               break
             }
@@ -177,24 +161,24 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
       } else if (cell.x === 2) {
         // counter clockwise check
         let counter = 50
-        if (possibleMoves.includes(board[cell.x][(cell.y + 2) % 50])) {
+        if (possibleMoves.has(board[cell.x][(cell.y + 2) % 50])) {
           counter = 4
         }
 
         while (counter < 48) {
-          const currentCell = board[cell.x][(cell.y + counter) % 50]
-          if (currentCell.piece === null) {
-            possibleMoves.push(currentCell)
+          const currVertex = board[cell.x][(cell.y + counter) % 50]
+          if (currVertex.piece === null) {
+            possibleMoves.add(currVertex)
           } else {
-            if (currentCell.piece.color !== cell.piece?.color) {
-              possibleMoves.push(currentCell)
+            if (currVertex.piece.color !== cell.piece?.color) {
+              possibleMoves.add(currVertex)
             }
             break
           }
           counter += 2
         }
 
-        if (possibleMoves.includes(board[cell.x][(cell.y + 48) % 50])) {
+        if (possibleMoves.has(board[cell.x][(cell.y + 48) % 50])) {
           counter = 4
         } else {
           counter = 50
@@ -203,16 +187,16 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
         // clockwise check
         if (counter < 48) {
           while (counter < 48) {
-            const currentCell = board[cell.x][(cell.y - counter + 50) % 50]
-            if (possibleMoves.includes(currentCell)) {
+            const currVertex = board[cell.x][(cell.y - counter + 50) % 50]
+            if (possibleMoves.has(currVertex)) {
               break
             }
 
-            if (currentCell.piece === null) {
-              possibleMoves.push(currentCell)
+            if (currVertex.piece === null) {
+              possibleMoves.add(currVertex)
             } else {
-              if (currentCell.piece.color !== cell.piece?.color) {
-                possibleMoves.push(currentCell)
+              if (currVertex.piece.color !== cell.piece?.color) {
+                possibleMoves.add(currVertex)
               }
               break
             }
@@ -224,115 +208,105 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
     }
     case "king": {
       // Need to prevent moves that put the king in danger (for demo this is good enough though) - Karl
-      for (const [x, y] of cell.edges) {
-        const tempCell = board[x][y]
-        if (tempCell.piece != null) {
-          if (tempCell.piece.color != cell.piece.color) {
-            possibleMoves.push(tempCell)
+      for (const edge of cell.edges) {
+        if (edge.piece != null) {
+          if (edge.piece.color != cell.piece.color) {
+            possibleMoves.add(edge)
           }
-        } else possibleMoves.push(tempCell)
+        } else possibleMoves.add(edge)
       }
-      for (const [x, y] of cell.vertices) {
-        const tempCell = board[x][y]
-        if (tempCell.color == cell.color) {
-          if (tempCell.piece != null) {
-            if (tempCell.piece.color != cell.piece.color) {
-              possibleMoves.push(tempCell)
+      for (const vertex of cell.vertices) {
+        if (vertex.color == cell.color) {
+          if (vertex.piece != null) {
+            if (vertex.piece.color != cell.piece.color) {
+              possibleMoves.add(vertex)
             }
-          } else possibleMoves.push(tempCell)
+          } else possibleMoves.add(vertex)
         }
       }
       break
     }
     case "berolina-pawn-cw": {
-      for (const [x, y] of cell.vertices) {
-        const vertex = board[x][y]
-
+      for (const vertex of cell.vertices) {
         if (vertex.color === cell.color && vertex.piece === null) {
           if (cell.x === 2) {
             if (cell.x === vertex.x) {
               if ((cell.y + 2) % 50 !== vertex.y) {
-                possibleMoves.push(vertex)
+                possibleMoves.add(vertex)
               }
-            } else possibleMoves.push(vertex)
+            } else possibleMoves.add(vertex)
           } else if (cell.x === 1) {
             if (cell.x === vertex.x) {
               if ((cell.y + 2) % 30 !== vertex.y) {
-                possibleMoves.push(vertex)
+                possibleMoves.add(vertex)
               }
-            } else possibleMoves.push(vertex)
+            } else possibleMoves.add(vertex)
           } else {
             if (cell.x === vertex.x) {
               if ((cell.y + 2) % 10 !== vertex.y) {
-                possibleMoves.push(vertex)
+                possibleMoves.add(vertex)
               }
-            } else possibleMoves.push(vertex)
+            } else possibleMoves.add(vertex)
           }
         }
       }
 
       if (cell.edges.length === 3) {
-        const [x, y] = cell.edges[2]
-        const curr_edge = board[x][y]
-        if (curr_edge.piece !== null) {
-          if (curr_edge.piece.color !== cell.piece.color) {
-            possibleMoves.push(curr_edge)
+        const edge = cell.edges[2]
+        if (edge.piece !== null) {
+          if (edge.piece.color !== cell.piece.color) {
+            possibleMoves.add(edge)
           }
         }
       }
 
-      const [x, y] = cell.edges[1]
-      const curr_edge = board[x][y]
-      if (curr_edge.piece !== null) {
-        if (curr_edge.piece.color !== cell.piece.color) {
-          possibleMoves.push(curr_edge)
+      const edge = cell.edges[1]
+      if (edge.piece !== null) {
+        if (edge.piece.color !== cell.piece.color) {
+          possibleMoves.add(edge)
         }
       }
 
       break
     }
     case "berolina-pawn-ccw": {
-      for (const [x, y] of cell.vertices) {
-        const vertex = board[x][y]
-
+      for (const vertex of cell.vertices) {
         if (vertex.color === cell.color && vertex.piece === null) {
           if (cell.x === 2) {
             if (cell.x === vertex.x) {
               if ((cell.y + 48) % 50 !== vertex.y) {
-                possibleMoves.push(vertex)
+                possibleMoves.add(vertex)
               }
-            } else possibleMoves.push(vertex)
+            } else possibleMoves.add(vertex)
           } else if (cell.x === 1) {
             if (cell.x === vertex.x) {
               if ((cell.y + 28) % 30 !== vertex.y) {
-                possibleMoves.push(vertex)
+                possibleMoves.add(vertex)
               }
-            } else possibleMoves.push(vertex)
+            } else possibleMoves.add(vertex)
           } else {
             if (cell.x === vertex.x) {
               if ((cell.y + 8) % 10 !== vertex.y) {
-                possibleMoves.push(vertex)
+                possibleMoves.add(vertex)
               }
-            } else possibleMoves.push(vertex)
+            } else possibleMoves.add(vertex)
           }
         }
       }
 
       if (cell.edges.length === 3) {
-        const [x, y] = cell.edges[2]
-        const curr_edge = board[x][y]
-        if (curr_edge.piece !== null) {
-          if (curr_edge.piece.color !== cell.piece.color) {
-            possibleMoves.push(curr_edge)
+        const edge = cell.edges[2]
+        if (edge.piece !== null) {
+          if (edge.piece.color !== cell.piece.color) {
+            possibleMoves.add(edge)
           }
         }
       }
 
-      const [x, y] = cell.edges[0]
-      const curr_edge = board[x][y]
-      if (curr_edge.piece !== null) {
-        if (curr_edge.piece.color !== cell.piece.color) {
-          possibleMoves.push(curr_edge)
+      const edge = cell.edges[0]
+      if (edge.piece !== null) {
+        if (edge.piece.color !== cell.piece.color) {
+          possibleMoves.add(edge)
         }
       }
 
@@ -348,42 +322,38 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
       // }
 
       if (cell.edges.length === 3) {
-        const [x, y] = cell.edges[2]
-        const curr_edge = board[x][y]
-        if (curr_edge.piece === null) {
-          possibleMoves.push(curr_edge)
+        const edge = cell.edges[2]
+        if (edge.piece === null) {
+          possibleMoves.add(edge)
         }
       }
 
-      const [x, y] = cell.edges[1]
-      const curr_edge = board[x][y]
-      if (curr_edge.piece === null) {
-        possibleMoves.push(curr_edge)
+      const edge = cell.edges[1]
+      if (edge.piece === null) {
+        possibleMoves.add(edge)
       }
 
-      for (const [x, y] of cell.vertices) {
-        const vertex = board[x][y]
-
+      for (const vertex of cell.vertices) {
         if (vertex.color === cell.color && vertex.piece !== null) {
           if (vertex.piece.color !== cell.piece.color) {
             if (cell.x === 2) {
               if (cell.x === vertex.x) {
                 if ((cell.y + 2) % 50 !== vertex.y) {
-                  possibleMoves.push(vertex)
+                  possibleMoves.add(vertex)
                 }
-              } else possibleMoves.push(vertex)
+              } else possibleMoves.add(vertex)
             } else if (cell.x === 1) {
               if (cell.x === vertex.x) {
                 if ((cell.y + 2) % 30 !== vertex.y) {
-                  possibleMoves.push(vertex)
+                  possibleMoves.add(vertex)
                 }
-              } else possibleMoves.push(vertex)
+              } else possibleMoves.add(vertex)
             } else {
               if (cell.x === vertex.x) {
                 if ((cell.y + 2) % 10 !== vertex.y) {
-                  possibleMoves.push(vertex)
+                  possibleMoves.add(vertex)
                 }
-              } else possibleMoves.push(vertex)
+              } else possibleMoves.add(vertex)
             }
           }
         }
@@ -401,42 +371,38 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
       // }
 
       if (cell.edges.length === 3) {
-        const [x, y] = cell.edges[2]
-        const curr_edge = board[x][y]
-        if (curr_edge.piece === null) {
-          possibleMoves.push(curr_edge)
+        const edge = cell.edges[2]
+        if (edge.piece === null) {
+          possibleMoves.add(edge)
         }
       }
 
-      const [x, y] = cell.edges[0]
-      const curr_edge = board[x][y]
-      if (curr_edge.piece === null) {
-        possibleMoves.push(curr_edge)
+      const edge = cell.edges[0]
+      if (edge.piece === null) {
+        possibleMoves.add(edge)
       }
 
-      for (const [x, y] of cell.vertices) {
-        const vertex = board[x][y]
-
+      for (const vertex of cell.vertices) {
         if (vertex.color === cell.color && vertex.piece !== null) {
           if (vertex.piece.color !== cell.piece.color) {
             if (cell.x === 2) {
               if (cell.x === vertex.x) {
                 if ((cell.y + 48) % 50 !== vertex.y) {
-                  possibleMoves.push(vertex)
+                  possibleMoves.add(vertex)
                 }
-              } else possibleMoves.push(vertex)
+              } else possibleMoves.add(vertex)
             } else if (cell.x === 1) {
               if (cell.x === vertex.x) {
                 if ((cell.y + 28) % 30 !== vertex.y) {
-                  possibleMoves.push(vertex)
+                  possibleMoves.add(vertex)
                 }
-              } else possibleMoves.push(vertex)
+              } else possibleMoves.add(vertex)
             } else {
               if (cell.x === vertex.x) {
                 if ((cell.y + 8) % 10 !== vertex.y) {
-                  possibleMoves.push(vertex)
+                  possibleMoves.add(vertex)
                 }
-              } else possibleMoves.push(vertex)
+              } else possibleMoves.add(vertex)
             }
           }
         }
@@ -445,7 +411,7 @@ export function getPossibleMoves(cell: Cell, board: Board): Cell[] {
       break
     }
   }
-  return removeDuplicates(possibleMoves)
+  return possibleMoves
 }
 
 // TODO

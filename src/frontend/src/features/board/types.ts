@@ -8,8 +8,8 @@ export type Cell = {
   side: number
   angle: number
   piece: Piece | null
-  edges: Array<[number, number]>
-  vertices: Array<[number, number]>
+  edges: Array<Cell> // TODO: switch to {next: Cell, prev: Cell, inout: Cell | null}
+  vertices: Array<Cell>
 }
 
 export type Board = Cell[][]
@@ -19,7 +19,7 @@ export type BoardState = {
   disabled: boolean
   selectedCell: {
     cell: Cell
-    availableMoves: Cell[]
+    availableMoves: Set<Cell>
   } | null
   overCell: Cell | null
 }

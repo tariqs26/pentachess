@@ -17,10 +17,7 @@ export const CellComponent = (cell: Cell) => {
   const { state, dispatch } = useLocalGame()
 
   const isCellSelected = state.boardState.selectedCell?.cell.id === cell.id
-  const isAvailableMove =
-    state.boardState.selectedCell?.availableMoves.find(
-      (move) => move.id === cell.id
-    ) !== undefined
+  const isAvailableMove = state.boardState.selectedCell?.availableMoves.values().some((move) => move.id === cell.id)
 
   const handlePieceMouseDown = () => {
     if (state.boardState.disabled) return

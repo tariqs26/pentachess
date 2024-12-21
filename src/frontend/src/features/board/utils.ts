@@ -1,6 +1,6 @@
 import { INITIAL_PIECES } from "../piece/constants"
 import { getPossibleMoves, makePiece } from "../piece/utils"
-import { cloneCell, makeCell, setCellVertices } from "./cell"
+import { cloneCell, makeCell, setCellEdges, setCellVertices } from "./cell"
 import type { Board, Cell } from "./types"
 
 export function initializeBoard(): Board {
@@ -56,6 +56,11 @@ export function initializeBoard(): Board {
     }
   }
 
+  // set cell edges
+  for (const ring of board) {
+    for (const cell of ring) setCellEdges(cell, board)
+  }
+
   // set cell vertices
   for (const ring of board) {
     for (const cell of ring) setCellVertices(cell, board)
@@ -96,7 +101,7 @@ export function getSides<T>(arr: T[], size: number) {
 }
 
 // handle piece click (user interaction)
-export function pieceClick(cell: Cell, board: Board): Cell[] {
+export function pieceClick(cell: Cell, board: Board): Set<Cell> {
   // memoize moves here and reset in the movePiece func
   return getPossibleMoves(cell, board)
 }
