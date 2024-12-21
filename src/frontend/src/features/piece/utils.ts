@@ -134,14 +134,13 @@ export function getPossibleMoves(cell: Cell, board: Board): Set<Cell> {
           counter += 2
         }
 
+        if (possibleMoves.has(board[cell.x][(cell.y + 28) % 30])) {
+          counter = 4
+        } else {
+          counter = 30
+        }
         // clockwise check
         if (counter < 28) {
-          if (possibleMoves.has(board[cell.x][(cell.y - 2 + 30) % 30])) {
-            counter = 4
-          } else {
-            counter = 30
-          }
-
           while (counter < 28) {
             const currVertex = board[cell.x][(cell.y - counter + 30) % 30]
             if (possibleMoves.has(currVertex)) {
@@ -179,14 +178,14 @@ export function getPossibleMoves(cell: Cell, board: Board): Set<Cell> {
           counter += 2
         }
 
+        if (possibleMoves.has(board[cell.x][(cell.y + 48) % 50])) {
+          counter = 4
+        } else {
+          counter = 50
+        }
+
         // clockwise check
         if (counter < 48) {
-          if (possibleMoves.has(board[cell.x][(cell.y - 2 + 50) % 50])) {
-            counter = 4
-          } else {
-            counter = 50
-          }
-
           while (counter < 48) {
             const currVertex = board[cell.x][(cell.y - counter + 50) % 50]
             if (possibleMoves.has(currVertex)) {

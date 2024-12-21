@@ -102,8 +102,11 @@ export function setCellVertices({ x, y, edges, vertices }: Cell, board: Board) {
     let i = 3
     for (let _ = 0; _ < 5; _++) {
       vertices.push(board[0][(y + i) % 10])
+      vertices.push(board[0][(y + i) % 10])
       i += 1
     }
+    vertices.push(board[1][(vertices[3].y + 1) % 30])
+    vertices.push(board[1][(vertices[4].y + 1) % 30])
     vertices.push(board[1][(vertices[3].y + 1) % 30])
     vertices.push(board[1][(vertices[4].y + 1) % 30])
   }
@@ -118,6 +121,8 @@ export function setCellVertices({ x, y, edges, vertices }: Cell, board: Board) {
       tmp = board[x][(y + 29) % 30].edges.inout as Cell
       vertices.push(board[tmp.x][(tmp.y + 5) % 50])
     } else if ((y - 1) % 3 === 0) {
+      vertices.push(board[1][(y + 3) % 30])
+      vertices.push(board[1][(y + 27) % 30])
       vertices.push(board[1][(y + 3) % 30])
       vertices.push(board[1][(y + 27) % 30])
 
