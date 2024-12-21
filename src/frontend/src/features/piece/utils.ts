@@ -1,6 +1,7 @@
 import type { Board, Cell } from "../board/types"
 import { PIECE_DATA } from "./constants"
 import type { Piece, PieceColor, PieceType } from "./types"
+import { getEdgeList } from "../board/cell"
 
 export function makePiece(type: PieceType, color: PieceColor): Piece {
   return {
@@ -13,20 +14,15 @@ export function makePiece(type: PieceType, color: PieceColor): Piece {
 
 // TODO: Demo MVP
 export function getPossibleMoves(cell: Cell, board: Board): Set<Cell> {
-  if (cell.piece == null) return new Set<Cell>()
+  if (cell.piece === null) return new Set<Cell>()
 
   let possibleMoves = new Set<Cell>()
 
   switch (cell.piece.type) {
     case "knight": {
-      for (const vertex of cell.vertices) {
-        if (
-          vertex.color !== cell.color &&
-          (vertex.piece === null || vertex.piece.color !== cell.piece.color)
-        ) {
-          possibleMoves.add(vertex)
-        }
-      }
+      possibleMoves = new Set(cell.vertices.filter(vertex =>
+        vertex.color !== cell.color &&
+        (vertex.piece === null || vertex.piece.color !== cell.piece.color)))
       break
     }
     case "queen": {
@@ -46,12 +42,11 @@ export function getPossibleMoves(cell: Cell, board: Board): Set<Cell> {
     case "rook": {
       if (cell.edges.inout !== null) {
         const edge = cell.edges.inout
-        if (edge.piece != null) {
-          if (edge.piece.color != cell.piece.color) {
-            possibleMoves.add(edge)
-          }
-        } else possibleMoves.add(edge)
+        if (edge.piece === null || edge.piece.color !== cell.piece.color) {
+          possibleMoves.add(edge)
+        }
       }
+
       let currEdge: Cell
       for (let i = 0; i < 2; i++) {
         if (i == 0) currEdge = cell.edges.next as Cell
@@ -208,10 +203,8 @@ export function getPossibleMoves(cell: Cell, board: Board): Set<Cell> {
     }
     case "king": {
       // Need to prevent moves that put the king in danger (for demo this is good enough though) - Karl
-      let edges : Array<Cell> = [cell.edges.next as Cell, cell.edges.prev as Cell]
-      if (cell.edges.inout !== null) {
-        edges.push(cell.edges.inout)
-      }
+      let edges = getEdgeList(cell.edges)
+      
       for (const edge of edges) {
         if (edge.piece === null || edge.piece.color != cell.piece.color) {
           possibleMoves.add(edge)
@@ -294,24 +287,20 @@ export function getPossibleMoves(cell: Cell, board: Board): Set<Cell> {
 
       if (cell.edges.inout !== null) {
         const edge = cell.edges.inout
-        if (edge.piece !== null) {
-          if (edge.piece.color !== cell.piece.color) {
-            possibleMoves.add(edge)
-          }
+        if (edge.piece !== null && edge.piece.color !== cell.piece.color) {
+          possibleMoves.add(edge)
         }
       }
 
       const edge = cell.edges.next as Cell
-      if (edge.piece !== null) {
-        if (edge.piece.color !== cell.piece.color) {
-          possibleMoves.add(edge)
-        }
+      if (edge.piece !== null && edge.piece.color !== cell.piece.color) {
+        possibleMoves.add(edge)
       }
 
       break
     }
     case "pawn-cw": {
-      // cell.edges[0] = ccw direction, cell.edges[1] = cw direction
+      // cell.edges.next = ccw direction, cell.edges.prev = cw direction
       // TODO: implement first Move
       // if (cell.piece.firstMove) {
       //   // stuff
@@ -360,7 +349,7 @@ export function getPossibleMoves(cell: Cell, board: Board): Set<Cell> {
       break
     }
     case "pawn-ccw": {
-      // cell.edges[0] = ccw direction, cell.edges[1] = cw direction
+      // cell.edges.next = ccw direction, cell.edges.prev = cw direction
       // TODO: implement first Move
       // if (cell.piece.firstMove) {
       //   // stuff

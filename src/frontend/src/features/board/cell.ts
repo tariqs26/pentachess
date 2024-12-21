@@ -1,6 +1,10 @@
 import { DECAGON_SIDES, RING_SIZES } from "@/features/board/constants"
 import type { Board, Cell } from "./types"
 
+export function getEdgeList(edges: {next: Cell | null, prev: Cell | null, inout: Cell | null}) {
+  return [edges.next as Cell, edges.prev as Cell].concat(edges.inout === null ? [] : [edges.inout])
+}
+
 function getReverseMidOutEdges() {
   let midX = 0
   let outY = 1
@@ -51,7 +55,6 @@ export function makeCell(x: number, y: number, angle: number): Cell {
 
 export function setCellEdges({ x, y, edges}: Cell, board: Board) {
 
-  // edges - [front, back, side(if exists)]
   if (x === 0) {
     // inner ring
     edges.next = board[x][(y + 1) % 10]
@@ -82,15 +85,11 @@ export function setCellEdges({ x, y, edges}: Cell, board: Board) {
 
 export function setCellVertices({ x, y, edges, vertices }: Cell, board: Board) {
   // iterate through the edges and collect the vertices based on the rules
-  const edgeList = [edges.next as Cell, edges.prev as Cell]
-  if (edges.inout !== null) {
-    edgeList.push(edges.inout)
-  }
+  const edgeList = getEdgeList(edges)
+  
   for (const edge of edgeList) {
-    const edgeEdgeList = [edge.edges.next as Cell, edge.edges.prev as Cell]
-    if (edge.edges.inout !== null) {
-      edgeEdgeList.push(edge.edges.inout)
-    }
+    const edgeEdgeList = getEdgeList(edge.edges)
+    
     for (const edgeEdge of edgeEdgeList) {
       if (!(edgeEdge.x === x && edgeEdge.y === y)) {
         vertices.push(edgeEdge)
