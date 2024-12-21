@@ -203,7 +203,7 @@ export function getPossibleMoves(cell: Cell, board: Board): Set<Cell> {
     }
     case "king": {
       // Need to prevent moves that put the king in danger (for demo this is good enough though) - Karl
-      let edges = getEdgeList(cell.edges)
+      const edges = getEdgeList(cell.edges)
       
       for (const edge of edges) {
         if (edge.piece === null || edge.piece.color != cell.piece.color) {
