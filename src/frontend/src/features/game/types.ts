@@ -14,6 +14,7 @@ type Move = {
 }
 
 type GameStatus =
+  | "waiting"
   | "playing"
   | "checkmate"
   | "stalemate"
@@ -25,6 +26,7 @@ export type LocalGameState = {
   opponent: PieceColor
   turn: PieceColor
   timer: Record<PieceColor, number>
+  duration?: number
   previousMoves: Move[]
   capturedPieces: Record<PieceColor, Piece[]>
   check: PieceColor | null
@@ -34,14 +36,18 @@ export type LocalGameState = {
 
 export type LocalGameAction =
   | {
+      type: "START_GAME"
+      payload?: number
+    }
+  | {
       type: "UPDATE_STATUS"
       payload: GameStatus
     }
   | {
-      type: "SWITCH_TURN"
-    }
-  | {
       type: "ADD_MOVE"
       payload: { player: PieceColor; move: Move }
+    }
+  | {
+      type: "SWITCH_TURN"
     }
   | BoardAction

@@ -59,6 +59,13 @@ export function localGameReducer(
               },
       }
     }
+    case "START_GAME": {
+      return {
+        ...state,
+        status: "playing",
+        duration: action.payload,
+      }
+    }
     default:
       return state
   }
