@@ -63,7 +63,12 @@ export function localGameReducer(
       return {
         ...state,
         status: "playing",
-        duration: action.payload,
+        timer: action.payload
+          ? {
+              w: action.payload,
+              b: action.payload,
+            }
+          : state.timer,
       }
     }
     default:

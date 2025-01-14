@@ -11,8 +11,7 @@ const initialState: LocalGameState = {
   opponent: "b",
   turn: "w",
   check: null,
-  status: "playing",
-  timer: { w: 15, b: 15 },
+  status: "waiting",
   previousMoves: [],
   capturedPieces: { w: [], b: [] },
   boardState: {

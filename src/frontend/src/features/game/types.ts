@@ -25,8 +25,7 @@ export type LocalGameState = {
   player: PieceColor
   opponent: PieceColor
   turn: PieceColor
-  timer: Record<PieceColor, number>
-  duration?: number
+  timer?: Record<PieceColor, number>
   previousMoves: Move[]
   capturedPieces: Record<PieceColor, Piece[]>
   check: PieceColor | null
