@@ -4,10 +4,116 @@ import type { Cell } from "../types"
 import { sideRotation } from "./Side"
 
 const cellRotation = (cell: Cell) => {
-  if (cell.x != 0 && cell.side % 2 != 0) {
-    return cell.y % 2 != 0 ? -70 : -103
+  if (cell.x == 1) {
+    if (cell.side % 2 != 0) {
+      return cell.y % 2 != 0 ? -104 : -70
+    }
+    
+    return cell.y % 2 == 0 ? -109.5 : -74
   }
-  return cell.y % 2 == 0 ? -70 : -103
+  if (cell.x == 2) {
+    if (cell.side % 2 != 0) {
+      return cell.y % 2 == 0 ? -55 : -90
+    }
+    return cell.y % 2 == 0 ? -109.5 : -74
+  }
+  return cell.y % 2 == 0 ? -70.5 : -109
+  // if (cell.x != 0 && cell.side % 2 != 0) {
+  //   return cell.y % 2 != 0 ? -70.5 : -109
+  // }
+  // return cell.y % 2 == 0 ? -70.5 : -109
+}
+
+const marginLeftStyle = (cell: Cell) => {
+
+  if (cell.x == 1) {
+    if (cell.side % 2 != 0) {
+      if ((cell.y - (cell.side * 3)) == 0) {
+        return 0
+      }
+      if ((cell.y - (cell.side * 3)) == 1) {
+        return -72
+      }
+      return -64
+    }
+    if ((cell.y - (cell.side * 3)) == 0) {
+      return 0
+    }
+    if ((cell.y - (cell.side * 3)) == 1) {
+      return -65.5
+    }
+    return -75
+  }
+
+  if (cell.x == 2) {
+    if (cell.side % 2 != 0) {
+      if ((cell.y - (cell.side * 5)) == 0) {
+        return 0
+      }
+      if ((cell.y - (cell.side * 5)) == 1) {
+        return -78.5
+      }
+      if ((cell.y - (cell.side * 5)) == 2) {
+        return -61.2
+      }
+      if ((cell.y - (cell.side * 5)) == 3) {
+        return -79.5
+      }
+      return -64
+    }
+
+    if ((cell.y - (cell.side * 5)) == 0) {
+      return 0
+    }
+    if ((cell.y - (cell.side * 5)) == 1) {
+      return -65.5
+    }
+    if ((cell.y - (cell.side * 5)) == 2) {
+      return -75.5
+    }
+    if ((cell.y - (cell.side * 5)) == 3) {
+      return -65.5
+    }
+    return -75
+  }
+
+  return cell.side % 2 != 0 ? -70.1 : -70.5
+}
+
+const marginTopStyle = (cell: Cell) => {
+  if (cell.x == 1) {
+    if (cell.side % 2 != 0) {
+      if ((cell.y - (cell.side * 3)) == 0) {
+        return 0
+      }
+      if ((cell.y - (cell.side * 3)) == 1) {
+        return 15
+      }
+      return -4
+    }
+    return cell.y % 2 != 0 ? 5 : -10
+  }
+  if (cell.x == 2) {
+    if (cell.side % 2 != 0) {
+      if ((cell.y - (cell.side * 5)) == 0) {
+        return 0
+      }
+      if ((cell.y - (cell.side * 5)) == 1) {
+        return 21
+      }
+      if ((cell.y - (cell.side * 5)) == 2) {
+        return 11
+      }
+      if ((cell.y - (cell.side * 5)) == 3) {
+        return 11
+      }
+      return -4
+    }
+
+
+    return cell.y % 2 != 0 ? 5 : -10
+  }
+  return cell.side % 2 != 0 ? cell.color === "w" ? -30 : -50 : cell.color === "w" ? -30 : -10
 }
 
 const pieceRotation = (cell: Cell) =>
@@ -84,19 +190,21 @@ export const CellComponent = (cell: Cell) => {
                 ? "white"
                 : "gray",
 
-          height: "100px",
+          height: cell.color === "b" ? "56.57px" : ((cell.y - (cell.side * (cell.x == 1 ? 3 : 5))) == 0) && cell.side % 2 != 0 ? "59px" : "65px",
           width: "100px",
           outline: "1px solid black",
           display: "flex",
+          position: "relative",
           justifyContent: "center",
           alignItems: "center",
-          clipPath:
-            "polygon(0% 43.43%, 20% 100%, 80% 100%, 100% 43.43%, 50% 76.7%)",
+          clipPath: cell.color === "b" ? "polygon(0px 0px, 20px 56.57px, 80px 56.57px, 100px 0px, 50px 34.7px)" : "none",
           rotate: `${cellRotation(cell)}deg`,
-          marginLeft: "-70px",
+          marginLeft: `${marginLeftStyle(cell)}px`,
+          marginTop: `${marginTopStyle(cell)}px`,
+          zIndex: cell.color === "b" ? 2 : 1
         }}
       />
-      {cell.piece ? (
+    {/* {cell.piece ? (
         <Image
           src={cell.piece.image}
           alt={`${cell.piece.color === "w" ? "white" : "black"} ${cell.piece.type}`}
@@ -113,7 +221,7 @@ export const CellComponent = (cell: Cell) => {
         >
           {cell.id}
         </span>
-      )}
+      )} */}
     </div>
   )
 }

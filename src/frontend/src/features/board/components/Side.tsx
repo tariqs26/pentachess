@@ -8,33 +8,33 @@ type SideProps = React.PropsWithChildren<{
 export const sideRotation = (ring: number) => {
   switch (ring) {
     case 0:
-      return [0, 0, -70, -73, -140, -142, 150, 148, 75, 70]
+      return [-20, -17, -91, -87, -165, -161, 124, 128, 52, 56]
     case 1:
-      return [-5, -40, -75, -110, -145, -180, 145, 110, 75, 38]
-    default:
-      return [-5, -35, -75, -112, -145, -185, 140, 105, 70, 38]
+      return [19, -20, -52, -93, -123, -162, 162, 122, 92, 52]
+    default:// /        /
+      return [20, -35, -51.5, -112, -145, -185, 140, 105, 70, 38]
   }
 }
 
 export const sideLeft = (ring: number) => {
   switch (ring) {
     case 0:
-      return [0, 30, 30, 35, -12, -38, -70, -92, -63, -50]
+      return [56.57, 80, 53.5, 46, -34.3, -68.8, -83, -99, -27, -3]
     case 1:
-      return [-33, 45, 83, 65, 10, -65, -140, -185, -180, -120]
-    default:
-      return [-60, 70, 137, 115, 30, -100, -225, -295, -285, -200]
+      return [-78, 11, 73, 65, 26, -73, -160, -213, -221, -162.3]
+    default:// /         /
+      return [-138, 20, 118, 115, 30, -100, -225, -295, -285, -200]
   }
 }
 
 export const sideTop = (ring: number) => {
   switch (ring) {
     case 0:
-      return [0, -2, -55, -85, -102, -117, -75, -55, -11, 18]
+      return [0, -9, -88, -116, -113, -113, -39, -2.5, 31, 62]
     case 1:
-      return [88, 50, -28, -110, -170, -185, -150, -80, 8, 78]
-    default:
-      return [177, 120, -2, -140, -245, -270, -210, -90, 50, 150]
+      return [100.5, 65, 1, -98, -174, -203, -181, -99, -12.5, 64]
+    default:// /           /
+      return [189.5, 140, 58, -2000, -2000, -2000, -2000, -2000, 2000, 2000]
   }
 }
 
@@ -44,6 +44,7 @@ const sideStyle = (ring: number, side: number): CSSProperties => ({
   rotate: `${sideRotation(ring)[side]}deg`,
   top: `${sideTop(ring)[side]}px`,
   left: `${sideLeft(ring)[side]}px`,
+  zIndex: side % 2 == 0 ? 2 : 1,
 })
 
 export const Side = ({ side, ring, ...props }: SideProps) => {
