@@ -1,7 +1,6 @@
 import type { Board, Cell } from "../board/types"
 import { PIECE_DATA } from "./constants"
 import type { Piece, PieceColor, PieceType } from "./types"
-import { getEdgeList } from "../board/cell"
 
 export function makePiece(type: PieceType, color: PieceColor): Piece {
   return {
@@ -20,9 +19,15 @@ export function getPossibleMoves(cell: Cell, board: Board): Set<Cell> {
 
   switch (cell.piece.type) {
     case "knight": {
-      possibleMoves = new Set(cell.vertices.filter(vertex =>
-        vertex.color !== cell.color &&
-        (vertex.piece === null || vertex.piece.color !== cell.piece.color)))
+      for (const vertexTuple of cell.vertices) {
+        const vertex = board[vertexTuple[0]][vertexTuple[1]]
+        if (
+          vertex.color !== cell.color &&
+          (vertex.piece === null || vertex.piece.color !== cell.piece.color)
+        ) {
+          possibleMoves.add(vertex)
+        }
+      }
       break
     }
     case "queen": {
@@ -40,8 +45,8 @@ export function getPossibleMoves(cell: Cell, board: Board): Set<Cell> {
       break
     }
     case "rook": {
-      if (cell.edges.inout !== null) {
-        const edge = cell.edges.inout
+      if (cell.edges.length === 3) {
+        const edge = board[cell.edges[2][0]][cell.edges[2][1]]
         if (edge.piece === null || edge.piece.color !== cell.piece.color) {
           possibleMoves.add(edge)
         }
@@ -49,8 +54,8 @@ export function getPossibleMoves(cell: Cell, board: Board): Set<Cell> {
 
       let currEdge: Cell
       for (let i = 0; i < 2; i++) {
-        if (i == 0) currEdge = cell.edges.next as Cell
-        else currEdge = cell.edges.prev as Cell
+        if (i == 0) currEdge = board[cell.edges[0][0]][cell.edges[0][1]]
+        else currEdge = board[cell.edges[1][0]][cell.edges[1][1]]
         while (currEdge != cell) {
           if (currEdge.piece != null) {
             if (currEdge.piece.color != cell.piece.color) {
@@ -59,14 +64,15 @@ export function getPossibleMoves(cell: Cell, board: Board): Set<Cell> {
             break
           } else possibleMoves.add(currEdge)
           if (i == 0)
-            currEdge = currEdge.edges.next as Cell
-          else currEdge = currEdge.edges.prev as Cell
+            currEdge = board[currEdge.edges[0][0]][currEdge.edges[0][1]]
+          else currEdge = board[currEdge.edges[1][0]][currEdge.edges[1][1]]
         }
       }
       break
     }
     case "bishop": {
-      for (const vertex of cell.vertices) {
+      for (const vertexTuple of cell.vertices) {
+        const vertex = board[vertexTuple[0]][vertexTuple[1]]
         if (
           vertex.color === cell.color &&
           (vertex.piece === null || vertex.piece.color !== cell.piece.color)
@@ -74,7 +80,9 @@ export function getPossibleMoves(cell: Cell, board: Board): Set<Cell> {
           possibleMoves.add(vertex)
 
           if (vertex.angle === cell.angle && vertex.piece === null) {
-            for (const attachedVertex of vertex.vertices) {
+            for (const attachedVertexTuple of vertex.vertices) {
+              const attachedVertex =
+                board[attachedVertexTuple[0]][attachedVertexTuple[1]]
               if (
                 attachedVertex.angle === vertex.angle &&
                 attachedVertex.color === vertex.color &&
@@ -202,15 +210,14 @@ export function getPossibleMoves(cell: Cell, board: Board): Set<Cell> {
       break
     }
     case "king": {
-      // Need to prevent moves that put the king in danger (for demo this is good enough though) - Karl
-      const edges = getEdgeList(cell.edges)
-      
-      for (const edge of edges) {
+      for (const edgeTuple of cell.edges) {
+        const edge = board[edgeTuple[0]][edgeTuple[1]]
         if (edge.piece === null || edge.piece.color != cell.piece.color) {
           possibleMoves.add(edge)
         }
       }
-      for (const vertex of cell.vertices) {
+      for (const vertexTuple of cell.vertices) {
+        const vertex = board[vertexTuple[0]][vertexTuple[1]]
         if (vertex.color == cell.color) {
           if (vertex.piece != null) {
             if (vertex.piece.color != cell.piece.color) {
@@ -222,7 +229,8 @@ export function getPossibleMoves(cell: Cell, board: Board): Set<Cell> {
       break
     }
     case "berolina-pawn-cw": {
-      for (const vertex of cell.vertices) {
+      for (const vertexTuple of cell.vertices) {
+        const vertex = board[vertexTuple[0]][vertexTuple[1]]
         if (vertex.color === cell.color && vertex.piece === null) {
           if (cell.x === 2) {
             if (cell.x === vertex.x) {
@@ -246,14 +254,14 @@ export function getPossibleMoves(cell: Cell, board: Board): Set<Cell> {
         }
       }
 
-      if (cell.edges.inout !== null) {
-        const edge = cell.edges.inout
+      if (cell.edges.length === 3) {
+        const edge = board[cell.edges[2][0]][cell.edges[2][1]]
         if (edge.piece !== null && edge.piece.color !== cell.piece.color) {
           possibleMoves.add(edge)
         }
       }
 
-      const edge = cell.edges.prev as Cell
+      const edge = board[cell.edges[1][0]][cell.edges[1][1]]
       if (edge.piece !== null && edge.piece.color !== cell.piece.color) {
         possibleMoves.add(edge)
       }
@@ -261,7 +269,8 @@ export function getPossibleMoves(cell: Cell, board: Board): Set<Cell> {
       break
     }
     case "berolina-pawn-ccw": {
-      for (const vertex of cell.vertices) {
+      for (const vertexTuple of cell.vertices) {
+        const vertex = board[vertexTuple[0]][vertexTuple[1]]
         if (vertex.color === cell.color && vertex.piece === null) {
           if (cell.x === 2) {
             if (cell.x === vertex.x) {
@@ -285,14 +294,14 @@ export function getPossibleMoves(cell: Cell, board: Board): Set<Cell> {
         }
       }
 
-      if (cell.edges.inout !== null) {
-        const edge = cell.edges.inout
+      if (cell.edges.length === 3) {
+        const edge = board[cell.edges[2][0]][cell.edges[2][1]]
         if (edge.piece !== null && edge.piece.color !== cell.piece.color) {
           possibleMoves.add(edge)
         }
       }
 
-      const edge = cell.edges.next as Cell
+      const edge = board[cell.edges[0][0]][cell.edges[0][1]]
       if (edge.piece !== null && edge.piece.color !== cell.piece.color) {
         possibleMoves.add(edge)
       }
@@ -308,19 +317,20 @@ export function getPossibleMoves(cell: Cell, board: Board): Set<Cell> {
       // } else { stuff below
       // }
 
-      if (cell.edges.inout !== null) {
-        const edge = cell.edges.inout
+      if (cell.edges.length === 3) {
+        const edge = board[cell.edges[2][0]][cell.edges[2][1]]
         if (edge.piece === null) {
           possibleMoves.add(edge)
         }
       }
 
-      const edge = cell.edges.prev as Cell
+      const edge = board[cell.edges[1][0]][cell.edges[1][1]]
       if (edge.piece === null) {
         possibleMoves.add(edge)
       }
 
-      for (const vertex of cell.vertices) {
+      for (const vertexTuple of cell.vertices) {
+        const vertex = board[vertexTuple[0]][vertexTuple[1]]
         if (vertex.color === cell.color && vertex.piece !== null) {
           if (vertex.piece.color !== cell.piece.color) {
             if (cell.x === 2) {
@@ -357,19 +367,20 @@ export function getPossibleMoves(cell: Cell, board: Board): Set<Cell> {
       // } else { stuff below
       // }
 
-      if (cell.edges.inout !== null) {
-        const edge = cell.edges.inout
+      if (cell.edges.length === 3) {
+        const edge = board[cell.edges[2][0]][cell.edges[2][1]]
         if (edge.piece === null) {
           possibleMoves.add(edge)
         }
       }
 
-      const edge = cell.edges.next as Cell
+      const edge = board[cell.edges[0][0]][cell.edges[0][1]]
       if (edge.piece === null) {
         possibleMoves.add(edge)
       }
 
-      for (const vertex of cell.vertices) {
+      for (const vertexTuple of cell.vertices) {
+        const vertex = board[vertexTuple[0]][vertexTuple[1]]
         if (vertex.color === cell.color && vertex.piece !== null) {
           if (vertex.piece.color !== cell.piece.color) {
             if (cell.x === 2) {

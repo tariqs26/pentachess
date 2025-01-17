@@ -1,16 +1,6 @@
 import { DECAGON_SIDES, RING_SIZES } from "@/features/board/constants"
 import type { Board, Cell } from "./types"
 
-export function getEdgeList(edges: {
-  next: Cell | null
-  prev: Cell | null
-  inout: Cell | null
-}) {
-  return [edges.next as Cell, edges.prev as Cell].concat(
-    edges.inout === null ? [] : [edges.inout]
-  )
-}
-
 function getReverseMidOutEdges() {
   let midX = 0
   let outY = 1
@@ -49,53 +39,48 @@ export function cellCoords(id: string): [number, number] {
 export function makeCell(x: number, y: number, angle: number): Cell {
   const id = cellId(x, y)
   const color = y % 2 === 0 ? "b" : "w"
-  const edges = {
-    next: null,
-    prev: null,
-    inout: null,
-  }
+
   const side = Math.floor(y / (RING_SIZES[x] / DECAGON_SIDES))
 
-  return { id, color, x, y, side, angle, piece: null, edges, vertices: [] }
+  return { id, color, x, y, side, angle, piece: null, edges: [], vertices: [] }
 }
 
-export function setCellEdges({ x, y, edges }: Cell, board: Board) {
+export function setCellEdges({ x, y, edges }: Cell) {
+  // saved in the form of [next, prev, side]
   if (x === 0) {
     // inner ring
-    edges.next = board[x][(y + 1) % 10]
-    edges.prev = board[x][(y + 9) % 10]
-    edges.inout = board[x + 1][3 * y + 1]
+    edges.push([x, (y + 1) % 10])
+    edges.push([x, (y + 9) % 10])
+    edges.push([x + 1, 3 * y + 1])
   } else if (x === 1) {
     // middle ring
-    edges.next = board[x][(y + 1) % 30]
-    edges.prev = board[x][(y + 29) % 30]
+    edges.push([x, (y + 1) % 30])
+    edges.push([x, (y + 29) % 30])
 
     if ((y - 1) % 3 === 0) {
-      edges.inout = board[x - 1][Math.floor((y - 1) / 3)]
+      edges.push([x - 1, Math.floor((y - 1) / 3)])
     } else {
-      edges.inout = board[x + 1][MID_OUT_EDGES[y]]
+      edges.push([x + 1, MID_OUT_EDGES[y]])
     }
   } else {
     // outer ring
-    edges.next = board[x][(y + 1) % 50]
-    edges.prev = board[x][(y + 49) % 50]
+    edges.push([x, (y + 1) % 50])
+    edges.push([x, (y + 49) % 50])
 
     const possibleEdge = REVERSE_MID_OUT_EDGES[y]
     if (possibleEdge !== undefined) {
-      edges.inout = board[x - 1][possibleEdge]
+      edges.push([x - 1, possibleEdge])
     }
   }
 }
 
 export function setCellVertices({ x, y, edges, vertices }: Cell, board: Board) {
   // iterate through the edges and collect the vertices based on the rules
-  const edgeList = getEdgeList(edges)
-
-  for (const edge of edgeList) {
-    const edgeEdgeList = getEdgeList(edge.edges)
+  for (const edge of edges) {
+    const edgeEdgeList = board[edge[0]][edge[1]].edges
 
     for (const edgeEdge of edgeEdgeList) {
-      if (!(edgeEdge.x === x && edgeEdge.y === y)) {
+      if (!(edgeEdge[0] === x && edgeEdge[1] === y)) {
         vertices.push(edgeEdge)
       }
     }
@@ -104,56 +89,51 @@ export function setCellVertices({ x, y, edges, vertices }: Cell, board: Board) {
   if (x === 0) {
     let i = 3
     for (let _ = 0; _ < 5; _++) {
-      vertices.push(board[0][(y + i) % 10])
-      vertices.push(board[0][(y + i) % 10])
+      vertices.push([0, (y + i) % 10])
       i += 1
     }
-    vertices.push(board[1][(vertices[3].y + 1) % 30])
-    vertices.push(board[1][(vertices[4].y + 1) % 30])
-    vertices.push(board[1][(vertices[3].y + 1) % 30])
-    vertices.push(board[1][(vertices[4].y + 1) % 30])
+    vertices.push([1, (vertices[3][1] + 1) % 30])
+    vertices.push([1, (vertices[4][1] + 1) % 30])
   }
 
   if (x === 1) {
     if (y % 3 === 0) {
-      vertices.push(board[x][(y + 28) % 30].edges.inout as Cell)
+      vertices.push(board[x][(y + 28) % 30].edges[2])
 
-      let tmp = board[x][(y + 29) % 30].edges.inout as Cell
-      vertices.push(board[tmp.x][(tmp.y + 1) % 50])
+      let tmp = board[x][(y + 29) % 30].edges[2]
+      vertices.push([tmp[0], (tmp[1] + 1) % 50])
 
-      tmp = board[x][(y + 29) % 30].edges.inout as Cell
-      vertices.push(board[tmp.x][(tmp.y + 5) % 50])
+      tmp = board[x][(y + 29) % 30].edges[2]
+      vertices.push([tmp[0], (tmp[1] + 5) % 50])
     } else if ((y - 1) % 3 === 0) {
-      vertices.push(board[1][(y + 3) % 30])
-      vertices.push(board[1][(y + 27) % 30])
-      vertices.push(board[1][(y + 3) % 30])
-      vertices.push(board[1][(y + 27) % 30])
+      vertices.push([1, (y + 3) % 30])
+      vertices.push([1, (y + 27) % 30])
 
-      const tmp = board[x][(y + 1) % 30].edges.inout as Cell
-      vertices.push(board[tmp.x][(tmp.y + 29) % 30])
+      const tmp = board[x][(y + 1) % 30].edges[2]
+      vertices.push([tmp[0], (tmp[1] + 29) % 30])
     } else {
-      vertices.push(board[x][(y + 2) % 30].edges.inout as Cell)
-      vertices.push(board[x][(y + 28) % 30].edges.inout as Cell)
+      vertices.push(board[x][(y + 2) % 30].edges[2])
+      vertices.push(board[x][(y + 28) % 30].edges[2])
 
-      const tmp = board[x][(y + 28) % 30].edges.inout as Cell
-      vertices.push(board[tmp.x][(tmp.y + 4) % 50])
+      const tmp = board[x][(y + 28) % 30].edges[2]
+      vertices.push([tmp[0], (tmp[1] + 4) % 50])
     }
   }
 
   if (x === 2) {
     if (y % 5 === 0) {
-      vertices.push(board[x][(y + 48) % 50].edges.inout as Cell)
+      vertices.push(board[x][(y + 48) % 50].edges[2])
     } else if ((y - 1) % 5 === 0) {
-      vertices.push(board[x][(y + 47) % 50])
-      vertices.push(board[x][(y + 2) % 50].edges.inout as Cell)
+      vertices.push([x, (y + 47) % 50])
+      vertices.push(board[x][(y + 2) % 50].edges[2])
     } else if ((y - 2) % 5 === 0) {
-      const tmp = board[x][(y + 1) % 50].edges.inout as Cell
-      vertices.push(board[tmp.x][(tmp.y + 29) % 30])
+      const tmp = board[x][(y + 1) % 50].edges[2]
+      vertices.push([tmp[0], (tmp[1] + 29) % 30])
     } else if ((y - 3) % 5 === 0) {
-      vertices.push(board[x][(y + 3) % 50])
-      vertices.push(board[x][(y + 48) % 50].edges.inout as Cell)
+      vertices.push([x, (y + 3) % 50])
+      vertices.push(board[x][(y + 48) % 50].edges[2])
     } else {
-      vertices.push(board[x][(y + 2) % 50].edges.inout as Cell)
+      vertices.push(board[x][(y + 2) % 50].edges[2])
     }
   }
 }
