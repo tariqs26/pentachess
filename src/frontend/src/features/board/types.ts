@@ -8,12 +8,8 @@ export type Cell = {
   side: number
   angle: number
   piece: Piece | null
-  edges: {
-    next: Cell | null
-    prev: Cell | null
-    inout: Cell | null
-  }
-  vertices: Array<Cell>
+  edges: [number, number][]
+  vertices: [number, number][]
 }
 
 export type Board = Cell[][]
