@@ -1,4 +1,5 @@
 import type { Board, Cell } from "../board/types"
+import { cloneBoard } from "../board/utils"
 import { PIECE_DATA } from "./constants"
 import type { Piece, PieceColor, PieceType } from "./types"
 
@@ -12,7 +13,11 @@ export function makePiece(type: PieceType, color: PieceColor): Piece {
 }
 
 // TODO: Demo MVP
-export function getPossibleMoves(cell: Cell, board: Board): Set<Cell> {
+export function getPossibleMoves(
+  cell: Cell,
+  board: Board,
+  simulate: boolean = false
+): Set<Cell> {
   if (cell.piece === null) return new Set<Cell>()
 
   let possibleMoves = new Set<Cell>()
@@ -210,7 +215,7 @@ export function getPossibleMoves(cell: Cell, board: Board): Set<Cell> {
       break
     }
     case "king": {
-      for (const edgeTuple of cell.edges) {
+      for (const edgeTuple of Array.from(cell.edges)) {
         const edge = board[edgeTuple[0]][edgeTuple[1]]
         if (edge.piece === null || edge.piece.color != cell.piece.color) {
           possibleMoves.add(edge)
@@ -409,6 +414,77 @@ export function getPossibleMoves(cell: Cell, board: Board): Set<Cell> {
       break
     }
   }
+  if (simulate) return possibleMoves
+  return checkKingSafety(cell, board, possibleMoves)
+}
+
+function checkKingSafety(
+  simulation: Cell,
+  board: Board,
+  possibleMoves: Set<Cell>
+): Set<Cell> {
+  if (simulation.piece?.type === "king") {
+    for (const move of Array.from(possibleMoves)) {
+      const clonedBoard = cloneBoard(board)
+      clonedBoard[move.x][move.y].piece = simulation.piece
+      clonedBoard[simulation.x][simulation.y].piece = null
+
+      for (const ring of clonedBoard) {
+        for (const cell of ring) {
+          if (cell.piece !== null && cell.piece.color !== move.piece?.color) {
+            const simulatedMoves = getPossibleMoves(cell, clonedBoard, true)
+
+            if (
+              Array.from(simulatedMoves).some(
+                (simulatedMove) => simulatedMove.id === move.id
+              )
+            ) {
+              possibleMoves.delete(move)
+            }
+          }
+        }
+      }
+    }
+    return possibleMoves
+  }
+
+  let king = null
+  // find king location -- would be efficient to keep track in some global variable
+  for (const x in board) {
+    for (const y in board[x]) {
+      if (
+        board[x][y].piece?.type === "king" &&
+        board[x][y].piece?.color === simulation.piece?.color
+      ) {
+        king = board[x][y]
+        break
+      }
+    }
+  }
+
+  for (const move of Array.from(possibleMoves)) {
+    const clonedBoard = cloneBoard(board)
+    clonedBoard[move.x][move.y].piece = simulation.piece
+    clonedBoard[simulation.x][simulation.y].piece = null
+
+    for (const ring of clonedBoard) {
+      for (const cell of ring) {
+        if (cell.piece !== null && cell.piece.color !== king?.piece?.color) {
+          const simulatedMoves = getPossibleMoves(cell, clonedBoard, true)
+
+          if (
+            king &&
+            Array.from(simulatedMoves).some(
+              (simulatedMove) => simulatedMove.id === king.id
+            )
+          ) {
+            possibleMoves.delete(move)
+          }
+        }
+      }
+    }
+  }
+
   return possibleMoves
 }
 
