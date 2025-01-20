@@ -10,7 +10,7 @@ export const Board = () => {
   return (
     <div className="relative mx-auto size-[650px]">
       {state.boardState.board.map((ring, i) => (
-        <div key={i} className="absolute left-1/2 top-1/2" >
+        <div key={i} className="absolute left-1/2 top-1/2">
           {getSides(ring, ring.length / DECAGON_SIDES).map((side, j) => (
             <Side key={j} ring={i} side={j}>
               {side.map((cell) => (
