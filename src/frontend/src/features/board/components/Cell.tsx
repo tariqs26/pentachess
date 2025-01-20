@@ -6,16 +6,16 @@ import { sideRotation } from "./Side"
 const cellRotation = (cell: Cell) => {
   if (cell.x == 1) {
     if (cell.side % 2 != 0) {
-      return cell.y % 2 != 0 ? -104 : -70
+      return cell.y % 2 != 0 ? -109.5 : -73.5
     }
     
-    return cell.y % 2 == 0 ? -109.5 : -74
+    return cell.y % 2 == 0 ? -109.5 : -73.5
   }
   if (cell.x == 2) {
     if (cell.side % 2 != 0) {
-      return cell.y % 2 == 0 ? -55 : -90
+      return cell.y % 2 == 0 ? -73.5 : -109.5
     }
-    return cell.y % 2 == 0 ? -109.5 : -74
+    return cell.y % 2 == 0 ? -109.5 : -73.5
   }
   return cell.y % 2 == 0 ? -70.5 : -109
   // if (cell.x != 0 && cell.side % 2 != 0) {
@@ -32,17 +32,17 @@ const marginLeftStyle = (cell: Cell) => {
         return 0
       }
       if ((cell.y - (cell.side * 3)) == 1) {
-        return -72
+        return -69
       }
-      return -64
+      return -69.5
     }
     if ((cell.y - (cell.side * 3)) == 0) {
       return 0
     }
     if ((cell.y - (cell.side * 3)) == 1) {
-      return -65.5
+      return -69
     }
-    return -75
+    return -69.5
   }
 
   if (cell.x == 2) {
@@ -51,30 +51,30 @@ const marginLeftStyle = (cell: Cell) => {
         return 0
       }
       if ((cell.y - (cell.side * 5)) == 1) {
-        return -78.5
+        return -69
       }
       if ((cell.y - (cell.side * 5)) == 2) {
-        return -61.2
+        return -69.5
       }
       if ((cell.y - (cell.side * 5)) == 3) {
-        return -79.5
+        return -69
       }
-      return -64
+      return -69.5
     }
 
     if ((cell.y - (cell.side * 5)) == 0) {
       return 0
     }
     if ((cell.y - (cell.side * 5)) == 1) {
-      return -65.5
+      return -69
     }
     if ((cell.y - (cell.side * 5)) == 2) {
-      return -75.5
+      return -69.5
     }
     if ((cell.y - (cell.side * 5)) == 3) {
-      return -65.5
+      return -69
     }
-    return -75
+    return -69.5
   }
 
   return cell.side % 2 != 0 ? -70.1 : -70.5
@@ -87,11 +87,17 @@ const marginTopStyle = (cell: Cell) => {
         return 0
       }
       if ((cell.y - (cell.side * 3)) == 1) {
-        return 15
+        return 4.5
       }
-      return -4
+      return -1.5
     }
-    return cell.y % 2 != 0 ? 5 : -10
+    if ((cell.y - (cell.side * 3)) == 0) {
+      return 0
+    }
+    if ((cell.y - (cell.side * 3)) == 1) {
+      return 4.5
+    }
+    return -1.5
   }
   if (cell.x == 2) {
     if (cell.side % 2 != 0) {
@@ -99,19 +105,30 @@ const marginTopStyle = (cell: Cell) => {
         return 0
       }
       if ((cell.y - (cell.side * 5)) == 1) {
-        return 21
+        return 4.5
       }
       if ((cell.y - (cell.side * 5)) == 2) {
-        return 11
+        return -1.6
       }
       if ((cell.y - (cell.side * 5)) == 3) {
-        return 11
+        return 2.9
       }
-      return -4
+      return -3.2
     }
 
-
-    return cell.y % 2 != 0 ? 5 : -10
+    if ((cell.y - (cell.side * 5)) == 0) {
+      return 0
+    }
+    if ((cell.y - (cell.side * 5)) == 1) {
+      return  4.5
+    }
+    if ((cell.y - (cell.side * 5)) == 2) {
+      return -1.6
+    }
+    if ((cell.y - (cell.side * 5)) == 3) {
+      return 2.9
+    }
+    return -3.2
   }
   return cell.side % 2 != 0 ? cell.color === "w" ? -30 : -50 : cell.color === "w" ? -30 : -10
 }
@@ -190,14 +207,14 @@ export const CellComponent = (cell: Cell) => {
                 ? "white"
                 : "gray",
 
-          height: cell.color === "b" ? "56.57px" : ((cell.y - (cell.side * (cell.x == 1 ? 3 : 5))) == 0) && cell.side % 2 != 0 ? "59px" : "65px",
+          height: "100px",
           width: "100px",
           outline: "1px solid black",
           display: "flex",
           position: "relative",
           justifyContent: "center",
           alignItems: "center",
-          clipPath: cell.color === "b" ? "polygon(0px 0px, 20px 56.57px, 80px 56.57px, 100px 0px, 50px 34.7px)" : "none",
+          clipPath: "polygon(0% 41.2215%, 19.0983% 100%, 80.9017% 100%, 100% 41.2215%, 50% 77.5486%)",
           rotate: `${cellRotation(cell)}deg`,
           marginLeft: `${marginLeftStyle(cell)}px`,
           marginTop: `${marginTopStyle(cell)}px`,
