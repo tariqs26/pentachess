@@ -1,6 +1,6 @@
 "use client"
 
-import { LoginForm } from "@/app/(auth)/login/LoginForm"
+import { ForgotPassForm } from "@/app/(auth)/forgotpass/ForgotPassForm"
 import { Button } from "@/components/ui/Button"
 import { Card } from "@/components/ui/Card"
 import { Label } from "@/components/ui/Label"
@@ -19,16 +19,14 @@ import Link from "next/link"
 
 const formSchema = z.object({
   emailAddress: z.string().email(),
-  password: z.string().min(6),
 })
 
-// TODO: Implement LoginPage
-export default function LoginPage() {
+// TODO: Implement ForgotPassPage
+export default function ForgotPassPage() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       emailAddress: "",
-      password: "",
     },
   })
   const handleSubmit = () => {
@@ -36,10 +34,10 @@ export default function LoginPage() {
   }
   return (
     <div className="flex min-h-screen items-center justify-center">
-      <LoginForm />
+      <ForgotPassForm />
       <Card className="w-full max-w-md space-y-1 p-4">
         <Label className="block text-center text-2xl">
-          Welcome Back! Login:
+          Forgot Password? Reset Here:
         </Label>
         <Form {...form}>
           <form
@@ -68,42 +66,17 @@ export default function LoginPage() {
                 )
               }}
             />
-            <Label className="w-full max-w-md space-y-4 text-green-400">
-              Password
-            </Label>
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => {
-                return (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        className="mb-4 w-full max-w-md space-y-4"
-                        placeholder="********"
-                        type="password"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )
-              }}
-            />
             <Button type="submit" className="w-full max-w-md">
-              Login
+              Reset Password
             </Button>
+            <Label className="mt-8 block w-full max-w-md text-xs text-gray-400">
+              You'll receive an email to reset your password
+            </Label>
             <Link
-              href="/register"
+              href="/login"
               className="mt-8 block w-full max-w-md text-xs text-blue-400 hover:underline"
             >
-              Don't have an account? Click here to Register
-            </Link>
-            <Link
-              href="/forgotpass"
-              className="mt-8 block w-full max-w-md text-xs text-blue-400 hover:underline"
-            >
-              Forgot your Password? Click here to Reset Password
+              Remeber your Password? Click here to Login
             </Link>
           </form>
         </Form>
