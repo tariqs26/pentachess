@@ -4,10 +4,49 @@ import type { Cell } from "../types"
 import { sideRotation } from "./Side"
 
 const cellRotation = (cell: Cell) => {
-  if (cell.x != 0 && cell.side % 2 != 0) {
-    return cell.y % 2 != 0 ? -70 : -103
+  if (cell.x == 0) {
+    return cell.y % 2 == 0 ? -70.5 : -109
   }
-  return cell.y % 2 == 0 ? -70 : -103
+  if (cell.side % 2 != 0) {
+    return cell.y % 2 == 0 ? -73.5 : -109.5
+  }
+  return cell.y % 2 == 0 ? -109.5 : -73.5
+}
+
+const marginLeftStyle = (cell: Cell) => {
+  // key = the ith cell in the side, value = margin value
+  const leftMarginsForRing1 = {0: 0, 1: -69, 2: -69.5}
+  const leftMarginsForRing2 = {0: 0, 1: -69, 2: -69.5, 3: -69, 4: -69.5}
+
+  if (cell.x == 1) {
+    const ithCell = (cell.y - (cell.side * 3)) as keyof typeof leftMarginsForRing1
+    return leftMarginsForRing1[ithCell];
+  }
+
+  if (cell.x == 2) {
+    const ithCell = (cell.y - (cell.side * 5)) as keyof typeof leftMarginsForRing2
+    return leftMarginsForRing2[ithCell];
+  }
+  // Default margins for Ring 0
+  return cell.side % 2 != 0 ? -70.1 : -70.5
+}
+
+const marginTopStyle = (cell: Cell) => {
+  // key = the ith cell in the side, value = margin value
+  const topMarginsForRing1 = {0: 0, 1: 4.5, 2: -1.5}
+  const topMarginsForRing2 = {0: 0, 1: 4.5, 2: -1.6, 3: 2.9, 4: -3.2}
+
+  if (cell.x == 1) {
+    const ithCell = (cell.y - (cell.side * 3)) as keyof typeof topMarginsForRing1
+    return topMarginsForRing1[ithCell];
+  }
+  if (cell.x == 2) {
+    const ithCell = (cell.y - (cell.side * 5)) as keyof typeof topMarginsForRing2
+    return topMarginsForRing2[ithCell];
+  }
+
+  // Default margins for Ring 0
+  return cell.side % 2 != 0 ? -30 : -10
 }
 
 const pieceRotation = (cell: Cell) =>
@@ -88,15 +127,17 @@ export const CellComponent = (cell: Cell) => {
           width: "100px",
           outline: "1px solid black",
           display: "flex",
+          position: "relative",
           justifyContent: "center",
           alignItems: "center",
-          clipPath:
-            "polygon(0% 43.43%, 20% 100%, 80% 100%, 100% 43.43%, 50% 76.7%)",
+          clipPath: "polygon(0% 41.2215%, 19.0983% 100%, 80.9017% 100%, 100% 41.2215%, 50% 77.5486%)",
           rotate: `${cellRotation(cell)}deg`,
-          marginLeft: "-70px",
+          marginLeft: `${marginLeftStyle(cell)}px`,
+          marginTop: `${marginTopStyle(cell)}px`,
+          zIndex: cell.color === "b" ? 2 : 1
         }}
       />
-      {cell.piece ? (
+    {cell.piece ? (
         <Image
           src={cell.piece.image}
           alt={`${cell.piece.color === "w" ? "white" : "black"} ${cell.piece.type}`}
