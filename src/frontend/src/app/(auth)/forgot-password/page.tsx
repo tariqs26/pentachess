@@ -6,24 +6,26 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/Card"
-import { LoginForm } from "@/features/auth/components/LoginForm"
+import { ForgotPasswordForm } from "@/features/auth/components/ForgotPasswordForm"
 
 export const metadata: Metadata = {
-  title: "Login",
-  description: "Login to your PentaChess account",
+  title: "Forgot Password",
+  description: "Forgot your password? Reset it here",
 }
 
-export default function LoginPage() {
+export default function ForgotPasswordPage() {
   return (
     <Card className="w-full max-w-sm">
       <CardHeader>
-        <CardTitle className="text-center text-2xl">Welcome back!</CardTitle>
+        <CardTitle className="block text-center text-xl">
+          Forgot Password
+        </CardTitle>
         <CardDescription className="text-center">
-          {metadata.description}
+          Reset your password
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <LoginForm />
+        <ForgotPasswordForm />
       </CardContent>
     </Card>
   )
