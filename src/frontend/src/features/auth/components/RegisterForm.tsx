@@ -105,10 +105,7 @@ export const RegisterForm = () => {
         </Button>
         <p className="text-center text-sm">
           Already have an account?{" "}
-          <Link
-            href="/login"
-            className="text-indigo-600 hover:underline dark:text-indigo-300"
-          >
+          <Link href="/login" className="text-link hover:underline">
             Login
           </Link>
         </p>

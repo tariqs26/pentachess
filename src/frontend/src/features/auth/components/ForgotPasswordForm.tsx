@@ -58,10 +58,7 @@ export const ForgotPasswordForm = () => {
         </Button>
         <p className="text-center text-sm">
           Remembered your password?{" "}
-          <Link
-            href="/login"
-            className="text-indigo-600 hover:underline dark:text-indigo-300"
-          >
+          <Link href="/login" className="text-link hover:underline">
             Login
           </Link>
         </p>

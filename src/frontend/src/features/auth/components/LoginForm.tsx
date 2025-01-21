@@ -62,7 +62,7 @@ export const LoginForm = () => {
                   Password
                   <Link
                     href="/forgot-password"
-                    className="font-normal text-foreground text-indigo-600 hover:underline dark:text-indigo-300"
+                    className="text-link font-normal hover:underline"
                   >
                     Forgot your password?
                   </Link>
@@ -85,10 +85,7 @@ export const LoginForm = () => {
         </Button>
         <p className="text-center text-sm">
           Don&apos;t have an account?{" "}
-          <Link
-            href="/register"
-            className="text-indigo-600 hover:underline dark:text-indigo-300"
-          >
+          <Link href="/register" className="text-link hover:underline">
             Register
           </Link>
         </p>
