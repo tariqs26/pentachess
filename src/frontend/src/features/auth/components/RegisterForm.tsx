@@ -17,6 +17,7 @@ import {
 import { Input } from "@/components/ui/Input"
 
 const registerSchema = z.object({
+  email: z.string().trim().toLowerCase().email().max(254, "Invalid email"),
   username: z
     .string()
     .trim()
@@ -26,7 +27,6 @@ const registerSchema = z.object({
     )
     .min(4, "Must be at least 4 characters")
     .max(20, "Must be at most 20 characters"),
-  email: z.string().trim().toLowerCase().email().max(254, "Invalid email"),
   password: z
     .string()
     .min(6, "Must be at least 6 characters")
@@ -49,21 +49,6 @@ export const RegisterForm = () => {
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
         <FormField
           control={form.control}
-          name="username"
-          render={({ field }) => {
-            return (
-              <FormItem>
-                <FormLabel>Username</FormLabel>
-                <FormControl>
-                  <Input placeholder="someone" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )
-          }}
-        />
-        <FormField
-          control={form.control}
           name="email"
           render={({ field }) => {
             return (
@@ -75,6 +60,21 @@ export const RegisterForm = () => {
                     type="email"
                     {...field}
                   />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )
+          }}
+        />
+        <FormField
+          control={form.control}
+          name="username"
+          render={({ field }) => {
+            return (
+              <FormItem>
+                <FormLabel>Username</FormLabel>
+                <FormControl>
+                  <Input placeholder="someone" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
