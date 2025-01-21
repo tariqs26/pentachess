@@ -26,6 +26,8 @@ type LoginValues = z.infer<typeof loginSchema>
 export const LoginForm = () => {
   const form = useForm<LoginValues>({ resolver: zodResolver(loginSchema) })
 
+  const { isSubmitting } = form.formState
+
   const handleSubmit = (values: LoginValues) => {
     console.log("login submitted:", values)
   }
@@ -44,6 +46,7 @@ export const LoginForm = () => {
                   <Input
                     autoComplete="email"
                     placeholder="someone@example.com"
+                    disabled={isSubmitting}
                     {...field}
                   />
                 </FormControl>
@@ -72,6 +75,7 @@ export const LoginForm = () => {
                     type="password"
                     autoComplete="current-password"
                     placeholder="••••••••••••"
+                    disabled={isSubmitting}
                     {...field}
                   />
                 </FormControl>
@@ -80,7 +84,7 @@ export const LoginForm = () => {
             )
           }}
         />
-        <Button type="submit" className="w-full">
+        <Button type="submit" disabled={isSubmitting} className="w-full">
           Login
         </Button>
         <p className="text-center text-sm">

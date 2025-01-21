@@ -40,6 +40,8 @@ export const RegisterForm = () => {
     resolver: zodResolver(registerSchema),
   })
 
+  const { isSubmitting } = form.formState
+
   const handleSubmit = (values: RegisterValues) => {
     console.log("register submitted:", values)
   }
@@ -56,8 +58,9 @@ export const RegisterForm = () => {
                 <FormLabel>Email</FormLabel>
                 <FormControl>
                   <Input
+                    autoComplete="email"
                     placeholder="someone@example.com"
-                    type="email"
+                    disabled={isSubmitting}
                     {...field}
                   />
                 </FormControl>
@@ -74,7 +77,12 @@ export const RegisterForm = () => {
               <FormItem>
                 <FormLabel>Username</FormLabel>
                 <FormControl>
-                  <Input placeholder="someone" {...field} />
+                  <Input
+                    autoComplete="username"
+                    placeholder="someone"
+                    disabled={isSubmitting}
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -90,8 +98,10 @@ export const RegisterForm = () => {
                 <FormLabel>Password</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="••••••••••••"
                     type="password"
+                    autoComplete="new-password"
+                    placeholder="••••••••••••"
+                    disabled={isSubmitting}
                     {...field}
                   />
                 </FormControl>
@@ -100,7 +110,7 @@ export const RegisterForm = () => {
             )
           }}
         />
-        <Button type="submit" className="w-full">
+        <Button type="submit" disabled={isSubmitting} className="w-full">
           Login
         </Button>
         <p className="text-center text-sm">

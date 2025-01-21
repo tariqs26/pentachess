@@ -28,6 +28,8 @@ export const ForgotPasswordForm = () => {
     resolver: zodResolver(forgotPasswordSchema),
   })
 
+  const { isSubmitting } = form.formState
+
   const handleSubmit = (values: ForgotPasswordValues) => {
     console.log("forgot password submitted:", values)
   }
@@ -43,7 +45,12 @@ export const ForgotPasswordForm = () => {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input placeholder="someone@example.com" {...field} />
+                  <Input
+                    autoComplete="email"
+                    placeholder="someone@example.com"
+                    disabled={isSubmitting}
+                    {...field}
+                  />
                 </FormControl>
                 <FormDescription>
                   You&apos;ll receive an email to reset your password
@@ -53,7 +60,7 @@ export const ForgotPasswordForm = () => {
             )
           }}
         />
-        <Button type="submit" className="w-full">
+        <Button type="submit" disabled={isSubmitting} className="w-full">
           Reset Password
         </Button>
         <p className="text-center text-sm">
