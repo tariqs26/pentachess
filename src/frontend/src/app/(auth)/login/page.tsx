@@ -10,7 +10,7 @@ import { LoginForm } from "@/features/auth/components/LoginForm"
 
 export const metadata: Metadata = {
   title: "Login",
-  description: "Login to your PentaChess account",
+  description: "Log in to your PentaChess account",
 }
 
 export default function LoginPage() {
