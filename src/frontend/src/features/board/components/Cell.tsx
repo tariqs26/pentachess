@@ -1,7 +1,7 @@
 import Image from "next/image"
 import { useLocalGame } from "@/features/game/useLocalGame"
 import type { Cell } from "../types"
-import { sideRotation } from "./Side"
+import { sideRotation, sideLeft, sideTop } from "./Side"
 
 const cellRotation = (cell: Cell) => {
   if (cell.x == 0) {
@@ -50,7 +50,13 @@ const marginTopStyle = (cell: Cell) => {
 }
 
 const pieceRotation = (cell: Cell) =>
-  `calc(${-sideRotation(cell.x)[cell.side]}deg )`
+  `calc(${-cellRotation(cell) - sideRotation(cell.x)[cell.side] }deg )`
+
+const pieceLeft = (cell: Cell) =>
+  `${-marginLeftStyle(cell)}px`
+
+const pieceTop = (cell: Cell) =>
+  `${-marginTopStyle(cell)}px`
 
 export const CellComponent = (cell: Cell) => {
   const { state, dispatch } = useLocalGame()
@@ -136,25 +142,44 @@ export const CellComponent = (cell: Cell) => {
           marginTop: `${marginTopStyle(cell)}px`,
           zIndex: cell.color === "b" ? 2 : 1
         }}
-      />
-    {cell.piece ? (
-        <Image
+      >
+        { cell.piece && (
+          <Image
           src={cell.piece.image}
           alt={`${cell.piece.color === "w" ? "white" : "black"} ${cell.piece.type}`}
-          className="absolute top-8 z-[999] size-[30px] hover:cursor-pointer"
-          style={{ rotate: pieceRotation(cell) }}
-          priority
           draggable
+          priority
           onMouseDown={handlePieceMouseDown}
+          style={{
+            position: "absolute",
+            marginLeft: pieceLeft(cell),
+            marginTop: pieceTop(cell),
+            transform: "translate(-50%, -50%)",
+            width: "25px",
+            height: "25px",
+            rotate: pieceRotation(cell),
+            zIndex: 4,
+            cursor: "pointer"
+          }}
         />
-      ) : (
+        )}
         <span
-          className="absolute top-5 select-none font-semibold text-background"
-          style={{ rotate: pieceRotation(cell) }}
+          style={{
+            position: "absolute",
+            left: "23%",
+            top: "77%",
+            transform: "translate(-50%, -50%)",
+            fontSize: "8px",
+            fontWeight: "bold",
+            color: "black",
+            rotate: pieceRotation(cell),
+            pointerEvents: "none",
+            zIndex: 2,
+          }}
         >
           {cell.id}
         </span>
-      )}
+      </div>
     </div>
   )
 }

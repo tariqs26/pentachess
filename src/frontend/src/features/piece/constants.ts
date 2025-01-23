@@ -57,18 +57,18 @@ export const INITIAL_PIECES: Record<
   Record<number, [PieceType, PieceColor]>
 > = {
   1: {
-    0: ["berolina-pawn-ccw", "w"],
-    1: ["pawn-ccw", "w"],
-    2: ["pawn-ccw", "w"],
+    0: ["pawn-cw", "w"],
+    1: ["berolina-pawn-cw", "w"],
+    2: ["berolina-pawn-ccw", "w"],
+    3: ["pawn-ccw", "w"],
+    4: ["pawn-ccw", "w"],
     12: ["pawn-cw", "b"],
     13: ["pawn-cw", "b"],
     14: ["berolina-pawn-cw", "b"],
     15: ["berolina-pawn-ccw", "b"],
     16: ["pawn-ccw", "b"],
     17: ["pawn-ccw", "b"],
-    27: ["pawn-cw", "w"],
-    28: ["pawn-cw", "w"],
-    29: ["berolina-pawn-cw", "w"],
+    29: ["pawn-cw", "w"],
   },
   2: {
     0: ["king", "w"],
