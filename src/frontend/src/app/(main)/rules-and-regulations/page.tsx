@@ -1,8 +1,10 @@
-// TODO: Implement RulesAndRegulationsPage
 export default function RulesAndRegulationsPage() {
   return (
-    <>
-      <h1>Rules and Regulations</h1>
-    </>
+    <div className="mx-auto max-w-5xl p-6">
+      <h1 className="text-3xl font-bold tracking-tight">
+        Rules and Regulations
+      </h1>
+      {/* TODO add content */}
+    </div>
   )
 }
