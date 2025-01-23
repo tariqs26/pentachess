@@ -65,7 +65,7 @@ export const LoginForm = () => {
                   Password
                   <Link
                     href="/forgot-password"
-                    className="text-link font-normal hover:underline"
+                    className="font-normal text-link hover:underline"
                   >
                     Forgot your password?
                   </Link>
