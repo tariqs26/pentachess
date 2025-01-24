@@ -8,20 +8,20 @@ import {
 } from "@/components/ui/Card"
 import { ForgotPasswordForm } from "@/features/auth/components/ForgotPasswordForm"
 
-export const metadata: Metadata = {
+export const metadata = {
   title: "Forgot Password",
-  description: "Forgot your password? Reset it here",
-}
+  description: "Forgot your password? Request a password reset",
+} satisfies Metadata
 
 export default function ForgotPasswordPage() {
   return (
     <Card className="w-full max-w-sm">
       <CardHeader>
         <CardTitle className="block text-center text-xl">
-          Forgot Password
+          {metadata.title}
         </CardTitle>
         <CardDescription className="text-center">
-          Reset your password
+          Enter your email to request a password reset
         </CardDescription>
       </CardHeader>
       <CardContent>

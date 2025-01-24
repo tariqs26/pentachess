@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/Button"
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -52,16 +51,13 @@ export const ForgotPasswordForm = () => {
                     {...field}
                   />
                 </FormControl>
-                <FormDescription>
-                  You&apos;ll receive an email to reset your password
-                </FormDescription>
                 <FormMessage />
               </FormItem>
             )
           }}
         />
         <Button type="submit" disabled={isSubmitting} className="w-full">
-          Reset Password
+          Send Reset Email
         </Button>
         <p className="text-center text-sm">
           Remembered your password?{" "}
