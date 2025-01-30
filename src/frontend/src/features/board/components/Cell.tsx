@@ -24,8 +24,8 @@ const marginLeftStyle = (cell: Cell) => {
    * to fix this we will need to update all side positions for
    * the outer and middle ring after fixing the margins
    */
-  const leftMarginsForRing1 = { 0: 0, 1: -69, 2: -69.5 }
-  const leftMarginsForRing2 = { 0: 0, 1: -69, 2: -69.5, 3: -69, 4: -69.5 }
+  const leftMarginsForRing1 = { 0: -70, 1: -69, 2: -69.5 }
+  const leftMarginsForRing2 = { 0: -70, 1: -69, 2: -69.5, 3: -69, 4: -69.5 }
 
   if (cell.x == 1) {
     const ithCell = (cell.y - cell.side * 3) as keyof typeof leftMarginsForRing1
