@@ -8,9 +8,9 @@ export const Board = () => {
   const { state } = useLocalGame()
 
   return (
-    <div className="relative mx-auto size-[650px]">
+    <div className="relative mx-auto my-2 h-[600px] w-[572px]">
       {state.boardState.board.map((ring, i) => (
-        <div key={i} className="absolute left-1/2 top-1/2">
+        <div key={i} className="absolute left-[45.2%] top-[49.5%]">
           {getSides(ring, ring.length / DECAGON_SIDES).map((side, j) => (
             <Side key={j} ring={i} side={j}>
               {side.map((cell) => (
