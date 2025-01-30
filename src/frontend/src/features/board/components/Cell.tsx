@@ -16,14 +16,6 @@ const cellRotation = (cell: Cell) => {
 
 const marginLeftStyle = (cell: Cell) => {
   // key = the ith cell in the side, value = margin value
-  /** TODO: ensure margins are similar in value for all cells
-   * the first cells in each side have margin 0 which is causing
-   * issues with overlapping as the first div in each side takes up too much space
-   * temp fix is update z-index in side but it causes at least
-   * one side in the outer and middle ring to be inaccessible
-   * to fix this we will need to update all side positions for
-   * the outer and middle ring after fixing the margins
-   */
   const leftMarginsForRing1 = { 0: -70, 1: -69, 2: -69.5 }
   const leftMarginsForRing2 = { 0: -70, 1: -69, 2: -69.5, 3: -69, 4: -69.5 }
 
@@ -42,7 +34,6 @@ const marginLeftStyle = (cell: Cell) => {
 
 const marginTopStyle = (cell: Cell) => {
   // key = the ith cell in the side, value = margin value
-  // TODO: ensure margins are similar in value for all cells
   const topMarginsForRing1 = { 0: 0, 1: 4.5, 2: -1.5 }
   const topMarginsForRing2 = { 0: 0, 1: 4.5, 2: -1.6, 3: 2.9, 4: -3.2 }
 
