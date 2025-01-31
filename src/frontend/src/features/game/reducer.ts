@@ -39,6 +39,9 @@ export function localGameReducer(
       state.boardState.board[to.x][to.y].piece = piece
       state.boardState.board[from.x][from.y].piece = null
 
+      const promoteCondition =
+        piece.type == "pawn-cw" || piece.type == "pawn-ccw"
+
       return {
         ...state,
         turn: state.turn === "w" ? "b" : "w",
@@ -57,6 +60,21 @@ export function localGameReducer(
                   capturedPiece,
                 ],
               },
+        status: promoteCondition ? "promoting" : "playing",
+        promoteID: [to.x, to.y],
+      }
+    }
+    case "PROMOTE_PAWN": {
+      const { cell, piece } = action.payload
+
+      state.boardState.board[cell[0]][cell[1]].piece = piece
+
+      return {
+        ...state,
+        boardState: {
+          ...state.boardState,
+        },
+        status: "playing",
       }
     }
     case "START_GAME": {

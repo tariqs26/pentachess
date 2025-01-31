@@ -16,6 +16,7 @@ type Move = {
 type GameStatus =
   | "waiting"
   | "playing"
+  | "promoting"
   | "checkmate"
   | "stalemate"
   | "time-expired"
@@ -31,6 +32,7 @@ export type LocalGameState = {
   check: PieceColor | null
   status: GameStatus
   boardState: BoardState
+  promoteID: number[]
 }
 
 export type LocalGameAction =
@@ -48,5 +50,9 @@ export type LocalGameAction =
     }
   | {
       type: "SWITCH_TURN"
+    }
+  | {
+      type: "PROMOTE_PAWN"
+      payload: { cell: number[]; piece: Piece }
     }
   | BoardAction
