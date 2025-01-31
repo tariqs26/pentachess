@@ -34,8 +34,7 @@ export const Side = ({ side, ring, ...props }: SideProps) => (
     style={{
       rotate: `${sideRotation[ring][side]}deg`,
       left: `${sideLeft[ring][side]}px`,
-      top: `${sideTop[ring][side]}px`,
-      zIndex: 10 - side, // TODO: temp fix for overlapping sides (see Cell.tsx): when issue with cell margins is fixed, remove this
+      top: `${sideTop[ring][side]}px`
     }}
     {...props}
   />
