@@ -1,4 +1,4 @@
-import { getPossibleMoves } from "../piece/utils"
+import { getPossibleMoves, canPromote } from "../piece/utils"
 import type { LocalGameAction, LocalGameState } from "./types"
 
 export function localGameReducer(
@@ -23,14 +23,12 @@ export function localGameReducer(
         },
       }
     }
-    case "SET_OVER_CELL":
+    case "SET_OVER_CELL": {
       return {
         ...state,
-        boardState: {
-          ...state.boardState,
-          overCell: action.payload,
-        },
+        boardState: { ...state.boardState, overCell: action.payload },
       }
+    }
     case "MOVE_PIECE": {
       const { to, from, piece } = action.payload
 
@@ -38,15 +36,6 @@ export function localGameReducer(
 
       state.boardState.board[to.x][to.y].piece = piece
       state.boardState.board[from.x][from.y].piece = null
-
-      const promoteCondition =
-        (piece.type == "pawn-cw" ||
-          piece.type == "pawn-ccw" ||
-          piece.type == "berolina-pawn-cw" ||
-          piece.type == "berolina-pawn-ccw") &&
-        to.x == 2 &&
-        ((piece.color == "w" && to.y >= 25 && to.y <= 32) ||
-          (piece.color == "b" && to.y >= 0 && to.y <= 7))
 
       return {
         ...state,
@@ -66,21 +55,23 @@ export function localGameReducer(
                   capturedPiece,
                 ],
               },
-        status: promoteCondition ? "promoting" : "playing",
-        promoteID: [to.x, to.y],
+        ...(canPromote(piece, to) && {
+          status: "promoting",
+          promotionCoordinates: [to.x, to.y],
+        }),
       }
     }
     case "PROMOTE_PAWN": {
-      const { cell, piece } = action.payload
-
-      state.boardState.board[cell[0]][cell[1]].piece = piece
+      if (state.promotionCoordinates) {
+        const [x, y] = state.promotionCoordinates
+        state.boardState.board[x][y].piece = action.payload
+      }
 
       return {
         ...state,
-        boardState: {
-          ...state.boardState,
-        },
+        boardState: { ...state.boardState },
         status: "playing",
+        promotionCoordinates: undefined,
       }
     }
     case "START_GAME": {
@@ -88,10 +79,7 @@ export function localGameReducer(
         ...state,
         status: "playing",
         timer: action.payload
-          ? {
-              w: action.payload,
-              b: action.payload,
-            }
+          ? { w: action.payload, b: action.payload }
           : state.timer,
       }
     }
