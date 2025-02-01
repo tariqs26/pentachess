@@ -3,9 +3,9 @@
 import Image from "next/image"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
 import { Board } from "@/features/board/components/Board"
-import { PromoteIcon } from "@/features/piece/components/PromoteIcon"
 import { CreateGameForm } from "@/features/game/components/CreateGameForm"
 import { useLocalGame } from "@/features/game/useLocalGame"
+import { PawnPromotionModal } from "@/features/piece/components/PawnPromotionModal"
 import type { Piece } from "@/features/piece/types"
 
 const CapturedPieces = ({ pieces }: { pieces: Piece[] }) => (
@@ -40,7 +40,7 @@ export default function LocalGamePage() {
           <CapturedPieces pieces={state.capturedPieces.w} />
           <Board />
           <CapturedPieces pieces={state.capturedPieces.b} />
-          {state.status === "promoting" && <PromoteIcon />}
+          {state.status === "promoting" && <PawnPromotionModal />}
         </div>
       )}
     </div>

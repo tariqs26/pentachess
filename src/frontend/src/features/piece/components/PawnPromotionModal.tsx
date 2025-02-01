@@ -5,7 +5,7 @@ import { makePiece } from "@/features/piece/utils"
 import { PROMOTION_PIECES } from "../constants"
 import { cn } from "@/lib/utils"
 
-export const PromoteIcon = () => {
+export const PawnPromotionModal = () => {
   const { state, dispatch } = useLocalGame()
 
   function handlePawnPromotion(piece: Piece) {
