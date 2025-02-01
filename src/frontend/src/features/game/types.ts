@@ -32,7 +32,7 @@ export type LocalGameState = {
   check: PieceColor | null
   status: GameStatus
   boardState: BoardState
-  promoteID: number[]
+  promotionCoordinates?: [number, number]
 }
 
 export type LocalGameAction =
@@ -53,6 +53,6 @@ export type LocalGameAction =
     }
   | {
       type: "PROMOTE_PAWN"
-      payload: { cell: number[]; piece: Piece }
+      payload: Piece
     }
   | BoardAction

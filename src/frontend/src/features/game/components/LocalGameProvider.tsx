@@ -20,7 +20,6 @@ const initialState: LocalGameState = {
     selectedCell: null,
     overCell: null,
   },
-  promoteID: [0, 0],
 }
 
 type LocalGameContextType = {
