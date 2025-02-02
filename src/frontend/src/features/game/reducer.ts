@@ -36,6 +36,8 @@ export function localGameReducer(
 
       const capturedPiece = to.piece
 
+      piece.hasMoved = true
+
       state.boardState.board[to.x][to.y].piece = piece
       state.boardState.board[from.x][from.y].piece = null
 

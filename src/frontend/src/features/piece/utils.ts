@@ -9,6 +9,7 @@ export function makePiece(type: PieceType, color: PieceColor): Piece {
     color,
     value: PIECE_DATA[type].value,
     image: PIECE_DATA[type].image[color],
+    hasMoved: false,
   }
 }
 
@@ -315,12 +316,6 @@ export function getPossibleMoves(
     }
     case "pawn-cw": {
       // cell.edges.next = ccw direction, cell.edges.prev = cw direction
-      // TODO: implement first Move
-      // if (cell.piece.firstMove) {
-      //   // stuff
-      //   cell.piece.firstMove = false
-      // } else { stuff below
-      // }
 
       if (cell.edges.length === 3) {
         const edge = board[cell.edges[2][0]][cell.edges[2][1]]
@@ -332,6 +327,10 @@ export function getPossibleMoves(
       const edge = board[cell.edges[1][0]][cell.edges[1][1]]
       if (edge.piece === null) {
         possibleMoves.add(edge)
+        if (!cell.piece.hasMoved) {
+          const firstMoveEdge = board[cell.edges[1][0]][cell.edges[1][1] - 1]
+          if (firstMoveEdge.piece === null) possibleMoves.add(firstMoveEdge)
+        }
       }
 
       for (const vertexTuple of cell.vertices) {
@@ -365,12 +364,6 @@ export function getPossibleMoves(
     }
     case "pawn-ccw": {
       // cell.edges.next = ccw direction, cell.edges.prev = cw direction
-      // TODO: implement first Move
-      // if (cell.piece.firstMove) {
-      //   // stuff
-      //   cell.piece.firstMove = false
-      // } else { stuff below
-      // }
 
       if (cell.edges.length === 3) {
         const edge = board[cell.edges[2][0]][cell.edges[2][1]]
@@ -382,6 +375,10 @@ export function getPossibleMoves(
       const edge = board[cell.edges[0][0]][cell.edges[0][1]]
       if (edge.piece === null) {
         possibleMoves.add(edge)
+        if (!cell.piece.hasMoved) {
+          const firstMoveEdge = board[cell.edges[0][0]][cell.edges[0][1] + 1]
+          if (firstMoveEdge.piece === null) possibleMoves.add(firstMoveEdge)
+        }
       }
 
       for (const vertexTuple of cell.vertices) {

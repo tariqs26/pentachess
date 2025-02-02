@@ -18,4 +18,5 @@ export type Piece = {
   color: PieceColor
   value: number
   image: StaticImageData
+  hasMoved: boolean
 }
