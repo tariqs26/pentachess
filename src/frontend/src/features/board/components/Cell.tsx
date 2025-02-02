@@ -1,6 +1,7 @@
 import Image from "next/image"
 import { useLocalGame } from "@/features/game/useLocalGame"
 import { cn } from "@/lib/utils"
+import { cellId } from "../cell"
 import type { Cell } from "../types"
 import { sideRotation } from "./Side"
 
@@ -119,17 +120,14 @@ export const CellComponent = (cell: Cell) => {
       <div
         id={`cell-${cell.id}`}
         className={cn(
-          "flex size-[100px] items-center justify-center",
-          isAvailableMove && "hover:cursor-pointer",
-          isAvailableMove
-            ? cell.piece
-              ? "bg-red-500"
-              : "bg-green-500"
-            : isCellSelected
-              ? "bg-orange-500"
-              : cell.color === "w"
-                ? "bg-white"
-                : "bg-gray-500"
+          "flex size-[100px] items-center justify-center bg-gray-500",
+          cell.color === "w" && "bg-white",
+          isAvailableMove && "bg-green-500 hover:cursor-pointer",
+          isAvailableMove && cell.piece && "bg-red-500",
+          isCellSelected && "bg-orange-500",
+          state.promotionCoordinates &&
+            cellId(...state.promotionCoordinates) === cell.id &&
+            "bg-yellow-500"
         )}
         style={{
           clipPath:

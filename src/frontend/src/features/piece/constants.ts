@@ -97,3 +97,5 @@ export const INITIAL_PIECES: Record<
     34: ["pawn-ccw", "b"],
   },
 } as const
+
+export const PROMOTION_PIECES = ["queen", "rook", "bishop", "knight"] as const

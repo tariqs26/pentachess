@@ -1,4 +1,4 @@
-import { getPossibleMoves } from "../piece/utils"
+import { getPossibleMoves, canPromote } from "../piece/utils"
 import type { LocalGameAction, LocalGameState } from "./types"
 
 export function localGameReducer(
@@ -23,14 +23,12 @@ export function localGameReducer(
         },
       }
     }
-    case "SET_OVER_CELL":
+    case "SET_OVER_CELL": {
       return {
         ...state,
-        boardState: {
-          ...state.boardState,
-          overCell: action.payload,
-        },
+        boardState: { ...state.boardState, overCell: action.payload },
       }
+    }
     case "MOVE_PIECE": {
       const { to, from, piece } = action.payload
 
@@ -57,6 +55,25 @@ export function localGameReducer(
                   capturedPiece,
                 ],
               },
+        ...(canPromote(piece, to) && {
+          status: "promoting",
+          promotionCoordinates: [to.x, to.y],
+          turn: state.turn,
+        }),
+      }
+    }
+    case "PROMOTE_PAWN": {
+      if (state.promotionCoordinates) {
+        const [x, y] = state.promotionCoordinates
+        state.boardState.board[x][y].piece = action.payload
+      }
+
+      return {
+        ...state,
+        boardState: { ...state.boardState },
+        status: "playing",
+        promotionCoordinates: undefined,
+        turn: state.turn === "w" ? "b" : "w",
       }
     }
     case "START_GAME": {
@@ -64,10 +81,7 @@ export function localGameReducer(
         ...state,
         status: "playing",
         timer: action.payload
-          ? {
-              w: action.payload,
-              b: action.payload,
-            }
+          ? { w: action.payload, b: action.payload }
           : state.timer,
       }
     }

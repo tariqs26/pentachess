@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
 import { Board } from "@/features/board/components/Board"
 import { CreateGameForm } from "@/features/game/components/CreateGameForm"
 import { useLocalGame } from "@/features/game/useLocalGame"
+import { PawnPromotionModal } from "@/features/piece/components/PawnPromotionModal"
 import type { Piece } from "@/features/piece/types"
 
 const CapturedPieces = ({ pieces }: { pieces: Piece[] }) => (
@@ -35,10 +36,11 @@ export default function LocalGamePage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="w-full bg-secondary/50">
+        <div className="relative w-full bg-secondary/50">
           <CapturedPieces pieces={state.capturedPieces.w} />
           <Board />
           <CapturedPieces pieces={state.capturedPieces.b} />
+          {state.status === "promoting" && <PawnPromotionModal />}
         </div>
       )}
     </div>

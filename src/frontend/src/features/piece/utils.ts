@@ -12,7 +12,18 @@ export function makePiece(type: PieceType, color: PieceColor): Piece {
   }
 }
 
-// TODO: Demo MVP
+export function canPromote(piece: Piece, to: { x: number; y: number }) {
+  return (
+    (piece.type == "pawn-cw" ||
+      piece.type == "pawn-ccw" ||
+      piece.type == "berolina-pawn-cw" ||
+      piece.type == "berolina-pawn-ccw") &&
+    to.x == 2 &&
+    ((piece.color == "w" && to.y >= 25 && to.y <= 32) ||
+      (piece.color == "b" && to.y >= 0 && to.y <= 7))
+  )
+}
+
 export function getPossibleMoves(
   cell: Cell,
   board: Board,
@@ -486,14 +497,4 @@ function checkKingSafety(
   }
 
   return possibleMoves
-}
-
-// TODO
-export function capturePiece(board: Board, from: Cell, to: Cell) {
-  console.info(board, from, to)
-}
-
-// TODO
-export function promotePawn(board: Board, cell: Cell) {
-  console.info(board, cell)
 }
