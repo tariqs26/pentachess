@@ -498,13 +498,3 @@ function checkKingSafety(
 
   return possibleMoves
 }
-
-// TODO
-export function capturePiece(board: Board, from: Cell, to: Cell) {
-  console.info(board, from, to)
-}
-
-// TODO
-export function promotePawn(board: Board, cell: Cell) {
-  console.info(board, cell)
-}
