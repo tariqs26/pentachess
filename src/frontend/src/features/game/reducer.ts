@@ -58,6 +58,7 @@ export function localGameReducer(
         ...(canPromote(piece, to) && {
           status: "promoting",
           promotionCoordinates: [to.x, to.y],
+          turn: state.turn,
         }),
       }
     }
@@ -72,6 +73,7 @@ export function localGameReducer(
         boardState: { ...state.boardState },
         status: "playing",
         promotionCoordinates: undefined,
+        turn: state.turn === "w" ? "b" : "w",
       }
     }
     case "START_GAME": {
