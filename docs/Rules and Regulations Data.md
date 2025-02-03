@@ -4,11 +4,11 @@ Welcome to Pentachess! We hope you enjoy your stay! Below are the general rules 
 
 ## Objective
 
-The goal of Pentachess is to checkmate the opponent's king. This means that you have put the king in check (danger), and there is no legal move for the opponent to play that gets them out of check.
+The goal of Pentachess is to checkmate the opponent's king. This means that you have put the king in check (danger), such that there is no legal move for the opponent to play that gets them out of check.
 
 ## Setup
 
-The game is played on a 90 tile board consisting of 3 decagon rings, with 10, 30, and 50 tiles within the inner, center, and outer decagons, respectively. Each player has 18 pieces consisting of 7 underlying pieces.
+The game is played on a 90 tile board consisting of 3 decagon rings, with 10, 30, and 50 tiles within the inner, center, and outer decagons, respectively. Each player has 18 pieces, each of which is one of 7 piece types.
 
 ## Movement
 
@@ -67,7 +67,7 @@ Both players will alternate turns moving one piece per turn.
 
 ## Time Control
 
-Each game can be setup with a unique timer that decreases while it is a player's turn. The timer pauses once it is no longer that player's turn. Once the time for a player runs out, that player automatically loses.
+Each game can be setup with an optional unique timer that decreases while it is a player's turn. The timer pauses once it is no longer that player's turn. Once the time for a player runs out, that player automatically loses.
 
 ## Win Condition
 
