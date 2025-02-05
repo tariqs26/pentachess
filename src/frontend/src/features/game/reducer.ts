@@ -1,5 +1,6 @@
 import { getPossibleMoves, canPromote } from "../piece/utils"
-import type { LocalGameAction, LocalGameState } from "./types"
+import { pieceNames } from "../piece/constants"
+import type { LocalGameAction, LocalGameState, Move } from "./types"
 
 export function localGameReducer(
   state: LocalGameState,
@@ -30,14 +31,28 @@ export function localGameReducer(
       }
     }
     case "MOVE_PIECE": {
-      const { to, from, piece } = action.payload
-
+      const { to, from, piece } = action.payload;
       const capturedPiece = to.piece
 
       piece.hasMoved = true
 
       state.boardState.board[to.x][to.y].piece = piece
       state.boardState.board[from.x][from.y].piece = null
+      
+      const rows = ["C", "B", "A"];
+      const notation = `${state.turn === "w" ? "Y: " : "O: "} ${pieceNames[piece.type]} ${rows[to.x] + to.y}`
+
+      const newMove: Move = {
+        from,
+        to,
+        piece,
+        pieceCaptured: capturedPiece,
+        check: false,
+        checkmate: false,
+        piecePromoted: null,
+        notation,
+        timestamp: new Date(),
+      }
 
       return {
         ...state,
@@ -47,16 +62,14 @@ export function localGameReducer(
           selectedCell: null,
           overCell: null,
         },
-        capturedPieces:
-          capturedPiece === null
-            ? state.capturedPieces
-            : {
-                ...state.capturedPieces,
-                [piece.color]: [
-                  ...state.capturedPieces[piece.color],
-                  capturedPiece,
-                ],
-              },
+        capturedPieces: capturedPiece
+          ? {
+          ...state.capturedPieces,
+          [piece.color]: [...state.capturedPieces[piece.color], capturedPiece],
+        }
+          : state.capturedPieces,
+        previousMoves: [newMove, ...state.previousMoves],
+        startTimeForMove: Date.now(),
         ...(canPromote(piece, to) && {
           status: "promoting",
           promotionCoordinates: [to.x, to.y],
@@ -82,9 +95,7 @@ export function localGameReducer(
       return {
         ...state,
         status: "playing",
-        timer: action.payload
-          ? { w: action.payload, b: action.payload }
-          : state.timer,
+        startTimeForMove: Date.now(),
       }
     }
     default:

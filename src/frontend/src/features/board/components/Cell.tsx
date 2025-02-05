@@ -81,16 +81,13 @@ export const CellComponent = (cell: Cell) => {
     if (!state.boardState.selectedCell.cell.piece) return
     if (state.boardState.overCell === null) return
 
-    const { x, y, piece } = state.boardState.selectedCell.cell
-    const { x: toX, y: toY, piece: toPiece } = state.boardState.overCell
+    const from = state.boardState.selectedCell.cell
+    const piece = state.boardState.selectedCell.cell.piece
+    const to = state.boardState.overCell
 
     dispatch({
       type: "MOVE_PIECE",
-      payload: {
-        from: { x, y, piece },
-        to: { x: toX, y: toY, piece: toPiece },
-        piece,
-      },
+      payload: { from, to, piece },
     })
   }
 
