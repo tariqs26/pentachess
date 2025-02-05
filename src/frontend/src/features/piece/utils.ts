@@ -136,12 +136,7 @@ export function getPossibleMoves(
       // cycles for center and outer ring
       if (cell.x === 1) {
         // counter clockwise check
-        let counter = 30
-        if (possibleMoves.has(board[cell.x][(cell.y + 2) % 30])) {
-          counter = 4
-        }
-
-        while (counter < 28) {
+        for (let counter = 2; counter < 28; counter += 2) {
           const currVertex = board[cell.x][(cell.y + counter) % 30]
           if (currVertex.piece === null) {
             possibleMoves.add(currVertex)
@@ -151,41 +146,22 @@ export function getPossibleMoves(
             }
             break
           }
-          counter += 2
-        }
-
-        if (possibleMoves.has(board[cell.x][(cell.y + 28) % 30])) {
-          counter = 4
-        } else {
-          counter = 30
         }
         // clockwise check
-        if (counter < 28) {
-          while (counter < 28) {
-            const currVertex = board[cell.x][(cell.y - counter + 30) % 30]
-            if (possibleMoves.has(currVertex)) {
-              break
-            }
-
-            if (currVertex.piece === null) {
+        for (let counter = 2; counter < 28; counter += 2) {
+          const currVertex = board[cell.x][(cell.y - counter + 30) % 30]
+          if (currVertex.piece === null) {
+            possibleMoves.add(currVertex)
+          } else {
+            if (currVertex.piece.color !== cell.piece?.color) {
               possibleMoves.add(currVertex)
-            } else {
-              if (currVertex.piece.color !== cell.piece?.color) {
-                possibleMoves.add(currVertex)
-              }
-              break
             }
-            counter += 2
+            break
           }
         }
       } else if (cell.x === 2) {
         // counter clockwise check
-        let counter = 50
-        if (possibleMoves.has(board[cell.x][(cell.y + 2) % 50])) {
-          counter = 4
-        }
-
-        while (counter < 48) {
+        for (let counter = 2; counter < 48; counter += 2) {
           const currVertex = board[cell.x][(cell.y + counter) % 50]
           if (currVertex.piece === null) {
             possibleMoves.add(currVertex)
@@ -195,32 +171,17 @@ export function getPossibleMoves(
             }
             break
           }
-          counter += 2
         }
-
-        if (possibleMoves.has(board[cell.x][(cell.y + 48) % 50])) {
-          counter = 4
-        } else {
-          counter = 50
-        }
-
         // clockwise check
-        if (counter < 48) {
-          while (counter < 48) {
-            const currVertex = board[cell.x][(cell.y - counter + 50) % 50]
-            if (possibleMoves.has(currVertex)) {
-              break
-            }
-
-            if (currVertex.piece === null) {
+        for (let counter = 2; counter < 48; counter += 2) {
+          const currVertex = board[cell.x][(cell.y - counter + 50) % 50]
+          if (currVertex.piece === null) {
+            possibleMoves.add(currVertex)
+          } else {
+            if (currVertex.piece.color !== cell.piece?.color) {
               possibleMoves.add(currVertex)
-            } else {
-              if (currVertex.piece.color !== cell.piece?.color) {
-                possibleMoves.add(currVertex)
-              }
-              break
             }
-            counter += 2
+            break
           }
         }
       }
