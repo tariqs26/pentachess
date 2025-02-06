@@ -392,6 +392,9 @@ function checkKingSafety(
   board: Board,
   possibleMoves: Set<Cell>
 ): Set<Cell> {
+
+  const currentColor = simulation?.piece?.color
+
   if (simulation.piece?.type === "king") {
     for (const move of Array.from(possibleMoves)) {
       const clonedBoard = cloneBoard(board)
@@ -400,7 +403,7 @@ function checkKingSafety(
 
       for (const ring of clonedBoard) {
         for (const cell of ring) {
-          if (cell.piece !== null && cell.piece.color !== move.piece?.color) {
+          if (cell.piece !== null && cell.piece.color !== currentColor) {
             const simulatedMoves = getPossibleMoves(cell, clonedBoard, true)
 
             if (
@@ -423,7 +426,7 @@ function checkKingSafety(
     for (const y in board[x]) {
       if (
         board[x][y].piece?.type === "king" &&
-        board[x][y].piece?.color === simulation.piece?.color
+        board[x][y].piece?.color === currentColor
       ) {
         king = board[x][y]
         break
