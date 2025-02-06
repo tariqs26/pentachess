@@ -1,4 +1,4 @@
-import { getPossibleMoves, canPromote } from "../piece/utils"
+import { getPossibleMoves, canPromote, checkForCheck } from "../piece/utils"
 import type { LocalGameAction, LocalGameState } from "./types"
 
 export function localGameReducer(
@@ -62,6 +62,11 @@ export function localGameReducer(
           promotionCoordinates: [to.x, to.y],
           turn: state.turn,
         }),
+
+        check: checkForCheck(
+          state.boardState.board,
+          state.turn === "w" ? "b" : "w"
+        ),
       }
     }
     case "PROMOTE_PAWN": {

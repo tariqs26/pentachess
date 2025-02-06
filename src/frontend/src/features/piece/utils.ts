@@ -456,3 +456,54 @@ function checkKingSafety(
 
   return possibleMoves
 }
+
+export function checkForCheck(
+  board: Board,
+  color: PieceColor
+): Record<PieceColor, boolean> {
+  let king: Cell | null = null
+  // Find king
+  for (const x in board) {
+    for (const y in board[x]) {
+      if (
+        board[x][y].piece?.type === "king" &&
+        board[x][y].piece?.color === color
+      ) {
+        king = board[x][y]
+        break
+      }
+    }
+  }
+
+  for (const ring of board) {
+    for (const cell of ring) {
+      if (cell.piece !== null && cell.piece.color !== king?.piece?.color) {
+        const possibleMoves = getPossibleMoves(cell, board, true)
+        if (Array.from(possibleMoves).some((move) => move.id === king?.id)) {
+          if (king && checkForCheckmate(board, king)) {
+            // switch states and end game
+            console.log(color, "is in checkmate")
+            return { w: color === "w", b: color === "b" }
+          } else {
+            console.log(color, "is in check")
+            return { w: color === "w", b: color === "b" }
+          }
+        }
+      }
+    }
+  }
+  console.log(color, "is not in check")
+  return { w: false, b: false }
+}
+
+function checkForCheckmate(board: Board, king: Cell): boolean {
+  for (const ring of board) {
+    for (const cell of ring) {
+      if (cell.piece !== null && cell.piece.color === king.piece?.color) {
+        const possibleMoves = getPossibleMoves(cell, board)
+        if (possibleMoves.size > 0) return false
+      }
+    }
+  }
+  return true
+}
