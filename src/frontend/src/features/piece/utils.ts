@@ -28,11 +28,11 @@ export function canPromote(piece: Piece, to: { x: number; y: number }) {
 export function getPossibleMoves(
   cell: Cell,
   board: Board,
-  simulate: boolean = false
+  simulate = false
 ): Set<Cell> {
-  if (cell.piece === null) return new Set<Cell>()
-
   let possibleMoves = new Set<Cell>()
+
+  if (cell.piece === null) return possibleMoves
 
   switch (cell.piece.type) {
     case "knight": {
@@ -58,7 +58,7 @@ export function getPossibleMoves(
         { ...cell, piece: makePiece("bishop", cell.piece.color) },
         board
       )
-      possibleMoves = possibleMoves.union(bishopMoves.union(rookMoves))
+      possibleMoves = bishopMoves.union(rookMoves)
       break
     }
     case "rook": {
