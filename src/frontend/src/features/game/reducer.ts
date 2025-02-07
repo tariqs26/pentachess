@@ -69,7 +69,6 @@ export function localGameReducer(
         }
           : state.capturedPieces,
         previousMoves: [newMove, ...state.previousMoves],
-        startTimeForMove: Date.now(),
         ...(canPromote(piece, to) && {
           status: "promoting",
           promotionCoordinates: [to.x, to.y],
@@ -92,10 +91,23 @@ export function localGameReducer(
       }
     }
     case "START_GAME": {
+      const duration = action.payload ? action.payload : 1200
       return {
         ...state,
         status: "playing",
-        startTimeForMove: Date.now(),
+        timer: {
+          w: duration,
+          b: duration,
+        },
+      }
+    }
+    case "DECREMENT_TIMER": {
+      return {
+        ...state,
+        timer: {
+          ...state.timer,
+          [action.payload]: state.timer[action.payload] - 1,
+        },
       }
     }
     default:

@@ -51,8 +51,7 @@ export const CreateGameForm = ({ isOnline, startHandler }: CreateGameProps) => {
     const duration =
       values.durationMinutes !== undefined ||
       values.durationSeconds !== undefined
-        ? ((values.durationMinutes ?? 0) * 60 + (values.durationSeconds ?? 0)) *
-          1000
+        ? (((values.durationMinutes ?? 0) * 60) + (values.durationSeconds ?? 0))
         : undefined
 
     if (!isOnline) {

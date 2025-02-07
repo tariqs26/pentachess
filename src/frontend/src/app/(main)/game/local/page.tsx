@@ -9,30 +9,15 @@ import { PawnPromotionModal } from "@/features/piece/components/PawnPromotionMod
 import type { Piece } from "@/features/piece/types"
 import { useEffect, useState } from "react"
 
-// Calculate the time remaining for the current move
-const calculateTimeRemaining = (startTime: number) => {
-  if (!startTime) {
-    return "5:00"
-  }
-
-  const totalDuration = 5 * 60 * 1000 // 5 minutes in milliseconds
-  const currentTime = Date.now()
-  const elapsedTime = currentTime - startTime
-  const timeRemaining = totalDuration - elapsedTime
-
-  if (timeRemaining <= 0) {
+const calcTimeRemaing = (timeInSeconds: number) => {
+  if (timeInSeconds <= 0) {
     return "00:00"
   }
 
-  const minutes = Math.floor(timeRemaining / (60 * 1000))
-  const seconds = Math.floor((timeRemaining % (60 * 1000)) / 1000)
+  const minutes = Math.floor(timeInSeconds / 60)
+  const seconds = timeInSeconds % 60
 
-  const formattedMinutes = minutes.toString().padStart(2, "0")
-  const formattedSeconds = seconds.toString().padStart(2, "0")
-
-  // TODO: send a dispatch to change turns when time runs out
-
-  return `${formattedMinutes}:${formattedSeconds}`
+  return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`
 }
 
 const CapturedPieces = ({ pieces }: { pieces: Piece[] }) => (
@@ -45,16 +30,23 @@ const CapturedPieces = ({ pieces }: { pieces: Piece[] }) => (
 
 export default function LocalGamePage() {
   const { state, dispatch } = useLocalGame()
-  const [timeRemaining, setTimeRemaining] = useState(calculateTimeRemaining(state.startTimeForMove))
+  const [timeRemaining, setTimeRemaining] = useState(() => (
+    { w: calcTimeRemaing(state.timer?.w || 0), b: calcTimeRemaing(state.timer?.b || 0)}
+  ))
 
-  // Update the time remaining every second
   useEffect(() => {
     const interval = setInterval(() => {
-      setTimeRemaining(calculateTimeRemaining(state.startTimeForMove))
+      if (state && state.timer) {
+        dispatch({ type: "DECREMENT_TIMER", payload: state.turn })
+      }
     }, 1000)
 
+    setTimeRemaining(
+      { w: calcTimeRemaing(state.timer?.w || 0), b: calcTimeRemaing(state.timer?.b || 0) }
+    )
+
     return () => clearInterval(interval)
-  }, [state.startTimeForMove])
+  }, [dispatch, state])
 
   return (
     <div className="mx-auto grid min-h-screen max-w-2xl place-items-center p-6">
@@ -82,7 +74,7 @@ export default function LocalGamePage() {
               <div>Current Turn: {state.turn == "w" ? "You" : "Opponent"}</div>
               <div className="mb-2 text-lg">Timer:</div>
               <div className="flex items-center justify-center bg-secondary rounded-lg p-2 shadow-md shadow-white border border-black">
-                <span className="text-lg font-bold">{timeRemaining}</span>
+                <span className="text-lg font-bold">{ timeRemaining[state.turn] }</span>
               </div>
             </CardContent>
           </Card>

@@ -26,7 +26,7 @@ export type LocalGameState = {
   player: PieceColor
   opponent: PieceColor
   turn: PieceColor
-  startTimeForMove: number
+  timer: Record<PieceColor, number>
   previousMoves: Move[]
   capturedPieces: Record<PieceColor, Piece[]>
   check: PieceColor | null
@@ -55,4 +55,7 @@ export type LocalGameAction =
       type: "PROMOTE_PAWN"
       payload: Piece
     }
-  | BoardAction
+  | {
+    type: "DECREMENT_TIMER"
+    payload: PieceColor
+  } | BoardAction
