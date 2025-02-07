@@ -29,7 +29,7 @@ export type LocalGameState = {
   timer?: Record<PieceColor, number>
   previousMoves: Move[]
   capturedPieces: Record<PieceColor, Piece[]>
-  check: Record<PieceColor, boolean>
+  check: PieceColor | null
   status: GameStatus
   boardState: BoardState
   promotionCoordinates?: [number, number]
