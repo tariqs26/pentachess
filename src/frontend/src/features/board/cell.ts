@@ -1,7 +1,7 @@
 import { DECAGON_SIDES, RING_SIZES } from "@/features/board/constants"
 import type { Board, Cell } from "./types"
 
-export function cellId(x: number, y: number): string {
+export function cellId(x: number, y: number) {
   return `${"CBA"[x]}${y}`
 }
 
@@ -12,7 +12,6 @@ export function cellCoords(id: string): [number, number] {
 export function makeCell(x: number, y: number, angle: number): Cell {
   const id = cellId(x, y)
   const color = y % 2 === 0 ? "b" : "w"
-
   const side = Math.floor(y / (RING_SIZES[x] / DECAGON_SIDES))
 
   return { id, color, x, y, side, angle, piece: null, edges: [], vertices: [] }
