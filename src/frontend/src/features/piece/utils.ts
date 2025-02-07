@@ -51,12 +51,14 @@ export function getPossibleMoves(
       // get rook moves
       const rookMoves = getPossibleMoves(
         { ...cell, piece: makePiece("rook", cell.piece.color) },
-        board
+        board,
+        simulate
       )
       // get bishop moves
       const bishopMoves = getPossibleMoves(
         { ...cell, piece: makePiece("bishop", cell.piece.color) },
-        board
+        board,
+        simulate
       )
       possibleMoves = bishopMoves.union(rookMoves)
       break
@@ -400,12 +402,7 @@ function checkKingSafety(
     clonedBoard[simulation.x][simulation.y].piece = null
     let illegalMove = false
     if (currentColor) {
-      const [, isInCheck] = checkForCheckOrMate(
-        clonedBoard,
-        currentColor,
-        false
-      )
-      illegalMove = isInCheck
+      ;[, illegalMove] = checkForCheckOrMate(clonedBoard, currentColor, false)
     }
 
     if (illegalMove) {

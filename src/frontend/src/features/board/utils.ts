@@ -106,7 +106,7 @@ export function checkForCheckOrMate(
   const king = getKingCell(board, color)
   for (const ring of board) {
     for (const cell of ring) {
-      if (cell.piece !== null && cell.piece.color !== king?.piece?.color) {
+      if (cell.piece !== null && cell.piece.color !== color) {
         const possibleMoves = getPossibleMoves(cell, board, true)
 
         if (Array.from(possibleMoves).some((move) => move.id === king?.id)) {
