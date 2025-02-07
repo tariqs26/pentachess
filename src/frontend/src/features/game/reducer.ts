@@ -1,4 +1,5 @@
-import { getPossibleMoves, canPromote, checkForCheck } from "../piece/utils"
+import { checkForCheckOrMate } from "../board/utils"
+import { canPromote, getPossibleMoves } from "../piece/utils"
 import type { LocalGameAction, LocalGameState } from "./types"
 
 export function localGameReducer(
@@ -39,34 +40,36 @@ export function localGameReducer(
       state.boardState.board[to.x][to.y].piece = piece
       state.boardState.board[from.x][from.y].piece = null
 
+      const [checkedColor, isCheckmate] = checkForCheckOrMate(
+        state.boardState.board,
+        state.turn === "w" ? "b" : "w"
+      )
+
       return {
         ...state,
         turn: state.turn === "w" ? "b" : "w",
+        status: isCheckmate ? "checkmate" : "playing",
         boardState: {
           ...state.boardState,
           selectedCell: null,
           overCell: null,
         },
-        capturedPieces:
-          capturedPiece === null
-            ? state.capturedPieces
-            : {
-                ...state.capturedPieces,
-                [piece.color]: [
-                  ...state.capturedPieces[piece.color],
-                  capturedPiece,
-                ],
-              },
+        capturedPieces: capturedPiece
+          ? {
+              ...state.capturedPieces,
+              [piece.color]: [
+                ...state.capturedPieces[piece.color],
+                capturedPiece,
+              ],
+            }
+          : state.capturedPieces,
+        check: checkedColor,
         ...(canPromote(piece, to) && {
           status: "promoting",
           promotionCoordinates: [to.x, to.y],
+          check: state.check,
           turn: state.turn,
         }),
-
-        check: checkForCheck(
-          state.boardState.board,
-          state.turn === "w" ? "b" : "w"
-        ),
       }
     }
     case "PROMOTE_PAWN": {
@@ -75,12 +78,20 @@ export function localGameReducer(
         state.boardState.board[x][y].piece = action.payload
       }
 
+      const turn = state.turn === "w" ? "b" : "w"
+
+      const [checkedColor, isCheckmate] = checkForCheckOrMate(
+        state.boardState.board,
+        turn
+      )
+
       return {
         ...state,
+        status: isCheckmate ? "checkmate" : "playing",
+        turn,
         boardState: { ...state.boardState },
-        status: "playing",
         promotionCoordinates: undefined,
-        turn: state.turn === "w" ? "b" : "w",
+        check: checkedColor,
       }
     }
     case "START_GAME": {

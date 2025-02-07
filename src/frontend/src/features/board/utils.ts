@@ -1,4 +1,5 @@
 import { INITIAL_PIECES } from "../piece/constants"
+import type { PieceColor } from "../piece/types"
 import { getPossibleMoves, makePiece } from "../piece/utils"
 import { cloneCell, makeCell, setCellEdges, setCellVertices } from "./cell"
 import type { Board, Cell } from "./types"
@@ -85,14 +86,6 @@ export function cloneBoard(board: Board): Board {
   return board.map((ring) => ring.map(cloneCell))
 }
 
-// display the board state for debugging
-export function logBoard(board: Board) {
-  board.forEach((ring) => {
-    const pieces = ring.map((cell) => cell.piece ?? "empty")
-    console.log(pieces)
-  })
-}
-
 export function getSides<T>(arr: T[], size: number) {
   return arr.reduce((acc: T[][], _, i) => {
     if (i % size === 0) acc.push(arr.slice(i, i + size))
@@ -100,26 +93,56 @@ export function getSides<T>(arr: T[], size: number) {
   }, [])
 }
 
-// handle piece click (user interaction)
-export function pieceClick(cell: Cell, board: Board): Set<Cell> {
-  // memoize moves here and reset in the movePiece function
-  return getPossibleMoves(cell, board)
+export function getKingCell(
+  board: Board,
+  pieceColor?: PieceColor
+): Cell | null {
+  for (const ring of board) {
+    for (const cell of ring) {
+      if (cell.piece?.type === "king" && cell.piece.color === pieceColor) {
+        return cell
+      }
+    }
+  }
+
+  return null
 }
 
-// TODO
-export function checkForCheck(board: Board): boolean {
-  console.info(board)
-  return false
+export function checkForCheckOrMate(
+  board: Board,
+  color: PieceColor
+): [PieceColor | null, boolean] {
+  const king = getKingCell(board, color)
+
+  for (const ring of board) {
+    for (const cell of ring) {
+      if (cell.piece !== null && cell.piece.color !== king?.piece?.color) {
+        const possibleMoves = getPossibleMoves(cell, board, true)
+        if (Array.from(possibleMoves).some((move) => move.id === king?.id)) {
+          return [color, king ? checkForCheckmate(board, king) : false]
+        }
+      }
+    }
+  }
+
+  return [null, false]
+}
+
+function checkForCheckmate(board: Board, king: Cell): boolean {
+  for (const ring of board) {
+    for (const cell of ring) {
+      if (cell.piece !== null && cell.piece.color === king.piece?.color) {
+        const possibleMoves = getPossibleMoves(cell, board)
+        if (possibleMoves.size > 0) return false
+      }
+    }
+  }
+
+  return true
 }
 
 // TODO
 export function checkForStalemate(board: Board): boolean {
-  console.info(board)
-  return false
-}
-
-// TODO
-export function checkForCheckmate(board: Board): boolean {
   console.info(board)
   return false
 }

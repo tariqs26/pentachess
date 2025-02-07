@@ -1,5 +1,5 @@
 import type { Board, Cell } from "../board/types"
-import { cloneBoard } from "../board/utils"
+import { cloneBoard, getKingCell } from "../board/utils"
 import { PIECE_DATA } from "./constants"
 import type { Piece, PieceColor, PieceType } from "./types"
 
@@ -394,20 +394,9 @@ function checkKingSafety(
 ): Set<Cell> {
   const currentColor = simulation?.piece?.color
 
-  let king = null
+  let king: Cell | null = null
   if (simulation.piece?.type !== "king") {
-    // find king location -- would be efficient to keep track in some global variable
-    for (const x in board) {
-      for (const y in board[x]) {
-        if (
-          board[x][y].piece?.type === "king" &&
-          board[x][y].piece?.color === currentColor
-        ) {
-          king = board[x][y]
-          break
-        }
-      }
-    }
+    king = getKingCell(board, currentColor)
   }
 
   for (const move of Array.from(possibleMoves)) {
@@ -420,15 +409,11 @@ function checkKingSafety(
         if (simulation.piece?.type !== "king") {
           if (cell.piece !== null && cell.piece.color !== king?.piece?.color) {
             const simulatedMoves = getPossibleMoves(cell, clonedBoard, true)
-            if (cell.piece.type === "queen") {
-              console.log("queen", simulatedMoves)
-            }
             if (
               Array.from(simulatedMoves).some(
                 (simulatedMove) => simulatedMove.id === king?.id
               )
             ) {
-              console.log("removing", move)
               possibleMoves.delete(move)
             }
           }
@@ -450,55 +435,4 @@ function checkKingSafety(
   }
 
   return possibleMoves
-}
-
-export function checkForCheck(
-  board: Board,
-  color: PieceColor
-): Record<PieceColor, boolean> {
-  let king: Cell | null = null
-  // Find king
-  for (const x in board) {
-    for (const y in board[x]) {
-      if (
-        board[x][y].piece?.type === "king" &&
-        board[x][y].piece?.color === color
-      ) {
-        king = board[x][y]
-        break
-      }
-    }
-  }
-
-  for (const ring of board) {
-    for (const cell of ring) {
-      if (cell.piece !== null && cell.piece.color !== king?.piece?.color) {
-        const possibleMoves = getPossibleMoves(cell, board, true)
-        if (Array.from(possibleMoves).some((move) => move.id === king?.id)) {
-          if (king && checkForCheckmate(board, king)) {
-            // switch states and end game
-            console.log(color, "is in checkmate")
-            return { w: color === "w", b: color === "b" }
-          } else {
-            console.log(color, "is in check")
-            return { w: color === "w", b: color === "b" }
-          }
-        }
-      }
-    }
-  }
-  console.log(color, "is not in check")
-  return { w: false, b: false }
-}
-
-function checkForCheckmate(board: Board, king: Cell): boolean {
-  for (const ring of board) {
-    for (const cell of ring) {
-      if (cell.piece !== null && cell.piece.color === king.piece?.color) {
-        const possibleMoves = getPossibleMoves(cell, board)
-        if (possibleMoves.size > 0) return false
-      }
-    }
-  }
-  return true
 }
