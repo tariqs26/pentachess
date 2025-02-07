@@ -2,6 +2,7 @@ import type { BoardAction, BoardState, Cell } from "../board/types"
 import type { Piece, PieceColor, PieceType } from "../piece/types"
 
 export type Move = {
+  player: PieceColor
   notation: string
   timestamp: Date
   piece: Piece

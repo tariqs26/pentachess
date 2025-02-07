@@ -1,6 +1,32 @@
 import { getPossibleMoves, canPromote } from "../piece/utils"
 import { pieceNames } from "../piece/constants"
 import type { LocalGameAction, LocalGameState, Move } from "./types"
+import { Piece, PieceColor } from "../piece/types"
+import { Cell } from "../board/types"
+
+
+const getMove = (from: Cell, to: Cell, piece: Piece, player: PieceColor): Move => {
+  const pieceAbrev = pieceNames[piece.type];
+  const capturedPieceAbrev = to.piece ? pieceNames[to.piece.type] : "";
+  const rows = ["C", "B", "A"];
+  const fromPosition = `${rows[from.x]}${from.y}`;
+  const toPosition = `${rows[to.x]}${to.y}`;
+  const captureNotation = capturedPieceAbrev ? `(${capturedPieceAbrev})` : "";
+  const notation = `${pieceAbrev}: ${fromPosition} → ${toPosition} ${captureNotation}`;
+
+  return {
+    player,
+    from,
+    to,
+    piece,
+    pieceCaptured: to.piece,
+    check: false,
+    checkmate: false,
+    piecePromoted: null,
+    notation,
+    timestamp: new Date(),
+  };
+};
 
 export function localGameReducer(
   state: LocalGameState,
@@ -33,26 +59,12 @@ export function localGameReducer(
     case "MOVE_PIECE": {
       const { to, from, piece } = action.payload;
       const capturedPiece = to.piece
-
       piece.hasMoved = true
 
       state.boardState.board[to.x][to.y].piece = piece
       state.boardState.board[from.x][from.y].piece = null
-      
-      const rows = ["C", "B", "A"];
-      const notation = `${state.turn === "w" ? "Y: " : "O: "} ${pieceNames[piece.type]} ${rows[to.x] + to.y}`
 
-      const newMove: Move = {
-        from,
-        to,
-        piece,
-        pieceCaptured: capturedPiece,
-        check: false,
-        checkmate: false,
-        piecePromoted: null,
-        notation,
-        timestamp: new Date(),
-      }
+      const newMove = getMove(from, to, piece, state.turn)
 
       return {
         ...state,
@@ -68,7 +80,7 @@ export function localGameReducer(
           [piece.color]: [...state.capturedPieces[piece.color], capturedPiece],
         }
           : state.capturedPieces,
-        previousMoves: [newMove, ...state.previousMoves],
+        previousMoves: [...state.previousMoves, newMove],
         ...(canPromote(piece, to) && {
           status: "promoting",
           promotionCoordinates: [to.x, to.y],

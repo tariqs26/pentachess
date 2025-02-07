@@ -88,18 +88,39 @@ export default function LocalGamePage() {
             <CapturedPieces pieces={state.capturedPieces.b} />
             {state.status === "promoting" && <PawnPromotionModal />}
           </div>
-          <Card className="flex-shrink-0 w-[230px] max-h-min">
+          <Card className="flex-shrink-0 w-[300px] max-h-min">
             <CardHeader>
-              <CardTitle className="text-xl">Previous Moves</CardTitle>
+                <CardTitle className="text-xl text-center">Previous Moves</CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="max-h-48 overflow-y-auto bg-white rounded-lg p-2 shadow-md shadow-white border border-black">
-                <ul className="text-black text-xs">
-                  {state.previousMoves.map((move, i) => (
-                    <li key={i}>{move.notation}</li>
-                  ))}
-                </ul>
-              </div>
+            <CardContent className="flex flex-col items-center mt-[-20px]">
+                <div className="flex justify-between w-full mb-2">
+                    <div className="text-sm font-bold text-center w-1/2 ml-[-15px]">You</div>
+                    <div className="text-sm font-bold text-center w-1/2 mr-[-5px]">Opponent</div>
+                </div>
+                <div className="flex space-x-1">
+                    <div className="max-h-[610px] overflow-y-auto bg-white rounded-lg p-2 shadow-md shadow-white border border-black w-[140px]">
+                      <ul className="text-black text-xs">
+                        {state.previousMoves
+                          .filter((move) => move.player === "w")
+                          .map((move, i) => (
+                            <li key={i} className={move.pieceCaptured ? "text-red-500" : "text-green-500"}>
+                              {move.notation}
+                            </li>
+                          ))}
+                      </ul>
+                  </div>
+                    <div className="max-h-[610px] overflow-y-auto bg-white rounded-lg p-2 shadow-md shadow-white border border-black w-[140px]">
+                    <ul className="text-black text-xs">
+                      {state.previousMoves
+                        .filter((move) => move.player === "b")
+                        .map((move, i) => (
+                          <li key={i} className={move.pieceCaptured ? "text-red-500" : "text-green-500"}>
+                            {move.notation}
+                          </li>
+                        ))}
+                    </ul>
+                  </div>
+                </div>
             </CardContent>
           </Card>
         </div>

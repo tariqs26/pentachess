@@ -101,13 +101,13 @@ export const INITIAL_PIECES: Record<
 export const PROMOTION_PIECES = ["queen", "rook", "bishop", "knight"] as const
 
 export const pieceNames: Record<PieceType, string> = {
-  "king": "King",
-  "queen": "Queen",
-  "rook": "Rook",
-  "bishop": "Bishop",
-  "knight": "Knight",
-  "pawn-cw": "Pawn",
-  "pawn-ccw": "Pawn",
-  "berolina-pawn-cw": "Berolina Pawn",
-  "berolina-pawn-ccw": "Berolina Pawn",
+  "king": "KG",
+  "queen": "QN",
+  "rook": "RK",
+  "bishop": "BS",
+  "knight": "KN",
+  "pawn-cw": "PN",
+  "pawn-ccw": "PN",
+  "berolina-pawn-cw": "B-PN",
+  "berolina-pawn-ccw": "B-PN",
 } as const
