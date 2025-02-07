@@ -4,13 +4,8 @@ import { getPossibleMoves, makePiece } from "../piece/utils"
 import { cloneCell, makeCell, setCellEdges, setCellVertices } from "./cell"
 import type { Board, Cell } from "./types"
 
-export function initializeBoard(): Board {
-  const rings = [
-    new Array(10), // inner ring
-    new Array(30), // middle ring
-    new Array(50), // outer ring
-  ]
-
+export function initializeBoard() {
+  const rings = [new Array(10), new Array(30), new Array(50)]
   const board: Board = [[], [], []]
 
   for (let ring = 0; ring < rings.length; ring++) {
@@ -57,12 +52,10 @@ export function initializeBoard(): Board {
     }
   }
 
-  // set cell edges
   for (const ring of board) {
     for (const cell of ring) setCellEdges(cell)
   }
 
-  // set cell vertices
   for (const ring of board) {
     for (const cell of ring) setCellVertices(cell, board)
   }
@@ -93,10 +86,7 @@ export function getSides<T>(arr: T[], size: number) {
   }, [])
 }
 
-export function getKingCell(
-  board: Board,
-  pieceColor?: PieceColor
-): Cell | null {
+export function getKingCell(board: Board, pieceColor?: PieceColor) {
   for (const ring of board) {
     for (const cell of ring) {
       if (cell.piece?.type === "king" && cell.piece.color === pieceColor) {
@@ -113,7 +103,6 @@ export function checkForCheckOrMate(
   color: PieceColor
 ): [PieceColor | null, boolean] {
   const king = getKingCell(board, color)
-
   for (const ring of board) {
     for (const cell of ring) {
       if (cell.piece !== null && cell.piece.color !== king?.piece?.color) {
@@ -124,11 +113,10 @@ export function checkForCheckOrMate(
       }
     }
   }
-
   return [null, false]
 }
 
-function checkForCheckmate(board: Board, king: Cell): boolean {
+function checkForCheckmate(board: Board, king: Cell) {
   for (const ring of board) {
     for (const cell of ring) {
       if (cell.piece !== null && cell.piece.color === king.piece?.color) {
@@ -137,7 +125,6 @@ function checkForCheckmate(board: Board, king: Cell): boolean {
       }
     }
   }
-
   return true
 }
 
