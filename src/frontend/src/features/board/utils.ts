@@ -100,14 +100,17 @@ export function getKingCell(board: Board, pieceColor?: PieceColor) {
 
 export function checkForCheckOrMate(
   board: Board,
-  color: PieceColor
+  color: PieceColor,
+  checkForMate = true
 ): [PieceColor | null, boolean] {
   const king = getKingCell(board, color)
   for (const ring of board) {
     for (const cell of ring) {
       if (cell.piece !== null && cell.piece.color !== king?.piece?.color) {
         const possibleMoves = getPossibleMoves(cell, board, true)
+
         if (Array.from(possibleMoves).some((move) => move.id === king?.id)) {
+          if (!checkForMate) return [color, true]
           return [color, king ? checkForCheckmate(board, king) : false]
         }
       }

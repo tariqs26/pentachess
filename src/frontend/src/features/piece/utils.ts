@@ -1,5 +1,5 @@
 import type { Board, Cell } from "../board/types"
-import { cloneBoard, getKingCell } from "../board/utils"
+import { cloneBoard, checkForCheckOrMate } from "../board/utils"
 import { PIECE_DATA } from "./constants"
 import type { Piece, PieceColor, PieceType } from "./types"
 
@@ -394,45 +394,23 @@ function checkKingSafety(
 ): Set<Cell> {
   const currentColor = simulation?.piece?.color
 
-  let king: Cell | null = null
-  if (simulation.piece?.type !== "king") {
-    king = getKingCell(board, currentColor)
-  }
-
   for (const move of Array.from(possibleMoves)) {
     const clonedBoard = cloneBoard(board)
     clonedBoard[move.x][move.y].piece = simulation.piece
     clonedBoard[simulation.x][simulation.y].piece = null
+    let illegalMove = false
+    if (currentColor) {
+      const [, isInCheck] = checkForCheckOrMate(
+        clonedBoard,
+        currentColor,
+        false
+      )
+      illegalMove = isInCheck
+    }
 
-    for (const ring of clonedBoard) {
-      for (const cell of ring) {
-        if (simulation.piece?.type !== "king") {
-          if (cell.piece !== null && cell.piece.color !== king?.piece?.color) {
-            const simulatedMoves = getPossibleMoves(cell, clonedBoard, true)
-            if (
-              Array.from(simulatedMoves).some(
-                (simulatedMove) => simulatedMove.id === king?.id
-              )
-            ) {
-              possibleMoves.delete(move)
-            }
-          }
-        } else {
-          if (cell.piece !== null && cell.piece.color !== currentColor) {
-            const simulatedMoves = getPossibleMoves(cell, clonedBoard, true)
-
-            if (
-              Array.from(simulatedMoves).some(
-                (simulatedMove) => simulatedMove.id === move.id
-              )
-            ) {
-              possibleMoves.delete(move)
-            }
-          }
-        }
-      }
+    if (illegalMove) {
+      possibleMoves.delete(move)
     }
   }
-
   return possibleMoves
 }
