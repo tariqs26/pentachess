@@ -16,33 +16,39 @@ import queenW from "/public/pieces/queen-w.png"
 import rookB from "/public/pieces/rook-b.png"
 import rookW from "/public/pieces/rook-w.png"
 
-const pawn = { value: 1, image: { w: pawnW, b: pawnB } }
-const berolinaPawn = { value: 1, image: { w: berolinaW, b: berolinaB } }
+const pawn = { abbr: "PN", value: 1, image: { w: pawnW, b: pawnB } }
+const berolinaPawn = { abbr: "B-PN", value: 1, image: { w: berolinaW, b: berolinaB } }
 
 export const PIECE_DATA: Record<
   PieceType,
   {
+    abbr: string
     value: number
     image: Record<PieceColor, StaticImageData>
   }
 > = {
   king: {
+    abbr: "KG",
     value: 9999,
     image: { w: kingW, b: kingB },
   },
   queen: {
+    abbr: "QN",
     value: 9,
     image: { w: queenW, b: queenB },
   },
   rook: {
+    abbr: "RK",
     value: 5,
     image: { w: rookW, b: rookB },
   },
   bishop: {
+    abbr: "BS",
     value: 3,
     image: { w: bishopW, b: bishopB },
   },
   knight: {
+    abbr: "KN",
     value: 3,
     image: { w: knightW, b: knightB },
   },
@@ -99,15 +105,3 @@ export const INITIAL_PIECES: Record<
 } as const
 
 export const PROMOTION_PIECES = ["queen", "rook", "bishop", "knight"] as const
-
-export const pieceNames: Record<PieceType, string> = {
-  "king": "KG",
-  "queen": "QN",
-  "rook": "RK",
-  "bishop": "BS",
-  "knight": "KN",
-  "pawn-cw": "PN",
-  "pawn-ccw": "PN",
-  "berolina-pawn-cw": "B-PN",
-  "berolina-pawn-ccw": "B-PN",
-} as const

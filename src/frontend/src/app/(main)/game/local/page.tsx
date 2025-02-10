@@ -23,7 +23,7 @@ const calcTimeRemaing = (timeInSeconds: number) => {
 const CapturedPieces = ({ pieces }: { pieces: Piece[] }) => (
   <div className="flex h-[48px] items-center bg-[#27B559] rounded-lg p-2 shadow-md shadow-white border border-black">
     {pieces.map((piece, i) => (
-      <Image key={i} src={piece.image} alt={piece.type} className="size-10" />
+      <Image key={i} src={piece.image} alt={piece.type} className="size-8 mr-[-1.2px]" />
     ))}
   </div>
 )
@@ -65,30 +65,8 @@ export default function LocalGamePage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="relative flex w-full space-x-4" style={{ marginLeft: "-500px" }}>
-          <Card className="flex-shrink-0 w-[230px] max-h-min">
-            <CardHeader>
-              <CardTitle className="text-xl">Game Info</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div>Current Turn: {state.turn == "w" ? "You" : "Opponent"}</div>
-              <div className="mb-2 text-lg">Timer:</div>
-              <div className="flex items-center justify-center bg-secondary rounded-lg p-2 shadow-md shadow-white border border-black">
-                <span className="text-lg font-bold">{ timeRemaining[state.turn] }</span>
-              </div>
-            </CardContent>
-          </Card>
-          <div className="flex-1">
-            <CapturedPieces pieces={state.capturedPieces.w} />
-            <div className="relative">
-              <div className="absolute top-7 left-0 transform -translate-y-full mb-2 text-lg font-bold">Opponent</div>
-              <Board />
-              <div className="absolute left-0 transform -translate-y-full mb-2 text-lg font-bold">You</div>
-            </div>
-            <CapturedPieces pieces={state.capturedPieces.b} />
-            {state.status === "promoting" && <PawnPromotionModal />}
-          </div>
-          <Card className="flex-shrink-0 w-[300px] max-h-min">
+        <div className="relative flex w-full space-x-4 ml-[-500px]">
+          <Card className="flex-shrink-0 w-[260px] max-h-min ml-[-50px]">
             <CardHeader>
                 <CardTitle className="text-xl text-center">Previous Moves</CardTitle>
             </CardHeader>
@@ -98,7 +76,7 @@ export default function LocalGamePage() {
                     <div className="text-sm font-bold text-center w-1/2 mr-[-5px]">Opponent</div>
                 </div>
                 <div className="flex space-x-1">
-                    <div className="max-h-[610px] overflow-y-auto bg-white rounded-lg p-2 shadow-md shadow-white border border-black w-[140px]">
+                    <div className="max-h-[610px] overflow-y-auto bg-white rounded-lg p-2 shadow-md shadow-white border border-black w-[120px]">
                       <ul className="text-black text-xs">
                         {state.previousMoves
                           .filter((move) => move.player === "w")
@@ -109,7 +87,7 @@ export default function LocalGamePage() {
                           ))}
                       </ul>
                   </div>
-                    <div className="max-h-[610px] overflow-y-auto bg-white rounded-lg p-2 shadow-md shadow-white border border-black w-[140px]">
+                    <div className="max-h-[610px] overflow-y-auto bg-white rounded-lg p-2 shadow-md shadow-white border border-black w-[120px]">
                     <ul className="text-black text-xs">
                       {state.previousMoves
                         .filter((move) => move.player === "b")
@@ -123,6 +101,29 @@ export default function LocalGamePage() {
                 </div>
             </CardContent>
           </Card>
+            <div className={`flex-1 ${state.status === "promoting" ? "relative" : ""}`}>
+            {state.status === "promoting" && (
+              <div className="absolute inset-0 bg-black/50 z-10"></div>
+            )}
+            <CapturedPieces pieces={state.capturedPieces.w} />
+            <div className="relative">
+              <div className="absolute items-center justify-center bg-secondary rounded-lg p-2 shadow-md shadow-white border border-black w-[80px] right-0">
+                <div className="flex items-center justify-center">
+                  <span className="text-lg font-bold">{ timeRemaining["b"] }</span>
+                </div>
+              </div>
+              <div className="absolute top-7 left-0 transform -translate-y-full mb-2 text-lg font-bold">Opponent</div>
+              <Board />
+              <div className="absolute left-0 transform -translate-y-full mb-2 text-lg font-bold">You</div>
+              <div className="absolute items-center justify-center bg-secondary rounded-lg p-2 shadow-md shadow-white border border-black w-[80px] right-0 bottom-0">
+                <div className="flex items-center justify-center">
+                  <span className="text-lg font-bold">{ timeRemaining["w"] }</span>
+                </div>
+              </div>
+            </div>
+            <CapturedPieces pieces={state.capturedPieces.b} />
+            {state.status === "promoting" && <PawnPromotionModal />}
+          </div>
         </div>
       )}
     </div>
