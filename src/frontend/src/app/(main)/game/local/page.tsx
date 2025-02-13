@@ -38,6 +38,10 @@ export default function LocalGamePage() {
     const interval = setInterval(() => {
       if (state && state.timer) {
         dispatch({ type: "DECREMENT_TIMER", payload: state.turn })
+
+        if (state.status == "playing" && (state.timer.w <= 0 || state.timer.b <= 0)) {
+          dispatch({ type: "UPDATE_STATUS", payload: "time-expired" })
+        }
       }
     }, 1000)
 
@@ -124,6 +128,17 @@ export default function LocalGamePage() {
             <CapturedPieces pieces={state.capturedPieces.b} />
             {state.status === "promoting" && <PawnPromotionModal />}
           </div>
+          {state.status === "time-expired" && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-20">
+            <div className="p-6 rounded-lg shadow-lg text-center bg-[#27B559]">
+              <h2 className="text-2xl font-bold mb-4">Game Over</h2>
+              <p className="mb-4">Time has expired!</p>
+              <button className="bg-red-500 text-white px-4 py-2 rounded" onClick={() => dispatch({ type: "UPDATE_STATUS", payload: "waiting" })}>
+                Finish Game
+              </button>
+            </div>
+          </div>
+          )}
         </div>
       )}
     </div>

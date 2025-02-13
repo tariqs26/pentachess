@@ -38,7 +38,7 @@ export function localGameReducer(
       state.boardState.board[to.x][to.y].piece = piece
       state.boardState.board[from.x][from.y].piece = null
 
-      const newMove = getMove(from, to, piece, state.turn)
+      const newMove = getMove(from, to, piece, state.turn, canPromote(piece, to))
 
       return {
         ...state,
@@ -85,6 +85,12 @@ export function localGameReducer(
           w: duration,
           b: duration,
         },
+      }
+    }
+    case "UPDATE_STATUS": {
+      return {
+        ...state,
+        status: action.payload,
       }
     }
     case "DECREMENT_TIMER": {
