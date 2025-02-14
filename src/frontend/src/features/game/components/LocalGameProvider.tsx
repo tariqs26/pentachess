@@ -2,10 +2,8 @@
 
 import { type Dispatch, createContext, useReducer } from "react"
 import { initializeBoard } from "@/features/board/utils"
-import Image from "next/image"
 import { localGameReducer } from "../reducer"
 import type { LocalGameAction, LocalGameState } from "../types"
-import { Piece } from "@/features/piece/types"
 
 const initialState: LocalGameState = {
   player: "w",
@@ -40,16 +38,3 @@ export const LocalGameProvider = ({ children }: React.PropsWithChildren) => {
     </LocalGameContext.Provider>
   )
 }
-
-export const CapturedPieces = ({ pieces }: { pieces: Piece[] }) => (
-  <div className="flex h-[48px] items-center rounded-lg border border-black bg-[#27B559] p-2 shadow-md shadow-white">
-    {pieces.map((piece, i) => (
-      <Image
-        key={i}
-        src={piece.image}
-        alt={piece.type}
-        className="mr-[-1.2px] size-8"
-      />
-    ))}
-  </div>
-)

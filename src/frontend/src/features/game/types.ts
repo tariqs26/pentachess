@@ -33,7 +33,7 @@ export type LocalGameState = {
   check: PieceColor | null
   status: GameStatus
   boardState: BoardState
-  promotionCoordinates?: { from: Cell; to: Cell }
+  promotionCoordinates?: { from: Cell; to: Cell; piece: Piece }
 }
 
 export type LocalGameAction =

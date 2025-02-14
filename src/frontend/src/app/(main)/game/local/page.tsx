@@ -7,33 +7,22 @@ import { useLocalGame } from "@/features/game/useLocalGame"
 import { PawnPromotionModal } from "@/features/piece/components/PawnPromotionModal"
 import { useEffect, useState } from "react"
 import { displayTimeRemaining } from "@/features/game/utils"
-import { CapturedPieces } from "@/features/game/components/LocalGameProvider"
+import { CapturedPieces } from "@/features/game/components/CapturedPieces"
 
 export default function LocalGamePage() {
   const { state, dispatch } = useLocalGame()
-  const [timeRemaining, setTimeRemaining] = useState(() => ({
-    w: displayTimeRemaining(state.timer?.w || 0),
-    b: displayTimeRemaining(state.timer?.b || 0),
-  }))
 
   useEffect(() => {
     const interval = setInterval(() => {
-      if (state && state.timer) {
-        dispatch({ type: "DECREMENT_TIMER", payload: state.turn })
+      dispatch({ type: "DECREMENT_TIMER", payload: state.turn })
 
-        if (
-          state.status == "playing" &&
-          (state.timer.w <= 0 || state.timer.b <= 0)
-        ) {
-          dispatch({ type: "UPDATE_STATUS", payload: "time-expired" })
-        }
+      if (
+        (state.status === "playing" || state.status === "promoting") &&
+        (state.timer.w <= 0 || state.timer.b <= 0)
+      ) {
+        dispatch({ type: "UPDATE_STATUS", payload: "time-expired" })
       }
     }, 1000)
-
-    setTimeRemaining({
-      w: displayTimeRemaining(state.timer?.w || 0),
-      b: displayTimeRemaining(state.timer?.b || 0),
-    })
 
     return () => clearInterval(interval)
   }, [dispatch, state])
@@ -122,7 +111,7 @@ export default function LocalGamePage() {
               <div className="absolute right-0 w-[80px] items-center justify-center rounded-lg border border-black bg-secondary p-2 shadow-md shadow-white">
                 <div className="flex items-center justify-center">
                   <span className="text-lg font-bold">
-                    {timeRemaining["b"]}
+                    {displayTimeRemaining(state.timer.b)}
                   </span>
                 </div>
               </div>
@@ -136,7 +125,7 @@ export default function LocalGamePage() {
               <div className="absolute bottom-0 right-0 w-[80px] items-center justify-center rounded-lg border border-black bg-secondary p-2 shadow-md shadow-white">
                 <div className="flex items-center justify-center">
                   <span className="text-lg font-bold">
-                    {timeRemaining["w"]}
+                    {displayTimeRemaining(state.timer.w)}
                   </span>
                 </div>
               </div>

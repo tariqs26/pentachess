@@ -60,7 +60,7 @@ export function localGameReducer(
         previousMoves: [...state.previousMoves, newMove],
         ...(canPromote(piece, to) && {
           status: "promoting",
-          promotionCoordinates: { from, to },
+          promotionCoordinates: { from, to, piece },
           previousMoves: state.previousMoves, // remove the new move, as it will be added after promotion
           turn: state.turn,
         }),
@@ -71,18 +71,12 @@ export function localGameReducer(
         return state
       }
 
-      const { from, to } = state.promotionCoordinates
+      const { from, to, piece } = state.promotionCoordinates
       const { x, y } = to
 
       state.boardState.board[x][y].piece = action.payload
 
-      const newMove = getMove(
-        from,
-        to,
-        state.boardState.board[x][y].piece,
-        state.turn,
-        action.payload
-      )
+      const newMove = getMove(from, to, piece, state.turn, action.payload)
 
       return {
         ...state,
