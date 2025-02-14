@@ -1,7 +1,6 @@
 import Image from "next/image"
 import { useLocalGame } from "@/features/game/useLocalGame"
 import { cn } from "@/lib/utils"
-import { cellId } from "../cell"
 import type { Cell } from "../types"
 import { sideRotation } from "./Side"
 
@@ -123,7 +122,7 @@ export const CellComponent = (cell: Cell) => {
           isAvailableMove && cell.piece && "bg-red-500",
           isCellSelected && "bg-orange-500",
           state.promotionCoordinates &&
-            cellId(...state.promotionCoordinates) === cell.id &&
+            state.promotionCoordinates.to.id === cell.id &&
             "bg-yellow-500"
         )}
         style={{

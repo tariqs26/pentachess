@@ -16,8 +16,12 @@ import queenW from "/public/pieces/queen-w.png"
 import rookB from "/public/pieces/rook-b.png"
 import rookW from "/public/pieces/rook-w.png"
 
-const pawn = { abbr: "PN", value: 1, image: { w: pawnW, b: pawnB } }
-const berolinaPawn = { abbr: "B-PN", value: 1, image: { w: berolinaW, b: berolinaB } }
+const pawn = { abbr: "P", value: 1, image: { w: pawnW, b: pawnB } }
+const berolinaPawn = {
+  abbr: "Bp",
+  value: 1,
+  image: { w: berolinaW, b: berolinaB },
+}
 
 export const PIECE_DATA: Record<
   PieceType,
@@ -28,27 +32,27 @@ export const PIECE_DATA: Record<
   }
 > = {
   king: {
-    abbr: "KG",
+    abbr: "K",
     value: 9999,
     image: { w: kingW, b: kingB },
   },
   queen: {
-    abbr: "QN",
+    abbr: "Q",
     value: 9,
     image: { w: queenW, b: queenB },
   },
   rook: {
-    abbr: "RK",
+    abbr: "R",
     value: 5,
     image: { w: rookW, b: rookB },
   },
   bishop: {
-    abbr: "BS",
+    abbr: "B",
     value: 3,
     image: { w: bishopW, b: bishopB },
   },
   knight: {
-    abbr: "KN",
+    abbr: "K",
     value: 3,
     image: { w: knightW, b: knightB },
   },

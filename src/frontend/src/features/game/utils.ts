@@ -1,16 +1,22 @@
-import { Cell } from "../board/types";
-import { PIECE_DATA } from "../piece/constants";
-import { Piece, PieceColor } from "../piece/types";
-import { Move } from "./types";
+import { Cell } from "../board/types"
+import { Piece, PieceColor } from "../piece/types"
+import { Move } from "./types"
 
-export const getMove = (from: Cell, to: Cell, piece: Piece, player: PieceColor, pawnPromotion: Boolean): Move => {
-  const pieceAbrev = PIECE_DATA[piece.type].abbr;
-  const rows = ["C", "B", "A"];
-  const fromPosition = `${rows[from.x]}${from.y}`;
-  const toPosition = `${rows[to.x]}${to.y}`;
-  const captureNotation = to.piece ? `(X)` : "";
-  const pawnPromotionNotation = pawnPromotion ? "(PROMO)" : "";
-  const notation = `${pieceAbrev}: ${fromPosition} → ${toPosition} ${captureNotation} ${pawnPromotionNotation}`;
+export const getMove = (
+  from: Cell,
+  to: Cell,
+  piece: Piece,
+  player: PieceColor,
+  piecePromoted: Piece | null
+): Move => {
+  const pieceAbrev = piece.abbr
+  const fromPosition = from.id.toLowerCase()
+  const toPosition = to.id.toLowerCase()
+  const moveType = to.piece ? "x" : "-"
+  const promotion = piecePromoted ? `=${piecePromoted.abbr}` : ""
+  const kingInCheck = "" // TODO: implement check
+  const checkmate = "" // TODO: implement checkmate
+  const notation = `${pieceAbrev}:${fromPosition}${moveType}${toPosition}${kingInCheck}${checkmate}${promotion}`
 
   return {
     player,
@@ -23,5 +29,16 @@ export const getMove = (from: Cell, to: Cell, piece: Piece, player: PieceColor, 
     piecePromoted: null,
     notation,
     timestamp: new Date(),
-  };
-};
+  }
+}
+
+export const displayTimeRemaining = (timeInSeconds: number) => {
+  if (timeInSeconds <= 0) {
+    return "00:00"
+  }
+
+  const minutes = Math.floor(timeInSeconds / 60)
+  const seconds = timeInSeconds % 60
+
+  return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`
+}

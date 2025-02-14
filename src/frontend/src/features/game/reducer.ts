@@ -31,14 +31,14 @@ export function localGameReducer(
       }
     }
     case "MOVE_PIECE": {
-      const { to, from, piece } = action.payload;
+      const { to, from, piece } = action.payload
       const capturedPiece = to.piece
       piece.hasMoved = true
 
       state.boardState.board[to.x][to.y].piece = piece
       state.boardState.board[from.x][from.y].piece = null
 
-      const newMove = getMove(from, to, piece, state.turn, canPromote(piece, to))
+      const newMove = getMove(from, to, piece, state.turn, null)
 
       return {
         ...state,
@@ -50,28 +50,45 @@ export function localGameReducer(
         },
         capturedPieces: capturedPiece
           ? {
-          ...state.capturedPieces,
-          [piece.color]: [...state.capturedPieces[piece.color], capturedPiece],
-        }
+              ...state.capturedPieces,
+              [piece.color]: [
+                ...state.capturedPieces[piece.color],
+                capturedPiece,
+              ],
+            }
           : state.capturedPieces,
         previousMoves: [...state.previousMoves, newMove],
         ...(canPromote(piece, to) && {
           status: "promoting",
-          promotionCoordinates: [to.x, to.y],
+          promotionCoordinates: { from, to },
+          previousMoves: state.previousMoves, // remove the new move, as it will be added after promotion
           turn: state.turn,
         }),
       }
     }
     case "PROMOTE_PAWN": {
-      if (state.promotionCoordinates) {
-        const [x, y] = state.promotionCoordinates
-        state.boardState.board[x][y].piece = action.payload
+      if (!state.promotionCoordinates) {
+        return state
       }
+
+      const { from, to } = state.promotionCoordinates
+      const { x, y } = to
+
+      state.boardState.board[x][y].piece = action.payload
+
+      const newMove = getMove(
+        from,
+        to,
+        state.boardState.board[x][y].piece,
+        state.turn,
+        action.payload
+      )
 
       return {
         ...state,
         boardState: { ...state.boardState },
         status: "playing",
+        previousMoves: [...state.previousMoves, newMove],
         promotionCoordinates: undefined,
         turn: state.turn === "w" ? "b" : "w",
       }

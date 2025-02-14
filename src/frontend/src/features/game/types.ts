@@ -1,5 +1,5 @@
 import type { BoardAction, BoardState, Cell } from "../board/types"
-import type { Piece, PieceColor, PieceType } from "../piece/types"
+import type { Piece, PieceColor } from "../piece/types"
 
 export type Move = {
   player: PieceColor
@@ -33,7 +33,7 @@ export type LocalGameState = {
   check: PieceColor | null
   status: GameStatus
   boardState: BoardState
-  promotionCoordinates?: [number, number]
+  promotionCoordinates?: { from: Cell; to: Cell }
 }
 
 export type LocalGameAction =
@@ -57,6 +57,7 @@ export type LocalGameAction =
       payload: Piece
     }
   | {
-    type: "DECREMENT_TIMER"
-    payload: PieceColor
-  } | BoardAction
+      type: "DECREMENT_TIMER"
+      payload: PieceColor
+    }
+  | BoardAction

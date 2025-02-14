@@ -13,14 +13,14 @@ export const PawnPromotionModal = () => {
   }
 
   return (
-    <div className="absolute inset-0 flex items-center justify-start z-10">
+    <div className="absolute inset-0 z-10 flex items-center justify-start">
       <div className="relative ml-4 rounded-xl border bg-card p-4 text-center shadow-lg">
         <h2 className="mb-4 font-semibold leading-none tracking-tight">
           Promote
           <br />
           Pawn
         </h2>
-        <div className="flex flex-col gap-3 z-12">
+        <div className="z-12 flex flex-col gap-3">
           {PROMOTION_PIECES.map((piece) => makePiece(piece, state.turn)).map(
             (piece) => (
               <button
