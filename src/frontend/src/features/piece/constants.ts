@@ -52,7 +52,7 @@ export const PIECE_DATA: Record<
     image: { w: bishopW, b: bishopB },
   },
   knight: {
-    abbr: "K",
+    abbr: "N",
     value: 3,
     image: { w: knightW, b: knightB },
   },
