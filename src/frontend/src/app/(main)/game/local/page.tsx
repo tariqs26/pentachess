@@ -1,13 +1,17 @@
 "use client"
 
+import Link from "next/link"
+import { useEffect } from "react"
+
+import { Button } from "@/components/ui/Button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
 import { Board } from "@/features/board/components/Board"
+import { CapturedPieces } from "@/features/game/components/CapturedPieces"
 import { CreateGameForm } from "@/features/game/components/CreateGameForm"
+import { PreviousMoves } from "@/features/game/components/PreviousMoves"
+import { Timer } from "@/features/game/components/Timer"
 import { useLocalGame } from "@/features/game/useLocalGame"
 import { PawnPromotionModal } from "@/features/piece/components/PawnPromotionModal"
-import { useEffect, useState } from "react"
-import { displayTimeRemaining } from "@/features/game/utils"
-import { CapturedPieces } from "@/features/game/components/CapturedPieces"
 
 export default function LocalGamePage() {
   const { state, dispatch } = useLocalGame()
@@ -28,7 +32,7 @@ export default function LocalGamePage() {
   }, [dispatch, state])
 
   return (
-    <div className="mx-auto grid min-h-screen max-w-2xl place-items-center p-6">
+    <div className="mx-auto grid min-h-screen place-items-center p-6">
       {state.status === "waiting" ? (
         <Card>
           <CardHeader>
@@ -44,108 +48,35 @@ export default function LocalGamePage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="relative ml-[-500px] flex w-full space-x-4">
-          <Card className="ml-[-50px] max-h-min w-[230px] flex-shrink-0">
-            <CardHeader>
-              <CardTitle className="text-center text-xl">
-                Previous Moves
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="mt-[-20px] flex flex-col items-center">
-              <div className="mb-2 flex w-full justify-between">
-                <div className="ml-[-15px] w-1/2 text-center text-sm font-bold">
-                  You
-                </div>
-                <div className="mr-[-5px] w-1/2 text-center text-sm font-bold">
-                  Opponent
-                </div>
-              </div>
-              <div className="flex space-x-1">
-                <div className="max-h-[610px] w-[100px] overflow-y-auto rounded-lg border border-black bg-white p-2 shadow-md shadow-white">
-                  <ul className="text-xs text-black">
-                    {state.previousMoves
-                      .filter((move) => move.player === "w")
-                      .map((move, i) => (
-                        <li
-                          key={i}
-                          className={
-                            move.pieceCaptured
-                              ? "text-red-500"
-                              : "text-green-500"
-                          }
-                        >
-                          {move.notation}
-                        </li>
-                      ))}
-                  </ul>
-                </div>
-                <div className="max-h-[610px] w-[100px] overflow-y-auto rounded-lg border border-black bg-white p-2 shadow-md shadow-white">
-                  <ul className="text-xs text-black">
-                    {state.previousMoves
-                      .filter((move) => move.player === "b")
-                      .map((move, i) => (
-                        <li
-                          key={i}
-                          className={
-                            move.pieceCaptured
-                              ? "text-red-500"
-                              : "text-green-500"
-                          }
-                        >
-                          {move.notation}
-                        </li>
-                      ))}
-                  </ul>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          <div
-            className={`flex-1 ${state.status === "promoting" ? "relative" : ""}`}
-          >
-            {state.status === "promoting" && (
-              <div className="absolute inset-0 z-10 bg-black/50"></div>
-            )}
+        <div className="flex w-full justify-center gap-x-2">
+          <div className="relative max-w-2xl flex-1">
+            {state.status === "promoting" && <PawnPromotionModal />}
             <CapturedPieces pieces={state.capturedPieces.w} />
             <div className="relative">
-              <div className="absolute right-0 w-[80px] items-center justify-center rounded-lg border border-black bg-secondary p-2 shadow-md shadow-white">
-                <div className="flex items-center justify-center">
-                  <span className="text-lg font-bold">
-                    {displayTimeRemaining(state.timer.b)}
-                  </span>
-                </div>
-              </div>
-              <div className="absolute left-0 top-7 mb-2 -translate-y-full transform text-lg font-bold">
-                Opponent
-              </div>
+              <Timer duration={state.timer.b} />
+              <p className="absolute left-0 -mt-1 font-bold">Opponent</p>
               <Board />
-              <div className="absolute left-0 mb-2 -translate-y-full transform text-lg font-bold">
-                You
-              </div>
-              <div className="absolute bottom-0 right-0 w-[80px] items-center justify-center rounded-lg border border-black bg-secondary p-2 shadow-md shadow-white">
-                <div className="flex items-center justify-center">
-                  <span className="text-lg font-bold">
-                    {displayTimeRemaining(state.timer.w)}
-                  </span>
-                </div>
-              </div>
+              <p className="absolute bottom-0 left-0 -mb-1 font-bold">You</p>
+              <Timer duration={state.timer.w} className="bottom-0" />
             </div>
             <CapturedPieces pieces={state.capturedPieces.b} />
-            {state.status === "promoting" && <PawnPromotionModal />}
           </div>
+          <PreviousMoves previousMoves={state.previousMoves} />
           {state.status === "time-expired" && (
             <div className="fixed inset-0 z-20 flex items-center justify-center bg-black/50">
-              <div className="rounded-lg bg-[#27B559] p-6 text-center shadow-lg">
-                <h2 className="mb-4 text-2xl font-bold">Game Over</h2>
-                <p className="mb-4">Time has expired!</p>
-                <button
-                  className="rounded bg-red-500 px-4 py-2 text-white"
+              <div className="rounded-md bg-card p-6 text-center shadow-lg">
+                <h2 className="mb-4 text-xl font-bold">Game Over</h2>
+                <p className="mb-4 text-muted-foreground">Time has expired!</p>
+                <Button variant="secondary" asChild className="mr-2">
+                  <Link href="/">Leave Game</Link>
+                </Button>
+                <Button
                   onClick={() =>
                     dispatch({ type: "UPDATE_STATUS", payload: "waiting" })
                   }
                 >
-                  Finish Game
-                </button>
+                  Play Again
+                </Button>
               </div>
             </div>
           )}

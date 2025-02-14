@@ -1,6 +1,6 @@
-import { Cell } from "../board/types"
-import { Piece, PieceColor } from "../piece/types"
-import { Move } from "./types"
+import type { Cell } from "../board/types"
+import type { Piece, PieceColor } from "../piece/types"
+import type { Move } from "./types"
 
 export const getMove = (
   from: Cell,
@@ -9,14 +9,13 @@ export const getMove = (
   player: PieceColor,
   piecePromoted: Piece | null
 ): Move => {
-  const pieceAbrev = piece.abbr
-  const fromPosition = from.id.toLowerCase()
-  const toPosition = to.id.toLowerCase()
+  const fromId = from.id.toLowerCase()
+  const toId = to.id.toLowerCase()
   const moveType = to.piece ? "x" : "-"
   const promotion = piecePromoted ? `=${piecePromoted.abbr}` : ""
-  const kingInCheck = "" // TODO: implement check
+  const check = "" // TODO: implement check
   const checkmate = "" // TODO: implement checkmate
-  const notation = `${pieceAbrev}:${fromPosition}${moveType}${toPosition}${kingInCheck}${checkmate}${promotion}`
+  const notation = `${piece.abbr}:${fromId}${moveType}${toId}${promotion}${check}${checkmate}`
 
   return {
     player,
@@ -24,9 +23,9 @@ export const getMove = (
     to,
     piece,
     pieceCaptured: to.piece,
+    piecePromoted,
     check: false,
     checkmate: false,
-    piecePromoted: null,
     notation,
     timestamp: new Date(),
   }
@@ -38,7 +37,7 @@ export const displayTimeRemaining = (timeInSeconds: number) => {
   }
 
   const minutes = Math.floor(timeInSeconds / 60)
-  const seconds = timeInSeconds % 60
+  const seconds = Math.floor(timeInSeconds % 60)
 
   return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`
 }

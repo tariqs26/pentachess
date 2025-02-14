@@ -1,6 +1,6 @@
-import { getPossibleMoves, canPromote } from "../piece/utils"
-import { getMove } from "./utils"
+import { canPromote, getPossibleMoves } from "../piece/utils"
 import type { LocalGameAction, LocalGameState } from "./types"
+import { getMove } from "./utils"
 
 export function localGameReducer(
   state: LocalGameState,
@@ -92,17 +92,11 @@ export function localGameReducer(
       return {
         ...state,
         status: "playing",
-        timer: {
-          w: duration,
-          b: duration,
-        },
+        timer: { w: duration, b: duration },
       }
     }
     case "UPDATE_STATUS": {
-      return {
-        ...state,
-        status: action.payload,
-      }
+      return { ...state, status: action.payload }
     }
     case "DECREMENT_TIMER": {
       return {
