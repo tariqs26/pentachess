@@ -1,7 +1,6 @@
 import Image from "next/image"
 import { useLocalGame } from "@/features/game/useLocalGame"
 import { cn } from "@/lib/utils"
-import { cellId } from "../cell"
 import type { Cell } from "../types"
 import { sideRotation } from "./Side"
 
@@ -81,16 +80,13 @@ export const CellComponent = (cell: Cell) => {
     if (!state.boardState.selectedCell.cell.piece) return
     if (state.boardState.overCell === null) return
 
-    const { x, y, piece } = state.boardState.selectedCell.cell
-    const { x: toX, y: toY, piece: toPiece } = state.boardState.overCell
+    const from = state.boardState.selectedCell.cell
+    const piece = state.boardState.selectedCell.cell.piece
+    const to = state.boardState.overCell
 
     dispatch({
       type: "MOVE_PIECE",
-      payload: {
-        from: { x, y, piece },
-        to: { x: toX, y: toY, piece: toPiece },
-        piece,
-      },
+      payload: { from, to, piece },
     })
   }
 
@@ -126,7 +122,7 @@ export const CellComponent = (cell: Cell) => {
           isAvailableMove && cell.piece && "bg-red-500",
           isCellSelected && "bg-orange-500",
           state.promotionCoordinates &&
-            cellId(...state.promotionCoordinates) === cell.id &&
+            state.promotionCoordinates.to.id === cell.id &&
             "bg-yellow-500"
         )}
         style={{

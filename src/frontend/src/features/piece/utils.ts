@@ -6,6 +6,7 @@ import type { Piece, PieceColor, PieceType } from "./types"
 export function makePiece(type: PieceType, color: PieceColor): Piece {
   return {
     type,
+    abbr: PIECE_DATA[type].abbr,
     color,
     value: PIECE_DATA[type].value,
     image: PIECE_DATA[type].image[color],

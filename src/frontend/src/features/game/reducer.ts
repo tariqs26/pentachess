@@ -1,5 +1,6 @@
-import { getPossibleMoves, canPromote } from "../piece/utils"
+import { canPromote, getPossibleMoves } from "../piece/utils"
 import type { LocalGameAction, LocalGameState } from "./types"
+import { getMove } from "./utils"
 
 export function localGameReducer(
   state: LocalGameState,
@@ -31,13 +32,13 @@ export function localGameReducer(
     }
     case "MOVE_PIECE": {
       const { to, from, piece } = action.payload
-
       const capturedPiece = to.piece
-
       piece.hasMoved = true
 
       state.boardState.board[to.x][to.y].piece = piece
       state.boardState.board[from.x][from.y].piece = null
+
+      const newMove = getMove(from, to, piece, state.turn, null)
 
       return {
         ...state,
@@ -47,44 +48,63 @@ export function localGameReducer(
           selectedCell: null,
           overCell: null,
         },
-        capturedPieces:
-          capturedPiece === null
-            ? state.capturedPieces
-            : {
-                ...state.capturedPieces,
-                [piece.color]: [
-                  ...state.capturedPieces[piece.color],
-                  capturedPiece,
-                ],
-              },
+        capturedPieces: capturedPiece
+          ? {
+              ...state.capturedPieces,
+              [piece.color]: [
+                ...state.capturedPieces[piece.color],
+                capturedPiece,
+              ],
+            }
+          : state.capturedPieces,
+        previousMoves: [...state.previousMoves, newMove],
         ...(canPromote(piece, to) && {
           status: "promoting",
-          promotionCoordinates: [to.x, to.y],
+          promotionCoordinates: { from, to, piece },
+          previousMoves: state.previousMoves, // remove the new move, as it will be added after promotion
           turn: state.turn,
         }),
       }
     }
     case "PROMOTE_PAWN": {
-      if (state.promotionCoordinates) {
-        const [x, y] = state.promotionCoordinates
-        state.boardState.board[x][y].piece = action.payload
+      if (!state.promotionCoordinates) {
+        return state
       }
+
+      const { from, to, piece } = state.promotionCoordinates
+      const { x, y } = to
+
+      state.boardState.board[x][y].piece = action.payload
+
+      const newMove = getMove(from, to, piece, state.turn, action.payload)
 
       return {
         ...state,
         boardState: { ...state.boardState },
         status: "playing",
+        previousMoves: [...state.previousMoves, newMove],
         promotionCoordinates: undefined,
         turn: state.turn === "w" ? "b" : "w",
       }
     }
     case "START_GAME": {
+      const duration = action.payload ? action.payload : 1200
       return {
         ...state,
         status: "playing",
-        timer: action.payload
-          ? { w: action.payload, b: action.payload }
-          : state.timer,
+        timer: { w: duration, b: duration },
+      }
+    }
+    case "UPDATE_STATUS": {
+      return { ...state, status: action.payload }
+    }
+    case "DECREMENT_TIMER": {
+      return {
+        ...state,
+        timer: {
+          ...state.timer,
+          [action.payload]: state.timer[action.payload] - 1,
+        },
       }
     }
     default:

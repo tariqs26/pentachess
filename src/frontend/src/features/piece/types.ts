@@ -15,6 +15,7 @@ export type PieceType =
 
 export type Piece = {
   type: PieceType
+  abbr: string
   color: PieceColor
   value: number
   image: StaticImageData
