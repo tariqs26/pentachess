@@ -22,7 +22,7 @@ export const sideTop = [
   // ring 1
   [105, 68.1, -13.7, -109.1, -181.7, -203.7, -166.8, -85, 10.4, 82.8],
   // ring 2
-  [196.2, 158.7, 41.9, -109.7, -238.4, -294.5, -257.3, -140.5, 11.25, 140]
+  [196.2, 158.7, 41.9, -109.7, -238.4, -294.5, -257.3, -140.5, 11.25, 140],
 ]
 
 type SideProps = React.PropsWithChildren<{ ring: number; side: number }>
@@ -34,7 +34,7 @@ export const Side = ({ side, ring, ...props }: SideProps) => (
     style={{
       rotate: `${sideRotation[ring][side]}deg`,
       left: `${sideLeft[ring][side]}px`,
-      top: `${sideTop[ring][side]}px`
+      top: `${sideTop[ring][side]}px`,
     }}
     {...props}
   />

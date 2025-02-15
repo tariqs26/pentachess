@@ -1,14 +1,15 @@
 import type { BoardAction, BoardState, Cell } from "../board/types"
-import type { Piece, PieceColor, PieceType } from "../piece/types"
+import type { Piece, PieceColor } from "../piece/types"
 
-type Move = {
+export type Move = {
+  player: PieceColor
   notation: string
   timestamp: Date
-  piece: PieceType
+  piece: Piece
   from: Cell
   to: Cell
-  pieceCaptured: PieceType | null
-  piecePromoted: PieceType | null
+  pieceCaptured: Piece | null
+  piecePromoted: Piece | null
   check: boolean
   checkmate: boolean
 }
@@ -26,13 +27,13 @@ export type LocalGameState = {
   player: PieceColor
   opponent: PieceColor
   turn: PieceColor
-  timer?: Record<PieceColor, number>
+  timer: Record<PieceColor, number>
   previousMoves: Move[]
   capturedPieces: Record<PieceColor, Piece[]>
   check: PieceColor | null
   status: GameStatus
   boardState: BoardState
-  promotionCoordinates?: [number, number]
+  promotionCoordinates?: { from: Cell; to: Cell; piece: Piece }
 }
 
 export type LocalGameAction =
@@ -54,5 +55,9 @@ export type LocalGameAction =
   | {
       type: "PROMOTE_PAWN"
       payload: Piece
+    }
+  | {
+      type: "DECREMENT_TIMER"
+      payload: PieceColor
     }
   | BoardAction

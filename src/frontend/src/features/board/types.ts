@@ -30,8 +30,8 @@ export type BoardAction =
   | {
       type: "MOVE_PIECE"
       payload: {
-        to: { x: number; y: number; piece: Piece | null }
-        from: { x: number; y: number; piece: Piece }
+        to: Cell
+        from: Cell
         piece: Piece
       }
     }
