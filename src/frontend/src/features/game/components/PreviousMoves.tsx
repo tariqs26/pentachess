@@ -1,4 +1,3 @@
-import { Card, CardContent, CardHeader } from "@/components/ui/Card"
 import type { Move } from "../types"
 import { cn } from "@/lib/utils"
 
@@ -23,14 +22,14 @@ const MovesList = ({ moves }: MovesListProps) => (
 type PreviousMovesProps = Readonly<{ previousMoves: Move[] }>
 
 export const PreviousMoves = ({ previousMoves }: PreviousMovesProps) => (
-  <Card className="rounded-md bg-accent">
-    <CardHeader className="flex flex-row space-y-0 px-4 pb-1 pt-4 text-sm font-semibold">
+  <aside className="rounded-md bg-accent">
+    <div className="flex px-4 pb-1 pt-4 text-sm font-semibold">
       <p>You</p>
       <p className="ml-[74px]">Opponent</p>
-    </CardHeader>
-    <CardContent className="flex max-h-[620px] flex-row overflow-y-auto px-4 text-xs font-medium">
+    </div>
+    <div className="flex max-h-[620px] overflow-y-auto px-4 text-xs font-medium">
       <MovesList moves={previousMoves.filter((move) => move.player === "w")} />
       <MovesList moves={previousMoves.filter((move) => move.player === "b")} />
-    </CardContent>
-  </Card>
+    </div>
+  </aside>
 )

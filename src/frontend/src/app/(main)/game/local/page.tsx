@@ -49,7 +49,7 @@ export default function LocalGamePage() {
         </Card>
       ) : (
         <div className="flex w-full justify-center gap-x-2">
-          <div className="relative max-w-2xl flex-1">
+          <div className="relative w-full max-w-[600px]">
             {state.status === "promoting" && <PawnPromotionModal />}
             <CapturedPieces pieces={state.capturedPieces.w} />
             <div className="relative">
