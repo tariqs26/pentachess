@@ -1,17 +1,17 @@
 "use client"
 
-import Link from "next/link"
 import { useEffect } from "react"
-
-import { Button } from "@/components/ui/Button"
+import { useLocalGame } from "@/features/game/useLocalGame"
+import { isGameOver } from "@/features/game/utils"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
 import { Board } from "@/features/board/components/Board"
 import { CapturedPieces } from "@/features/game/components/CapturedPieces"
 import { CreateGameForm } from "@/features/game/components/CreateGameForm"
 import { PreviousMoves } from "@/features/game/components/PreviousMoves"
 import { Timer } from "@/features/game/components/Timer"
-import { useLocalGame } from "@/features/game/useLocalGame"
 import { PawnPromotionModal } from "@/features/piece/components/PawnPromotionModal"
+import { GameEndModal } from "@/features/game/components/GameEndModal"
+import { cn } from "@/lib/utils"
 
 export default function LocalGamePage() {
   const { state, dispatch } = useLocalGame()
@@ -54,31 +54,36 @@ export default function LocalGamePage() {
             <CapturedPieces pieces={state.capturedPieces.w} />
             <div className="relative">
               <Timer duration={state.timer.b} />
-              <p className="absolute left-0 -mt-1 font-bold">Opponent</p>
+              <p
+                className={cn(
+                  "absolute left-0 -mt-1 font-bold",
+                  state.check === "b" && "text-red-500"
+                )}
+              >
+                Opponent {state.check === "b" && "(check)"}
+              </p>
               <Board />
-              <p className="absolute bottom-0 left-0 -mb-1 font-bold">You</p>
+              <p
+                className={cn(
+                  "absolute bottom-0 left-0 -mb-1 font-bold",
+                  state.check === "w" && "text-red-500"
+                )}
+              >
+                You {state.check === "w" && "(check)"}
+              </p>
               <Timer duration={state.timer.w} className="bottom-0" />
             </div>
             <CapturedPieces pieces={state.capturedPieces.b} />
           </div>
-          <PreviousMoves previousMoves={state.previousMoves} />
-          {state.status === "time-expired" && (
-            <div className="fixed inset-0 z-20 flex items-center justify-center bg-black/50">
-              <div className="rounded-md bg-card p-6 text-center shadow-lg">
-                <h2 className="mb-4 text-xl font-bold">Game Over</h2>
-                <p className="mb-4 text-muted-foreground">Time has expired!</p>
-                <Button variant="secondary" asChild className="mr-2">
-                  <Link href="/">Leave Game</Link>
-                </Button>
-                <Button
-                  onClick={() =>
-                    dispatch({ type: "UPDATE_STATUS", payload: "waiting" })
-                  }
-                >
-                  Play Again
-                </Button>
-              </div>
-            </div>
+          <PreviousMoves startingPlayer="w" moves={state.previousMoves} />
+          {isGameOver(state.status) && (
+            <GameEndModal
+              turn={state.turn}
+              status={state.status}
+              onPlayAgain={() =>
+                dispatch({ type: "UPDATE_STATUS", payload: "waiting" })
+              }
+            />
           )}
         </div>
       )}

@@ -1,7 +1,7 @@
 import { checkForCheckOrMate } from "../board/utils"
 import { canPromote, getPossibleMoves } from "../piece/utils"
 import type { LocalGameAction, LocalGameState } from "./types"
-import { getMove } from "./utils"
+import { getMove, isGameOver } from "./utils"
 
 export function localGameReducer(
   state: LocalGameState,
@@ -43,16 +43,28 @@ export function localGameReducer(
         state.boardState.board,
         state.turn === "w" ? "b" : "w"
       )
-      const newMove = getMove(from, to, piece, state.turn, null)
+
+      const status = isCheckmate ? "checkmate" : "playing"
+
+      const newMove = getMove(
+        state.turn,
+        from,
+        to,
+        piece,
+        null,
+        checkedColor,
+        status
+      )
 
       return {
         ...state,
         turn: state.turn === "w" ? "b" : "w",
-        status: isCheckmate ? "checkmate" : "playing",
+        status,
         boardState: {
           ...state.boardState,
           selectedCell: null,
           overCell: null,
+          disabled: isGameOver(status),
         },
         capturedPieces: capturedPiece
           ? {
@@ -85,16 +97,26 @@ export function localGameReducer(
         state.boardState.board,
         turn
       )
+
+      const status = isCheckmate ? "checkmate" : "playing"
       const { from, to, piece } = state.promotionCoordinates
       const { x, y } = to
 
       state.boardState.board[x][y].piece = action.payload
 
-      const newMove = getMove(from, to, piece, state.turn, action.payload)
+      const newMove = getMove(
+        state.turn,
+        from,
+        to,
+        piece,
+        action.payload,
+        checkedColor,
+        status
+      )
 
       return {
         ...state,
-        status: isCheckmate ? "checkmate" : "playing",
+        status,
         turn,
         boardState: { ...state.boardState },
         previousMoves: [...state.previousMoves, newMove],
@@ -111,7 +133,14 @@ export function localGameReducer(
       }
     }
     case "UPDATE_STATUS": {
-      return { ...state, status: action.payload }
+      return {
+        ...state,
+        boardState: {
+          ...state.boardState,
+          disabled: isGameOver(action.payload),
+        },
+        status: action.payload,
+      }
     }
     case "DECREMENT_TIMER": {
       return {
