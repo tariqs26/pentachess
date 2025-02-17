@@ -13,7 +13,9 @@ export const metadata: Metadata = {
   description: "Log in to your PentaChess account",
 }
 
-export default function LoginPage() {
+export default function LoginPage({
+  searchParams,
+}: Readonly<{ searchParams: { from?: string } }>) {
   return (
     <Card className="w-full max-w-sm">
       <CardHeader>
@@ -23,7 +25,7 @@ export default function LoginPage() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <LoginForm />
+        <LoginForm from={searchParams.from} />
       </CardContent>
     </Card>
   )

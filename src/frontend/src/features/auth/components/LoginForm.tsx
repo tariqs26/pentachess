@@ -1,10 +1,13 @@
 "use client"
 
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
+import { toast } from "sonner"
 
+import { authClient } from "@/lib/auth-client"
+import { loginSchema, type LoginValues } from "../schemas"
 import { Button } from "@/components/ui/Button"
 import {
   Form,
@@ -16,20 +19,23 @@ import {
 } from "@/components/ui/Form"
 import { Input } from "@/components/ui/Input"
 
-const loginSchema = z.object({
-  email: z.string().trim().toLowerCase().email().max(254, "Invalid email"),
-  password: z.string().min(6, "Must be at least 6 characters"),
-})
-
-type LoginValues = z.infer<typeof loginSchema>
-
-export const LoginForm = () => {
+export const LoginForm = ({ from }: Readonly<{ from?: string }>) => {
+  const router = useRouter()
   const form = useForm<LoginValues>({ resolver: zodResolver(loginSchema) })
 
   const { isSubmitting } = form.formState
 
-  const handleSubmit = (values: LoginValues) => {
-    console.log("login submitted:", values)
+  const handleSubmit = async (values: LoginValues) => {
+    await authClient.signIn.email(values, {
+      onSuccess: () => {
+        router.push(from ?? "/")
+        router.refresh()
+        toast.success("Logged in successfully")
+      },
+      onError: (ctx) => {
+        toast.error(ctx.error.message)
+      },
+    })
   }
 
   return (
@@ -38,51 +44,47 @@ export const LoginForm = () => {
         <FormField
           control={form.control}
           name="email"
-          render={({ field }) => {
-            return (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input
-                    autoComplete="email"
-                    placeholder="someone@example.com"
-                    disabled={isSubmitting}
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )
-          }}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <FormControl>
+                <Input
+                  autoComplete="email"
+                  placeholder="someone@example.com"
+                  disabled={isSubmitting}
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
         <FormField
           control={form.control}
           name="password"
-          render={({ field }) => {
-            return (
-              <FormItem>
-                <FormLabel className="flex justify-between gap-2 pb-1">
-                  Password
-                  <Link
-                    href="/forgot-password"
-                    className="font-normal text-link hover:underline"
-                  >
-                    Forgot your password?
-                  </Link>
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    type="password"
-                    autoComplete="current-password"
-                    placeholder="••••••••••••"
-                    disabled={isSubmitting}
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )
-          }}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="flex justify-between gap-2 pb-1">
+                Password
+                <Link
+                  href="/forgot-password"
+                  className="font-normal text-link hover:underline"
+                >
+                  Forgot your password?
+                </Link>
+              </FormLabel>
+              <FormControl>
+                <Input
+                  type="password"
+                  autoComplete="current-password"
+                  placeholder="••••••••••••"
+                  disabled={isSubmitting}
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
         <Button type="submit" disabled={isSubmitting} className="w-full">
           Login
