@@ -3,15 +3,15 @@
 import { useEffect } from "react"
 import { useLocalGame } from "@/features/game/useLocalGame"
 import { isGameOver } from "@/features/game/utils"
+import { cn } from "@/lib/utils"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
 import { Board } from "@/features/board/components/Board"
 import { CapturedPieces } from "@/features/game/components/CapturedPieces"
 import { CreateGameForm } from "@/features/game/components/CreateGameForm"
+import { GameEndModal } from "@/features/game/components/GameEndModal"
 import { PreviousMoves } from "@/features/game/components/PreviousMoves"
 import { Timer } from "@/features/game/components/Timer"
 import { PawnPromotionModal } from "@/features/piece/components/PawnPromotionModal"
-import { GameEndModal } from "@/features/game/components/GameEndModal"
-import { cn } from "@/lib/utils"
 
 export default function LocalGamePage() {
   const { state, dispatch } = useLocalGame()
