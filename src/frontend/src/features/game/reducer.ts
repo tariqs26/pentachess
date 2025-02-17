@@ -31,6 +31,12 @@ export function localGameReducer(
         boardState: { ...state.boardState, overCell: action.payload },
       }
     }
+    case "SET_DISABLED": {
+      return {
+        ...state,
+        boardState: { ...state.boardState, disabled: action.payload },
+      }
+    }
     case "MOVE_PIECE": {
       const { to, from, piece } = action.payload
       const capturedPiece = to.piece

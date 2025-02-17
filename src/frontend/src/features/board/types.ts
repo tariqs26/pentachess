@@ -28,4 +28,4 @@ export type BoardAction =
       type: "MOVE_PIECE"
       payload: { to: Cell; from: Cell; piece: Piece }
     }
-  | { type: "SET_DISABLED"; payload: { disabled: boolean } }
+  | { type: "SET_DISABLED"; payload: boolean }
