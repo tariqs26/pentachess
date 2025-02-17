@@ -1,7 +1,7 @@
 import { checkForCheckOrMate } from "../board/utils"
 import { canPromote, getPossibleMoves } from "../piece/utils"
 import type { LocalGameAction, LocalGameState } from "./types"
-import { getMove, isGameOver } from "./utils"
+import { getMove } from "./utils"
 
 export function localGameReducer(
   state: LocalGameState,
@@ -31,10 +31,10 @@ export function localGameReducer(
         boardState: { ...state.boardState, overCell: action.payload },
       }
     }
-    case "SET_DISABLED": {
+    case "DISABLE_BOARD": {
       return {
         ...state,
-        boardState: { ...state.boardState, disabled: action.payload },
+        boardState: { ...state.boardState, disabled: true },
       }
     }
     case "MOVE_PIECE": {
@@ -66,12 +66,7 @@ export function localGameReducer(
         ...state,
         turn: state.turn === "w" ? "b" : "w",
         status,
-        boardState: {
-          ...state.boardState,
-          selectedCell: null,
-          overCell: null,
-          disabled: isGameOver(status),
-        },
+        boardState: { ...state.boardState, selectedCell: null, overCell: null },
         capturedPieces: capturedPiece
           ? {
               ...state.capturedPieces,
@@ -139,14 +134,7 @@ export function localGameReducer(
       }
     }
     case "UPDATE_STATUS": {
-      return {
-        ...state,
-        boardState: {
-          ...state.boardState,
-          disabled: isGameOver(action.payload),
-        },
-        status: action.payload,
-      }
+      return { ...state, status: action.payload }
     }
     case "DECREMENT_TIMER": {
       return {

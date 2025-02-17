@@ -17,6 +17,7 @@ export default function LocalGamePage() {
   const { state, dispatch } = useLocalGame()
 
   useEffect(() => {
+    if (state.status !== "playing" && state.status !== "promoting") return
     const interval = setInterval(() => {
       dispatch({ type: "DECREMENT_TIMER", payload: state.turn })
 
@@ -29,7 +30,13 @@ export default function LocalGamePage() {
     }, 1000)
 
     return () => clearInterval(interval)
-  }, [dispatch, state])
+  }, [state, dispatch])
+
+  useEffect(() => {
+    if (isGameOver(state.status)) {
+      dispatch({ type: "DISABLE_BOARD" })
+    }
+  }, [state.status, dispatch])
 
   return (
     <div className="mx-auto grid min-h-screen place-items-center p-6">
