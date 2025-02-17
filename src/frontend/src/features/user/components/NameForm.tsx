@@ -2,8 +2,10 @@
 
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
+import { toast } from "sonner"
 
+import { authClient } from "@/lib/auth-client"
+import { nameSchema, type NameValues } from "../schemas"
 import { Button } from "@/components/ui/Button"
 import {
   Form,
@@ -15,26 +17,24 @@ import {
 } from "@/components/ui/Form"
 import { Input } from "@/components/ui/Input"
 
-const nameSchema = z.object({
-  name: z
-    .string()
-    .trim()
-    .min(2, "Name must be at least 2 characters")
-    .max(100, "Name must be at most 100 characters"),
-})
-
-type NameValues = z.infer<typeof nameSchema>
-
-export const NameForm = () => {
+export const NameForm = ({ name }: Readonly<{ name: string }>) => {
   const form = useForm<NameValues>({
     resolver: zodResolver(nameSchema),
-    defaultValues: { name: "" },
+    defaultValues: { name },
   })
 
   const { isSubmitting, isDirty } = form.formState
 
   const onSubmit = async (values: NameValues) => {
-    console.log("name submitted:", values)
+    const { error } = await authClient.updateUser(values)
+
+    if (error) {
+      toast.error(error.message)
+      return
+    }
+
+    toast.success("Name updated successfully")
+    form.reset(values)
   }
 
   return (
@@ -44,22 +44,20 @@ export const NameForm = () => {
           <FormField
             control={form.control}
             name="name"
-            render={({ field }) => {
-              return (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input
-                      autoComplete="name"
-                      placeholder="First Last"
-                      disabled={isSubmitting}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )
-            }}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Name</FormLabel>
+                <FormControl>
+                  <Input
+                    autoComplete="name"
+                    placeholder="First Last"
+                    disabled={isSubmitting}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
         </div>
         <div className="flex flex-wrap justify-end gap-2 border-t bg-card px-6 py-3">
