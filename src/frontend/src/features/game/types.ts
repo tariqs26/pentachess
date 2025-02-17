@@ -44,4 +44,5 @@ export type LocalGameAction =
   | { type: "UPDATE_STATUS"; payload: GameStatus }
   | { type: "PROMOTE_PAWN"; payload: Piece }
   | { type: "DECREMENT_TIMER"; payload: PieceColor }
+  | { type: "RESET_GAME" }
   | BoardAction

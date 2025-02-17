@@ -1,8 +1,7 @@
 import { checkForCheckOrMate } from "../board/utils"
 import { canPromote, getPossibleMoves } from "../piece/utils"
-import { INITIAL_STATE } from "./constants"
 import type { LocalGameAction, LocalGameState } from "./types"
-import { getMove } from "./utils"
+import { createNewGameState, getMove } from "./utils"
 
 export function localGameReducer(
   state: LocalGameState,
@@ -129,7 +128,7 @@ export function localGameReducer(
     case "START_GAME": {
       const duration = action.payload ? action.payload : 1200
       return {
-        ...INITIAL_STATE,
+        ...state,
         status: "playing",
         timer: { w: duration, b: duration },
       }
@@ -145,6 +144,9 @@ export function localGameReducer(
           [action.payload]: state.timer[action.payload] - 1,
         },
       }
+    }
+    case "RESET_GAME": {
+      return createNewGameState()
     }
     default:
       return state

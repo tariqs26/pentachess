@@ -92,9 +92,7 @@ export default function LocalGamePage() {
               <GameEndModal
                 turn={state.turn}
                 status={state.status}
-                onPlayAgain={() =>
-                  dispatch({ type: "UPDATE_STATUS", payload: "waiting" })
-                }
+                onPlayAgain={() => dispatch({ type: "RESET_GAME" })}
               />
             )}
           </div>

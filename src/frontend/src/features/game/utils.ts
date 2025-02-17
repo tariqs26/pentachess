@@ -1,6 +1,24 @@
 import type { Cell } from "../board/types"
+import { initializeBoard } from "../board/utils"
 import type { Piece, PieceColor } from "../piece/types"
-import type { GameStatus, Move } from "./types"
+import type { GameStatus, LocalGameState, Move } from "./types"
+
+export const createNewGameState = (): LocalGameState => ({
+  player: "w",
+  opponent: "b",
+  turn: "w",
+  check: null,
+  status: "waiting",
+  boardState: {
+    disabled: false,
+    board: initializeBoard(),
+    selectedCell: null,
+    overCell: null,
+  },
+  timer: { w: 0, b: 0 },
+  previousMoves: [],
+  capturedPieces: { w: [], b: [] },
+})
 
 export const getMove = (
   player: PieceColor,
