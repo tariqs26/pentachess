@@ -18,7 +18,18 @@ export const GameEndModal = ({
 }: GameEndModalProps) => {
   const [open, setOpen] = useState(true)
 
-  if (!open) return null
+  if (!open) {
+    return (
+      <div className="flex">
+        <Button variant="secondary" asChild className="mr-2">
+          <Link href="/">Leave Game</Link>
+        </Button>
+        <Button onClick={onPlayAgain} className="w-full">
+          Play Again
+        </Button>
+      </div>
+    )
+  }
 
   const winner =
     status === "time-expired" ||

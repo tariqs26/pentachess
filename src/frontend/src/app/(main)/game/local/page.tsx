@@ -67,7 +67,9 @@ export default function LocalGamePage() {
                   state.check === "b" && "text-red-500"
                 )}
               >
-                Opponent {state.check === "b" && "(check)"}
+                Opponent{" "}
+                {state.check === "b" &&
+                  `(${state.status === "checkmate" ? "checkmate" : "check"})`}
               </p>
               <Board />
               <p
@@ -76,22 +78,26 @@ export default function LocalGamePage() {
                   state.check === "w" && "text-red-500"
                 )}
               >
-                You {state.check === "w" && "(check)"}
+                You{" "}
+                {state.check === "w" &&
+                  `(${state.status === "checkmate" ? "checkmate" : "check"})`}
               </p>
               <Timer duration={state.timer.w} className="bottom-0" />
             </div>
             <CapturedPieces pieces={state.capturedPieces.b} />
           </div>
-          <PreviousMoves startingPlayer="w" moves={state.previousMoves} />
-          {isGameOver(state.status) && (
-            <GameEndModal
-              turn={state.turn}
-              status={state.status}
-              onPlayAgain={() =>
-                dispatch({ type: "UPDATE_STATUS", payload: "waiting" })
-              }
-            />
-          )}
+          <div className="flex flex-col gap-2 [&>aside]:flex-1">
+            <PreviousMoves startingPlayer="w" moves={state.previousMoves} />
+            {isGameOver(state.status) && (
+              <GameEndModal
+                turn={state.turn}
+                status={state.status}
+                onPlayAgain={() =>
+                  dispatch({ type: "UPDATE_STATUS", payload: "waiting" })
+                }
+              />
+            )}
+          </div>
         </div>
       )}
     </div>
