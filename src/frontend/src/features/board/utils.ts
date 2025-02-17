@@ -35,19 +35,17 @@ export function initializeBoard() {
 
           flipCounter2 += 1
         }
+      } else if (flipCounter4 === 4) {
+        flipCounter4 = 0
+        angle = (angle + 36) % 360
       } else {
-        if (flipCounter4 === 4) {
-          flipCounter4 = 0
-          angle = (angle + 36) % 360
+        if (flipCounter4 % 2 === 0) {
+          angle = (angle - 36 + 360) % 360 // must add 360 so negative angle is not returned
         } else {
-          if (flipCounter4 % 2 === 0) {
-            angle = (angle - 36 + 360) % 360 // must add 360 so negative angle is not returned
-          } else {
-            angle = (angle + 36) % 360
-          }
-
-          flipCounter4 += 1
+          angle = (angle + 36) % 360
         }
+
+        flipCounter4 += 1
       }
     }
   }
