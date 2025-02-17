@@ -1,11 +1,14 @@
 "use client"
 
-import { BookText, Gamepad2, Trophy } from "lucide-react"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { BookText, Gamepad2, Trophy } from "lucide-react"
+
+import { authClient } from "@/lib/auth-client"
+import { cn } from "@/lib/utils"
 import { ThemeToggle } from "./ThemeToggle"
 import { Button } from "./ui/Button"
-import { usePathname } from "next/navigation"
-import { cn } from "@/lib/utils"
+import { UserDropdown } from "./UserDropdown"
 
 const items = [
   {
@@ -27,6 +30,7 @@ const items = [
 
 export const Sidebar = () => {
   const pathname = usePathname()
+  const { data: session, isPending } = authClient.useSession()
 
   return (
     <aside className="fixed z-10 flex h-screen w-[180px] flex-col overflow-y-auto border-r bg-accent p-4 pt-2">
@@ -51,9 +55,15 @@ export const Sidebar = () => {
           </Link>
         ))}
       </nav>
-      <Button asChild className="mt-auto w-full">
-        <Link href="/login">Login</Link>
-      </Button>
+      <div className="mt-auto">
+        {isPending ? null : session ? (
+          <UserDropdown user={session.user} />
+        ) : (
+          <Button className="w-full" asChild>
+            <Link href="/login">Login</Link>
+          </Button>
+        )}
+      </div>
     </aside>
   )
 }
