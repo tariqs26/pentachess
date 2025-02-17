@@ -42,8 +42,6 @@ export type LocalGameState = {
 export type LocalGameAction =
   | { type: "START_GAME"; payload?: number }
   | { type: "UPDATE_STATUS"; payload: GameStatus }
-  | { type: "ADD_MOVE"; payload: { player: PieceColor; move: Move } }
-  | { type: "SWITCH_TURN" }
   | { type: "PROMOTE_PAWN"; payload: Piece }
   | { type: "DECREMENT_TIMER"; payload: PieceColor }
   | BoardAction
