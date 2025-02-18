@@ -1,5 +1,20 @@
 import type { Metadata } from "next"
 import board from "/public/pieces_rules/board.png"
+import pawn1 from "/public/pieces_rules/pawn-1.png"
+import pawn2 from "/public/pieces_rules/pawn-2.png"
+import pawn3 from "/public/pieces_rules/pawn-3.png"
+import pawn4 from "/public/pieces_rules/pawn-4.png"
+import pawn5 from "/public/pieces_rules/pawn-5.png"
+import berolina1 from "/public/pieces_rules/berolina-1.png"
+import berolina2 from "/public/pieces_rules/berolina-2.png"
+import knight from "/public/pieces_rules/knight.png"
+import bishop1 from "/public/pieces_rules/bishop-1.png"
+import bishop2 from "/public/pieces_rules/bishop-2.png"
+import bishop3 from "/public/pieces_rules/bishop-3.png"
+import rook1 from "/public/pieces_rules/rook-1.png"
+import rook2 from "/public/pieces_rules/rook-2.png"
+import queen from "/public/pieces_rules/queen.png"
+import king from "/public/pieces_rules/king.png"
 
 export const metadata = {
   title: "Rules and Regulations",
@@ -59,6 +74,7 @@ export default function RulesAndRegulationsPage() {
                 "Capture: Pawns can also capture one same-color cell across a vertex into a different decagon, that also shares the same vertex with the next same-color cell within the starting decagon using its given direction.",
                 "Promote: Pawns can promote to a Knight, Bishop, Rook, or Queen when reaching the opposite side of the board (cells A25-32 for team white and cells A0-7 for team black).",
               ],
+              images: [pawn1.src, pawn2.src, pawn3.src, pawn4.src, pawn5.src],
             },
             {
               title: "Berolina (CW/CCW)",
@@ -68,6 +84,7 @@ export default function RulesAndRegulationsPage() {
                 "Berolinas move passively like Pawns capture and capture like Pawns passively move.",
                 "They do not move two cells forward on the first move.",
               ],
+              images: [berolina1.src, berolina2.src],
             },
             {
               title: "Knight",
@@ -76,6 +93,7 @@ export default function RulesAndRegulationsPage() {
               details: [
                 "Knights can move/capture one cell across a vertex to a different-color cell, excluding any edge-adjacent cells.",
               ],
+              images: [knight.src],
             },
             {
               title: "Bishop",
@@ -86,6 +104,7 @@ export default function RulesAndRegulationsPage() {
                 "Bishops can also move/capture to any same-color cell across a vertex into a different decagon.",
                 "Bishops can also move/capture to any same-color cell across two consecutive vertices in a straight line (two decagons away) as long as the cell has the same orientation as its starting cell, and the path to that cell is clear.",
               ],
+              images: [bishop1.src, bishop2.src, bishop3.src],
             },
             {
               title: "Rook",
@@ -94,6 +113,7 @@ export default function RulesAndRegulationsPage() {
                 "Rooks can move/capture to any cell within its decagon as long as the path to that cell is clear. Here, the path consists of all cells from the starting point to the desired cell.",
                 "Rooks can also move/capture one cell across an edge into a different decagon, if such an edge exists.",
               ],
+              images: [rook1.src, rook2.src],
             },
             {
               title: "Queen",
@@ -102,6 +122,7 @@ export default function RulesAndRegulationsPage() {
               details: [
                 "Queens can move/capture as a rook or bishop. This means all available moves that a rook or bishop can do on the cell that the queen is on is a legal move for the queen.",
               ],
+              images: [queen.src],
             },
             {
               title: "King",
@@ -110,6 +131,7 @@ export default function RulesAndRegulationsPage() {
               details: [
                 "The king can move/capture as a rook or bishop using one step only. In simple terms, it can move/capture to any edge or vertex-adjacent cell a bishop or rook would be able to.",
               ],
+              images: [king.src],
             },
           ].map((piece, index) => (
             <div
@@ -127,7 +149,7 @@ export default function RulesAndRegulationsPage() {
                     {detail}
                     <div className="pointer-events-none absolute left-3/4 mt-3 h-96 w-96 overflow-hidden rounded-lg opacity-0 duration-300 group-hover:translate-x-2 group-hover:opacity-100">
                       <img
-                        src={board.src}
+                        src={piece.images[i]}
                         alt="Chess Board Example"
                         className="h-full w-full rounded-lg object-cover"
                       />
