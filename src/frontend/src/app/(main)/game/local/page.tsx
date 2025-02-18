@@ -25,6 +25,10 @@ export default function LocalGamePage() {
         (state.status === "playing" || state.status === "promoting") &&
         (state.timer.w <= 0 || state.timer.b <= 0)
       ) {
+        dispatch({
+          type: "SET_WINNER",
+          payload: state.timer.w <= 0 ? "b" : "w",
+        })
         dispatch({ type: "UPDATE_STATUS", payload: "time-expired" })
       }
     }, 1000)
@@ -34,7 +38,7 @@ export default function LocalGamePage() {
 
   useEffect(() => {
     if (isGameOver(state.status)) {
-      dispatch({ type: "DISABLE_BOARD" })
+      dispatch({ type: "END_GAME" })
     }
   }, [state.status, dispatch])
 
@@ -90,7 +94,7 @@ export default function LocalGamePage() {
             <PreviousMoves startingPlayer="w" moves={state.previousMoves} />
             {isGameOver(state.status) && (
               <GameEndModal
-                turn={state.turn}
+                winner={state.winner}
                 status={state.status}
                 onPlayAgain={() => dispatch({ type: "RESET_GAME" })}
               />

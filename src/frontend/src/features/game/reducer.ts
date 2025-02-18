@@ -145,6 +145,22 @@ export function localGameReducer(
         },
       }
     }
+    case "SET_WINNER": {
+      return { ...state, winner: action.payload }
+    }
+    case "END_GAME": {
+      return {
+        ...state,
+        winner:
+          state.winner ??
+          (state.status.startsWith("draw")
+            ? "draw"
+            : state.turn === "w"
+              ? "b"
+              : "w"),
+        boardState: { ...state.boardState, disabled: true },
+      }
+    }
     case "RESET_GAME": {
       return createNewGameState()
     }

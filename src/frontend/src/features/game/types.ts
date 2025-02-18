@@ -29,6 +29,7 @@ export type GameStatus =
 export type LocalGameState = {
   player: PieceColor
   opponent: PieceColor
+  winner?: PieceColor | "draw"
   turn: PieceColor
   timer: Record<PieceColor, number>
   previousMoves: Move[]
@@ -44,5 +45,7 @@ export type LocalGameAction =
   | { type: "UPDATE_STATUS"; payload: GameStatus }
   | { type: "PROMOTE_PAWN"; payload: Piece }
   | { type: "DECREMENT_TIMER"; payload: PieceColor }
+  | { type: "SET_WINNER"; payload: PieceColor }
+  | { type: "END_GAME" }
   | { type: "RESET_GAME" }
   | BoardAction

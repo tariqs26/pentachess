@@ -6,13 +6,13 @@ import type { GameStatus } from "../types"
 import { Button } from "@/components/ui/Button"
 
 type GameEndModalProps = Readonly<{
-  turn: PieceColor
+  winner?: PieceColor | "draw"
   status: GameStatus
   onPlayAgain: () => void
 }>
 
 export const GameEndModal = ({
-  turn,
+  winner,
   status,
   onPlayAgain,
 }: GameEndModalProps) => {
@@ -31,15 +31,6 @@ export const GameEndModal = ({
     )
   }
 
-  const winner =
-    status === "time-expired" ||
-    status === "resignation" ||
-    status === "checkmate"
-      ? turn === "w"
-        ? "b"
-        : "w"
-      : null
-
   const title =
     status === "checkmate"
       ? "Checkmate"
@@ -50,7 +41,7 @@ export const GameEndModal = ({
           : `Draw: ${status.replace("draw-", "")}`
 
   const message =
-    winner === null
+    winner === "draw"
       ? "It's a draw"
       : `${winner === "w" ? "White" : "Black"} wins`
 
