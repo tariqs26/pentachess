@@ -1,5 +1,4 @@
 import type { Metadata } from "next"
-import board from "/public/pieces_rules/board.png"
 import pawn1 from "/public/pieces_rules/pawn-1.png"
 import pawn2 from "/public/pieces_rules/pawn-2.png"
 import pawn3 from "/public/pieces_rules/pawn-3.png"
