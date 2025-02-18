@@ -26,7 +26,7 @@ export default function RulesAndRegulationsPage() {
       <section className="mb-6">
         <h2 className="mb-2 text-2xl font-semibold">Objective</h2>
         <p>
-          The goal of Pentachess is to checkmate the opponent's king. This means
+          The goal of Pentachess is to checkmate the opponents king. This means
           that you have put the king in check (danger), such that there is no
           legal move for the opponent to play that gets them out of check.
         </p>
@@ -53,7 +53,7 @@ export default function RulesAndRegulationsPage() {
               description:
                 "Pawns have three types of moves: Passive Moves, Capture Moves, and Promotion.",
               details: [
-                "Passive: Pawns can move one cell across an edge within its decagon using its given direction. If it is the pawn's first move, they can move two cells forward.",
+                "Passive: Pawns can move one cell across an edge within its decagon using its given direction. If it is the pawns first move, they can move two cells forward.",
                 "Passive: Pawns can also move one cell across an edge into a different decagon.",
                 "Capture: Pawns can capture one cell across a vertex within its decagon using its given direction.",
                 "Capture: Pawns can also capture one same-color cell across a vertex into a different decagon, that also shares the same vertex with the next same-color cell within the starting decagon using its given direction.",
@@ -89,7 +89,7 @@ export default function RulesAndRegulationsPage() {
             },
             {
               title: "Rook",
-              description: "Rooks aren't too bad, just two rules.",
+              description: "Rooks are not too bad, just two rules.",
               details: [
                 "Rooks can move/capture to any cell within its decagon as long as the path to that cell is clear. Here, the path consists of all cells from the starting point to the desired cell.",
                 "Rooks can also move/capture one cell across an edge into a different decagon, if such an edge exists.",
@@ -149,15 +149,15 @@ export default function RulesAndRegulationsPage() {
         <h2 className="mb-2 text-2xl font-semibold">Time Control</h2>
         <p>
           Each game can be set up with an optional timer that decreases while it
-          is a player's turn. The timer pauses once it is no longer that
-          player's turn. If the timer runs out, that player loses.
+          is a players turn. The timer pauses once it is no longer that players
+          turn. If the timer runs out, that player loses.
         </p>
       </section>
 
       <section className="mb-6">
         <h2 className="mb-2 text-2xl font-semibold">Win Condition</h2>
         <ul className="list-inside list-disc">
-          <li>Checkmate: described in the 'Objective' above.</li>
+          <li>Checkmate: described in the Objective above.</li>
           <li>Resignation: the opponent resigns.</li>
           <li>Timer reaches 0: the opponent runs out of time.</li>
         </ul>
@@ -167,7 +167,7 @@ export default function RulesAndRegulationsPage() {
         <h2 className="mb-2 text-2xl font-semibold">Draw Condition</h2>
         <ul className="list-inside list-disc">
           <li>
-            Stalemate: a player's king is not in check but has no legal moves.
+            Stalemate: a players king is not in check but has no legal moves.
           </li>
           <li>
             Insufficient material: neither player has the necessary pieces to
