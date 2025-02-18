@@ -17,10 +17,7 @@ export type Board = Cell[][]
 export type BoardState = {
   board: Board
   disabled: boolean
-  selectedCell: {
-    cell: Cell
-    availableMoves: Set<Cell>
-  } | null
+  selectedCell: { cell: Cell; availableMoves: Set<Cell> } | null
   overCell: Cell | null
 }
 
@@ -29,10 +26,6 @@ export type BoardAction =
   | { type: "SET_OVER_CELL"; payload: Cell | null }
   | {
       type: "MOVE_PIECE"
-      payload: {
-        to: Cell
-        from: Cell
-        piece: Piece
-      }
+      payload: { to: Cell; from: Cell; piece: Piece }
     }
-  | { type: "SET_DISABLED"; payload: { disabled: boolean } }
+  | { type: "DISABLE_BOARD" }

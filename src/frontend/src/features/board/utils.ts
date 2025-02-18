@@ -1,15 +1,11 @@
 import { INITIAL_PIECES } from "../piece/constants"
+import type { PieceColor } from "../piece/types"
 import { getPossibleMoves, makePiece } from "../piece/utils"
 import { cloneCell, makeCell, setCellEdges, setCellVertices } from "./cell"
 import type { Board, Cell } from "./types"
 
-export function initializeBoard(): Board {
-  const rings = [
-    new Array(10), // inner ring
-    new Array(30), // middle ring
-    new Array(50), // outer ring
-  ]
-
+export function initializeBoard() {
+  const rings = [new Array(10), new Array(30), new Array(50)]
   const board: Board = [[], [], []]
 
   for (let ring = 0; ring < rings.length; ring++) {
@@ -39,29 +35,25 @@ export function initializeBoard(): Board {
 
           flipCounter2 += 1
         }
+      } else if (flipCounter4 === 4) {
+        flipCounter4 = 0
+        angle = (angle + 36) % 360
       } else {
-        if (flipCounter4 === 4) {
-          flipCounter4 = 0
-          angle = (angle + 36) % 360
+        if (flipCounter4 % 2 === 0) {
+          angle = (angle - 36 + 360) % 360 // must add 360 so negative angle is not returned
         } else {
-          if (flipCounter4 % 2 === 0) {
-            angle = (angle - 36 + 360) % 360 // must add 360 so negative angle is not returned
-          } else {
-            angle = (angle + 36) % 360
-          }
-
-          flipCounter4 += 1
+          angle = (angle + 36) % 360
         }
+
+        flipCounter4 += 1
       }
     }
   }
 
-  // set cell edges
   for (const ring of board) {
     for (const cell of ring) setCellEdges(cell)
   }
 
-  // set cell vertices
   for (const ring of board) {
     for (const cell of ring) setCellVertices(cell, board)
   }
@@ -85,14 +77,6 @@ export function cloneBoard(board: Board): Board {
   return board.map((ring) => ring.map(cloneCell))
 }
 
-// display the board state for debugging
-export function logBoard(board: Board) {
-  board.forEach((ring) => {
-    const pieces = ring.map((cell) => cell.piece ?? "empty")
-    console.log(pieces)
-  })
-}
-
 export function getSides<T>(arr: T[], size: number) {
   return arr.reduce((acc: T[][], _, i) => {
     if (i % size === 0) acc.push(arr.slice(i, i + size))
@@ -100,26 +84,53 @@ export function getSides<T>(arr: T[], size: number) {
   }, [])
 }
 
-// handle piece click (user interaction)
-export function pieceClick(cell: Cell, board: Board): Set<Cell> {
-  // memoize moves here and reset in the movePiece function
-  return getPossibleMoves(cell, board)
+export function getKingCell(board: Board, pieceColor?: PieceColor) {
+  for (const ring of board) {
+    for (const cell of ring) {
+      if (cell.piece?.type === "king" && cell.piece.color === pieceColor) {
+        return cell
+      }
+    }
+  }
+
+  return null
 }
 
-// TODO
-export function checkForCheck(board: Board): boolean {
-  console.info(board)
-  return false
+export function checkForCheckOrMate(
+  board: Board,
+  color: PieceColor,
+  checkForMate = true
+): [PieceColor | null, boolean] {
+  const king = getKingCell(board, color)
+  for (const ring of board) {
+    for (const cell of ring) {
+      if (cell.piece !== null && cell.piece.color !== color) {
+        const possibleMoves = getPossibleMoves(cell, board, true)
+
+        if (Array.from(possibleMoves).some((move) => move.id === king?.id)) {
+          if (!checkForMate) return [color, true]
+          return [color, king ? checkForCheckmate(board, king) : false]
+        }
+      }
+    }
+  }
+  return [null, false]
+}
+
+function checkForCheckmate(board: Board, king: Cell) {
+  for (const ring of board) {
+    for (const cell of ring) {
+      if (cell.piece !== null && cell.piece.color === king.piece?.color) {
+        const possibleMoves = getPossibleMoves(cell, board)
+        if (possibleMoves.size > 0) return false
+      }
+    }
+  }
+  return true
 }
 
 // TODO
 export function checkForStalemate(board: Board): boolean {
-  console.info(board)
-  return false
-}
-
-// TODO
-export function checkForCheckmate(board: Board): boolean {
   console.info(board)
   return false
 }

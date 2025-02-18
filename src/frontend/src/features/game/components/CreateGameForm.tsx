@@ -110,7 +110,6 @@ export const CreateGameForm = ({ isOnline, startHandler }: CreateGameProps) => {
                         type="number"
                         min={0}
                         max={59}
-                        step={5}
                         className="z-[2] rounded-r-none"
                         disabled={isSubmitting}
                         {...field}
@@ -134,7 +133,6 @@ export const CreateGameForm = ({ isOnline, startHandler }: CreateGameProps) => {
                       <Input
                         type="number"
                         min={0}
-                        step={5}
                         max={59}
                         className="z-[2] rounded-r-none"
                         disabled={isSubmitting}
