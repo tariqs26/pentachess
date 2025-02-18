@@ -111,8 +111,9 @@ export function getPossibleMoves(
                 if (cell.x === 0) {
                   if (
                     attachedVertex.x === 2 &&
-                    (attachedVertex.y + 48) % 5 !== 0 &&
-                    (attachedVertex.y + 47) % 5 !== 0
+                    ((cell.y * 5) % 50 === attachedVertex.y ||
+                      (cell.y * 5 + 4) % 50 === attachedVertex.y ||
+                      (cell.y * 5 + 8) % 50 === attachedVertex.y)
                   ) {
                     possibleMoves.add(attachedVertex)
                     break
@@ -121,8 +122,8 @@ export function getPossibleMoves(
                   // cell.x = 2
                   if (
                     attachedVertex.x === 0 &&
-                    (cell.y + 48) % 5 !== 0 &&
-                    (cell.y + 47) % 5 !== 0
+                    (cell.y + 4) % 5 !== 0 &&
+                    (cell.y + 3) % 5 !== 0
                   ) {
                     possibleMoves.add(attachedVertex)
                     break
