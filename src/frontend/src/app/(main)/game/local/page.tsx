@@ -75,7 +75,7 @@ export default function LocalGamePage() {
                 Opponent{" "}
                 {(state.check === "b" &&
                   `(${state.status === "checkmate" ? "checkmate" : "check"})`) ||
-                  (state.status.startsWith("draw") && `(stalemate)`)}
+                  (state.status.startsWith("draw") && `(draw)`)}
               </p>
               <Board />
               <p
@@ -88,7 +88,7 @@ export default function LocalGamePage() {
                 You{" "}
                 {(state.check === "w" &&
                   `(${state.status === "checkmate" ? "checkmate" : "check"})`) ||
-                  (state.status.startsWith("draw") && `(stalemate)`)}
+                  (state.status.startsWith("draw") && `(draw)`)}
               </p>
               <Timer duration={state.timer.w} className="bottom-0" />
             </div>
