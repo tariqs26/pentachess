@@ -68,8 +68,8 @@ export default function LocalGamePage() {
               <p
                 className={cn(
                   "absolute left-0 -mt-1 font-bold",
-                  (state.check === "b" && "text-red-500") ||
-                    (state.status.startsWith("draw") && "text-gray-500")
+                  state.check === "b" && "text-red-500",
+                  state.status.startsWith("draw") && "text-gray-500"
                 )}
               >
                 Opponent{" "}
@@ -81,8 +81,8 @@ export default function LocalGamePage() {
               <p
                 className={cn(
                   "absolute bottom-0 left-0 -mb-1 font-bold",
-                  (state.check === "w" && "text-red-500") ||
-                    (state.status.startsWith("draw") && "text-gray-500")
+                  state.check === "w" && "text-red-500",
+                  state.status.startsWith("draw") && "text-gray-500"
                 )}
               >
                 You{" "}
