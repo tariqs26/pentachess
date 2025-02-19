@@ -1,4 +1,4 @@
-import { checkForCheckOrMate } from "../board/utils"
+import { checkForCheckOrMate, checkForStalemate } from "../board/utils"
 import { canPromote, getPossibleMoves } from "../piece/utils"
 import type { LocalGameAction, LocalGameState } from "./types"
 import { createNewGameState, getMove } from "./utils"
@@ -50,7 +50,14 @@ export function localGameReducer(
         state.turn === "w" ? "b" : "w"
       )
 
-      const status = isCheckmate ? "checkmate" : "playing"
+      const status = isCheckmate
+        ? "checkmate"
+        : checkForStalemate(
+              state.boardState.board,
+              state.turn === "w" ? "b" : "w"
+            )
+          ? "draw-stalemate"
+          : "playing"
 
       const newMove = getMove(
         state.turn,

@@ -23,6 +23,7 @@ export type GameStatus =
   | "draw-agreement"
   | "draw-threefold"
   | "draw-fifty-move"
+  | "draw-insufficient"
   | "resignation"
   | "time-expired"
 

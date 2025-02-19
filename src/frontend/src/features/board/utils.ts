@@ -118,8 +118,14 @@ function checkForCheckmate(board: Board, king: Cell) {
   return true
 }
 
-// TODO
-export function checkForStalemate(board: Board): boolean {
-  console.info(board)
-  return false
+export function checkForStalemate(board: Board, color: PieceColor): boolean {
+  for (const ring of board) {
+    for (const cell of ring) {
+      if (cell.piece !== null && cell.piece.color === color) {
+        const possibleMoves = getPossibleMoves(cell, board)
+        if (possibleMoves.size > 0) return false
+      }
+    }
+  }
+  return true
 }
