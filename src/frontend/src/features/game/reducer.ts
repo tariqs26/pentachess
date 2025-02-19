@@ -106,7 +106,15 @@ export function localGameReducer(
         turn
       )
 
-      const status = isCheckmate ? "checkmate" : "playing"
+      const status = isCheckmate
+        ? "checkmate"
+        : checkForStalemate(
+              state.boardState.board,
+              state.turn === "w" ? "b" : "w"
+            )
+          ? "draw-stalemate"
+          : "playing"
+
       const { from, to, piece } = state.promotionCoordinates
       const { x, y } = to
 
