@@ -98,7 +98,10 @@ export function checkForCheckOrMate(
 
         if (Array.from(possibleMoves).some((move) => move.id === king?.id)) {
           if (!checkForMate) return [color, true]
-          return [color, king ? checkForCheckmate(board, king) : false]
+          return [
+            color,
+            king?.piece ? checkIfMovesExist(board, king.piece.color) : false,
+          ]
         }
       }
     }
@@ -106,19 +109,7 @@ export function checkForCheckOrMate(
   return [null, false]
 }
 
-function checkForCheckmate(board: Board, king: Cell) {
-  for (const ring of board) {
-    for (const cell of ring) {
-      if (cell.piece !== null && cell.piece.color === king.piece?.color) {
-        const possibleMoves = getPossibleMoves(cell, board)
-        if (possibleMoves.size > 0) return false
-      }
-    }
-  }
-  return true
-}
-
-export function checkForStalemate(board: Board, color: PieceColor): boolean {
+function checkIfMovesExist(board: Board, color: PieceColor) {
   for (const ring of board) {
     for (const cell of ring) {
       if (cell.piece !== null && cell.piece.color === color) {
@@ -128,4 +119,8 @@ export function checkForStalemate(board: Board, color: PieceColor): boolean {
     }
   }
   return true
+}
+
+export function checkForStalemate(board: Board, color: PieceColor): boolean {
+  return checkIfMovesExist(board, color)
 }
