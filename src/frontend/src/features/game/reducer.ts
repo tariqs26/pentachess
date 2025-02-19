@@ -45,17 +45,16 @@ export function localGameReducer(
       state.boardState.board[to.x][to.y].piece = piece
       state.boardState.board[from.x][from.y].piece = null
 
+      const turn = state.turn === "w" ? "b" : "w"
+
       const [checkedColor, isCheckmate] = checkForCheckOrMate(
         state.boardState.board,
-        state.turn === "w" ? "b" : "w"
+        turn
       )
 
       const status = isCheckmate
         ? "checkmate"
-        : checkForStalemate(
-              state.boardState.board,
-              state.turn === "w" ? "b" : "w"
-            )
+        : checkForStalemate(state.boardState.board, turn)
           ? "draw-stalemate"
           : "playing"
 
@@ -71,7 +70,7 @@ export function localGameReducer(
 
       return {
         ...state,
-        turn: state.turn === "w" ? "b" : "w",
+        turn,
         status,
         boardState: { ...state.boardState, selectedCell: null, overCell: null },
         capturedPieces: capturedPiece
@@ -108,10 +107,7 @@ export function localGameReducer(
 
       const status = isCheckmate
         ? "checkmate"
-        : checkForStalemate(
-              state.boardState.board,
-              state.turn === "w" ? "b" : "w"
-            )
+        : checkForStalemate(state.boardState.board, turn)
           ? "draw-stalemate"
           : "playing"
 
