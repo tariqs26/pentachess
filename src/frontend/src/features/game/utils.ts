@@ -33,14 +33,7 @@ export const getMove = (
   const toId = to.id.toLowerCase()
   const moveType = to.piece ? "x" : "-"
   const promotion = piecePromoted ? `=${piecePromoted.abbr}` : ""
-  const postfix =
-    status === "checkmate"
-      ? "#"
-      : status.startsWith("draw")
-        ? "$"
-        : check
-          ? "+"
-          : ""
+  const postfix = status === "checkmate" ? "#" : check ? "+" : ""
   const notation = `${piece.abbr}:${fromId}${moveType}${toId}${promotion}${postfix}`
 
   return {
