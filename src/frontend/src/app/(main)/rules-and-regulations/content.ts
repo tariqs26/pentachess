@@ -20,11 +20,11 @@ export const pieceMovementRules = [
     description:
       "Pawns have three types of moves: passive moves, capture moves, and promotion.",
     details: [
-      "<strong>Passive:</strong> Pawns can move one cell across an edge within its decagon using its given direction. If it is the pawn's first move, they can move two cells forward.",
-      "<strong>Passive:</strong> Pawns can also move one cell across an edge into a different decagon.",
-      "<strong>Capture:</strong> Pawns can capture one cell across a vertex within its decagon using its given direction.",
-      "<strong>Capture:</strong> Pawns can also capture one same-color cell across a vertex into a different decagon, that also shares the same vertex with the next same-color cell within the starting decagon using its given direction.",
-      "<strong>Promote:</strong> Pawns can promote to a knight, bishop, rook, or queen when reaching the opposite side of the board (cells A25-32 for team white and cells A0-7 for team black).",
+      "Passive: Pawns can move one cell across an edge within its decagon using its given direction. If it is the pawn's first move, they can move two cells forward.",
+      "Passive: Pawns can also move one cell across an edge into a different decagon.",
+      "Capture: Pawns can capture one cell across a vertex within its decagon using its given direction.",
+      "Capture: Pawns can also capture one same-color cell across a vertex into a different decagon, that also shares the same vertex with the next same-color cell within the starting decagon using its given direction.",
+      "Promote: Pawns can promote to a knight, bishop, rook, or queen when reaching the opposite side of the board (cells A25-32 for team white and cells A0-7 for team black).",
     ],
     images: [pawn1, pawn2, pawn3, pawn4, pawn5],
   },

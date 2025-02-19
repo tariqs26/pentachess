@@ -1,6 +1,12 @@
 import type { Metadata } from "next"
 import Image from "next/image"
 import { pieceMovementRules } from "./content"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/Accordion"
 
 export const metadata = {
   title: "Rules and Regulations",
@@ -54,7 +60,7 @@ export default function RulesAndRegulationsPage() {
         <h2 className="mb-2 text-2xl font-semibold tracking-tight">
           Win Conditions
         </h2>
-        <ul className="ml-6 list-disc">
+        <ul className="ml-8 list-disc">
           <li>
             <strong>Checkmate:</strong> Described in the Objective above.
           </li>
@@ -70,7 +76,7 @@ export default function RulesAndRegulationsPage() {
         <h2 className="mb-2 text-2xl font-semibold tracking-tight">
           Draw Conditions
         </h2>
-        <ul className="ml-6 list-disc">
+        <ul className="ml-8 list-disc">
           <li>
             <strong>Stalemate:</strong> A player&apos;s king is not in check but
             has no legal moves.
@@ -105,23 +111,23 @@ export default function RulesAndRegulationsPage() {
               <p className="font-medium text-muted-foreground">
                 {piece.description}
               </p>
-              <ul className="mt-2 list-inside list-disc">
+              <Accordion type="multiple" defaultValue={["0"]} className="ml-4">
                 {piece.details.map((detail, i) => (
-                  <li
-                    key={i}
-                    className="group relative rounded-md px-4 py-2 hover:cursor-pointer hover:bg-muted"
-                  >
-                    <span dangerouslySetInnerHTML={{ __html: detail }} />
-                    <div className="pointer-events-none absolute right-2 z-10 mt-4 size-80 overflow-hidden rounded-lg opacity-0 duration-300 group-hover:translate-x-2 group-hover:opacity-100">
+                  <AccordionItem key={i} value={String(i)}>
+                    <AccordionTrigger className="flex items-start justify-start gap-3 text-base">
+                      <div className="mt-2.5 size-[5px] shrink-0 rounded-full bg-foreground" />
+                      <span className="mr-auto">{detail}</span>
+                    </AccordionTrigger>
+                    <AccordionContent>
                       <Image
                         src={piece.images[i]}
                         alt="Chess Board Example"
-                        className="h-full w-full rounded-lg object-cover"
+                        className="mx-auto size-96 rounded-md border"
                       />
-                    </div>
-                  </li>
+                    </AccordionContent>
+                  </AccordionItem>
                 ))}
-              </ul>
+              </Accordion>
             </div>
           ))}
         </div>
