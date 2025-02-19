@@ -52,9 +52,10 @@ export default function LocalGamePage() {
           <CardContent>
             <CreateGameForm
               isOnline={false}
-              startHandler={(duration) =>
+              startHandler={(duration) => {
+                dispatch({ type: "RESET_GAME" })
                 dispatch({ type: "START_GAME", payload: duration })
-              }
+              }}
             />
           </CardContent>
         </Card>
@@ -96,7 +97,9 @@ export default function LocalGamePage() {
               <GameEndModal
                 winner={state.winner}
                 status={state.status}
-                onPlayAgain={() => dispatch({ type: "RESET_GAME" })}
+                onPlayAgain={() =>
+                  dispatch({ type: "UPDATE_STATUS", payload: "waiting" })
+                }
               />
             )}
           </div>
