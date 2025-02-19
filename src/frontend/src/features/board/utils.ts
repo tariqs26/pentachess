@@ -2,7 +2,7 @@ import { INITIAL_PIECES } from "../piece/constants"
 import type { PieceColor } from "../piece/types"
 import { getPossibleMoves, makePiece } from "../piece/utils"
 import { cloneCell, makeCell, setCellEdges, setCellVertices } from "./cell"
-import type { Board, Cell } from "./types"
+import type { Board } from "./types"
 
 export function initializeBoard() {
   const rings = [new Array(10), new Array(30), new Array(50)]
