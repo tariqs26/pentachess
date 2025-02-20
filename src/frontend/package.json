@@ -13,8 +13,8 @@
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:studio": "prisma studio",
-    "compose:dev:up": "docker-compose -f docker-compose.dev.yml up -d --build",
-    "compose:dev:down": "docker-compose -f docker-compose.dev.yml down"
+    "compose:dev:up": "docker compose -f docker-compose.dev.yml up -d --build",
+    "compose:dev:down": "docker compose -f docker-compose.dev.yml down"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
