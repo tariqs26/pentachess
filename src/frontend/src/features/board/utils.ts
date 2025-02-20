@@ -2,7 +2,7 @@ import { INITIAL_PIECES } from "../piece/constants"
 import type { PieceColor } from "../piece/types"
 import { getPossibleMoves, makePiece } from "../piece/utils"
 import { cloneCell, makeCell, setCellEdges, setCellVertices } from "./cell"
-import type { Board, Cell } from "./types"
+import type { Board } from "./types"
 
 export function initializeBoard() {
   const rings = [new Array(10), new Array(30), new Array(50)]
@@ -98,7 +98,10 @@ export function checkForCheckOrMate(
 
         if (Array.from(possibleMoves).some((move) => move.id === king?.id)) {
           if (!checkForMate) return [color, true]
-          return [color, king ? checkForCheckmate(board, king) : false]
+          return [
+            color,
+            king?.piece ? checkIfMovesExist(board, king.piece.color) : false,
+          ]
         }
       }
     }
@@ -106,10 +109,10 @@ export function checkForCheckOrMate(
   return [null, false]
 }
 
-function checkForCheckmate(board: Board, king: Cell) {
+function checkIfMovesExist(board: Board, color: PieceColor) {
   for (const ring of board) {
     for (const cell of ring) {
-      if (cell.piece !== null && cell.piece.color === king.piece?.color) {
+      if (cell.piece !== null && cell.piece.color === color) {
         const possibleMoves = getPossibleMoves(cell, board)
         if (possibleMoves.size > 0) return false
       }
@@ -118,8 +121,6 @@ function checkForCheckmate(board: Board, king: Cell) {
   return true
 }
 
-// TODO
-export function checkForStalemate(board: Board): boolean {
-  console.info(board)
-  return false
+export function checkForStalemate(board: Board, color: PieceColor): boolean {
+  return checkIfMovesExist(board, color)
 }
