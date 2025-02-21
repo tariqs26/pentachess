@@ -2,8 +2,10 @@
 
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
+import { toast } from "sonner"
 
+import { usernameSchema, type UsernameValues } from "../schemas"
+import { authClient } from "@/lib/auth-client"
 import { Button } from "@/components/ui/Button"
 import {
   Form,
@@ -15,30 +17,24 @@ import {
 } from "@/components/ui/Form"
 import { Input } from "@/components/ui/Input"
 
-const usernameSchema = z.object({
-  username: z
-    .string()
-    .trim()
-    .regex(
-      /^[a-z][a-z0-9_-]+$/i,
-      "Must start with a letter and only contain letters, numbers, underscores (_) and hyphens (-)"
-    )
-    .min(4, "Must be at least 4 characters")
-    .max(20, "Must be at most 20 characters"),
-})
-
-type UsernameValues = z.infer<typeof usernameSchema>
-
-export const UsernameForm = () => {
+export const UsernameForm = ({ username }: Readonly<{ username: string }>) => {
   const form = useForm<UsernameValues>({
     resolver: zodResolver(usernameSchema),
-    defaultValues: { username: "" },
+    defaultValues: { username },
   })
 
   const { isSubmitting, isDirty } = form.formState
 
   const onSubmit = async (values: UsernameValues) => {
-    console.log("username submitted:", values)
+    const { error } = await authClient.updateUser(values)
+
+    if (error) {
+      toast.error(error.message)
+      return
+    }
+
+    toast.success("Username updated successfully")
+    form.reset(values)
   }
 
   return (
@@ -48,22 +44,20 @@ export const UsernameForm = () => {
           <FormField
             control={form.control}
             name="username"
-            render={({ field }) => {
-              return (
-                <FormItem>
-                  <FormLabel>Username</FormLabel>
-                  <FormControl>
-                    <Input
-                      autoComplete="username"
-                      placeholder="someone"
-                      disabled={isSubmitting}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )
-            }}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Username</FormLabel>
+                <FormControl>
+                  <Input
+                    autoComplete="username"
+                    placeholder="someone"
+                    disabled={isSubmitting}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
         </div>
         <div className="flex flex-wrap justify-end gap-2 border-t bg-card px-6 py-3">

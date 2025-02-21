@@ -1,27 +1,20 @@
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
+import { Toaster } from "@/components/ui/Sonner"
 import { ThemeProvider } from "@/components/ThemeProvider"
 
 import "./globals.css"
 
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-})
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
 
 export const metadata: Metadata = {
-  title: {
-    default: "PentaChess",
-    template: "%s - PentaChess",
-  },
+  title: { default: "PentaChess", template: "%s - PentaChess" },
   description: "Online multiplayer chess featuring the PentaChess variant",
 }
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
       <body className={`${inter.className} antialiased`}>
@@ -32,6 +25,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
+          <Toaster richColors />
         </ThemeProvider>
       </body>
     </html>

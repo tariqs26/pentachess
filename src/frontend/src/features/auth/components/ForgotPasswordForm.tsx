@@ -3,8 +3,8 @@
 import Link from "next/link"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
 
+import { forgotPasswordSchema, type ForgotPasswordValues } from "../schemas"
 import { Button } from "@/components/ui/Button"
 import {
   Form,
@@ -16,12 +16,6 @@ import {
 } from "@/components/ui/Form"
 import { Input } from "@/components/ui/Input"
 
-const forgotPasswordSchema = z.object({
-  email: z.string().trim().toLowerCase().email().max(254, "Invalid email"),
-})
-
-type ForgotPasswordValues = z.infer<typeof forgotPasswordSchema>
-
 export const ForgotPasswordForm = () => {
   const form = useForm<ForgotPasswordValues>({
     resolver: zodResolver(forgotPasswordSchema),
@@ -30,7 +24,7 @@ export const ForgotPasswordForm = () => {
   const { isSubmitting } = form.formState
 
   const handleSubmit = (values: ForgotPasswordValues) => {
-    console.log("forgot password submitted:", values)
+    console.info("forgot password submitted:", values)
   }
 
   return (
@@ -39,22 +33,20 @@ export const ForgotPasswordForm = () => {
         <FormField
           control={form.control}
           name="email"
-          render={({ field }) => {
-            return (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input
-                    autoComplete="email"
-                    placeholder="someone@example.com"
-                    disabled={isSubmitting}
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )
-          }}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <FormControl>
+                <Input
+                  autoComplete="email"
+                  placeholder="someone@example.com"
+                  disabled={isSubmitting}
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
         <Button type="submit" disabled={isSubmitting} className="w-full">
           Send Reset Email
