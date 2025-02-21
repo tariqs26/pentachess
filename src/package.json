@@ -1,0 +1,14 @@
+{
+    "name": "pentachess",
+    "private": true,
+    "workspaces": [
+        "frontend",
+        "backend"
+    ],
+    "scripts": {
+        "dev": "concurrently \"npm run dev --workspace=frontend\" \"npm run dev --workspace=backend\""
+    },
+    "devDependencies": {
+        "concurrently": "^7.6.0"
+    }
+}
