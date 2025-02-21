@@ -1,58 +1,52 @@
 import type { BoardAction, BoardState, Cell } from "../board/types"
-import type { Piece, PieceColor, PieceType } from "../piece/types"
+import type { Piece, PieceColor } from "../piece/types"
 
-type Move = {
-  notation: string
-  timestamp: Date
-  piece: PieceType
+export type Move = {
+  player: PieceColor
   from: Cell
   to: Cell
-  pieceCaptured: PieceType | null
-  piecePromoted: PieceType | null
+  piece: Piece
+  pieceCaptured: Piece | null
+  piecePromoted: Piece | null
   check: boolean
-  checkmate: boolean
+  status: GameStatus
+  notation: string
+  timestamp: Date
 }
 
-type GameStatus =
+export type GameStatus =
   | "waiting"
   | "playing"
   | "promoting"
   | "checkmate"
-  | "stalemate"
+  | "draw-stalemate"
+  | "draw-agreement"
+  | "draw-threefold"
+  | "draw-fifty-move"
+  | "draw-insufficient"
+  | "resignation"
   | "time-expired"
-  | "resigned"
 
 export type LocalGameState = {
   player: PieceColor
   opponent: PieceColor
+  winner?: PieceColor | "draw"
   turn: PieceColor
-  timer?: Record<PieceColor, number>
+  timer: Record<PieceColor, number>
   previousMoves: Move[]
   capturedPieces: Record<PieceColor, Piece[]>
   check: PieceColor | null
   status: GameStatus
   boardState: BoardState
-  promotionCoordinates?: [number, number]
+  promotionCoordinates?: { from: Cell; to: Cell; piece: Piece }
 }
 
 export type LocalGameAction =
-  | {
-      type: "START_GAME"
-      payload?: number
-    }
-  | {
-      type: "UPDATE_STATUS"
-      payload: GameStatus
-    }
-  | {
-      type: "ADD_MOVE"
-      payload: { player: PieceColor; move: Move }
-    }
-  | {
-      type: "SWITCH_TURN"
-    }
-  | {
-      type: "PROMOTE_PAWN"
-      payload: Piece
-    }
+  | { type: "START_GAME"; payload?: number }
+  | { type: "UPDATE_STATUS"; payload: GameStatus }
+  | { type: "PROMOTE_PAWN"; payload: Piece }
+  | { type: "DECREMENT_TIMER"; payload: PieceColor }
+  | { type: "SET_WINNER"; payload: PieceColor }
+  | { type: "END_GAME" }
+  | { type: "RESET_GAME" }
   | BoardAction

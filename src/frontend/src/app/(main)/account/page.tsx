@@ -1,17 +1,26 @@
 import type { Metadata } from "next"
+import { headers } from "next/headers"
+
 import { AccountSection } from "@/features/user/components/AccountSection"
 import { DeleteAccountDialog } from "@/features/user/components/DeleteAccountDialog"
 import { EmailForm } from "@/features/user/components/EmailForm"
 import { NameForm } from "@/features/user/components/NameForm"
 import { PasswordForm } from "@/features/user/components/PasswordForm"
 import { UsernameForm } from "@/features/user/components/UsernameForm"
+import { auth } from "@/lib/auth"
 
 export const metadata = {
   title: "Account Settings",
   description: "Manage your account settings",
 } satisfies Metadata
 
-export default function AccountPage() {
+export default async function AccountPage() {
+  const session = await auth.api.getSession({ headers: headers() })
+
+  if (!session) {
+    return <div>Not authenticated</div>
+  }
+
   return (
     <div className="mx-auto max-w-5xl p-6">
       <h1 className="mb-8 text-3xl font-bold tracking-tight">
@@ -22,19 +31,19 @@ export default function AccountPage() {
           title="Username"
           description="This is your username, which will be displayed on your profile and when you play games."
         >
-          <UsernameForm />
+          <UsernameForm username={session.user.username} />
         </AccountSection>
         <AccountSection
           title="Name"
           description="Please enter your full name, or a name you are comfortable with."
         >
-          <NameForm />
+          <NameForm name={session.user.name} />
         </AccountSection>
         <AccountSection
           title="Email"
           description="Your email address is used to log in and receive password reset emails."
         >
-          <EmailForm />
+          <EmailForm email={session.user.email} />
         </AccountSection>
         <AccountSection
           title="Change Password"

@@ -1,5 +1,9 @@
 "use client"
 
+import { useRouter } from "next/navigation"
+import { toast } from "sonner"
+
+import { authClient } from "@/lib/auth-client"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,9 +18,19 @@ import {
 import { Button } from "@/components/ui/Button"
 
 export const DeleteAccountDialog = () => {
-  const handleDelete = () => {
-    // Handle delete account
-    console.log("Deleting account...")
+  const router = useRouter()
+
+  const handleDelete = async () => {
+    const data = await authClient.deleteUser()
+
+    if (data.error) {
+      toast.error(data.error.message)
+      return
+    }
+
+    router.replace("/")
+    router.refresh()
+    toast.success("Account deleted successfully")
   }
 
   return (

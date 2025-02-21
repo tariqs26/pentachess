@@ -1,5 +1,7 @@
-import { getPossibleMoves, canPromote } from "../piece/utils"
+import { checkForCheckOrMate, checkForStalemate } from "../board/utils"
+import { canPromote, getPossibleMoves } from "../piece/utils"
 import type { LocalGameAction, LocalGameState } from "./types"
+import { createNewGameState, getMove } from "./utils"
 
 export function localGameReducer(
   state: LocalGameState,
@@ -29,61 +31,149 @@ export function localGameReducer(
         boardState: { ...state.boardState, overCell: action.payload },
       }
     }
+    case "DISABLE_BOARD": {
+      return {
+        ...state,
+        boardState: { ...state.boardState, disabled: true },
+      }
+    }
     case "MOVE_PIECE": {
       const { to, from, piece } = action.payload
-
       const capturedPiece = to.piece
+      piece.hasMoved = true
 
       state.boardState.board[to.x][to.y].piece = piece
       state.boardState.board[from.x][from.y].piece = null
 
+      const turn = state.turn === "w" ? "b" : "w"
+
+      const [checkedColor, isCheckmate] = checkForCheckOrMate(
+        state.boardState.board,
+        turn
+      )
+
+      const status = isCheckmate
+        ? "checkmate"
+        : checkForStalemate(state.boardState.board, turn)
+          ? "draw-stalemate"
+          : "playing"
+
+      const newMove = getMove(
+        state.turn,
+        from,
+        to,
+        piece,
+        null,
+        checkedColor,
+        status
+      )
+
       return {
         ...state,
-        turn: state.turn === "w" ? "b" : "w",
-        boardState: {
-          ...state.boardState,
-          selectedCell: null,
-          overCell: null,
-        },
-        capturedPieces:
-          capturedPiece === null
-            ? state.capturedPieces
-            : {
-                ...state.capturedPieces,
-                [piece.color]: [
-                  ...state.capturedPieces[piece.color],
-                  capturedPiece,
-                ],
-              },
+        turn,
+        status,
+        boardState: { ...state.boardState, selectedCell: null, overCell: null },
+        capturedPieces: capturedPiece
+          ? {
+              ...state.capturedPieces,
+              [piece.color]: [
+                ...state.capturedPieces[piece.color],
+                capturedPiece,
+              ],
+            }
+          : state.capturedPieces,
+        check: checkedColor,
+        previousMoves: [...state.previousMoves, newMove],
         ...(canPromote(piece, to) && {
           status: "promoting",
-          promotionCoordinates: [to.x, to.y],
+          check: state.check,
+          promotionCoordinates: { from, to, piece },
+          previousMoves: state.previousMoves, // remove the new move, as it will be added after promotion
           turn: state.turn,
         }),
       }
     }
     case "PROMOTE_PAWN": {
-      if (state.promotionCoordinates) {
-        const [x, y] = state.promotionCoordinates
-        state.boardState.board[x][y].piece = action.payload
+      if (!state.promotionCoordinates) {
+        return state
       }
+
+      const turn = state.turn === "w" ? "b" : "w"
+
+      const [checkedColor, isCheckmate] = checkForCheckOrMate(
+        state.boardState.board,
+        turn
+      )
+
+      const status = isCheckmate
+        ? "checkmate"
+        : checkForStalemate(state.boardState.board, turn)
+          ? "draw-stalemate"
+          : "playing"
+
+      const { from, to, piece } = state.promotionCoordinates
+      const { x, y } = to
+
+      state.boardState.board[x][y].piece = action.payload
+
+      const newMove = getMove(
+        state.turn,
+        from,
+        to,
+        piece,
+        action.payload,
+        checkedColor,
+        status
+      )
 
       return {
         ...state,
+        status,
+        turn,
         boardState: { ...state.boardState },
-        status: "playing",
+        previousMoves: [...state.previousMoves, newMove],
         promotionCoordinates: undefined,
-        turn: state.turn === "w" ? "b" : "w",
+        check: checkedColor,
       }
     }
     case "START_GAME": {
+      const duration = action.payload ? action.payload : 1200
       return {
         ...state,
         status: "playing",
-        timer: action.payload
-          ? { w: action.payload, b: action.payload }
-          : state.timer,
+        timer: { w: duration, b: duration },
       }
+    }
+    case "UPDATE_STATUS": {
+      return { ...state, status: action.payload }
+    }
+    case "DECREMENT_TIMER": {
+      return {
+        ...state,
+        timer: {
+          ...state.timer,
+          [action.payload]: state.timer[action.payload] - 1,
+        },
+      }
+    }
+    case "SET_WINNER": {
+      return { ...state, winner: action.payload }
+    }
+    case "END_GAME": {
+      return {
+        ...state,
+        winner:
+          state.winner ??
+          (state.status.startsWith("draw")
+            ? "draw"
+            : state.turn === "w"
+              ? "b"
+              : "w"),
+        boardState: { ...state.boardState, disabled: true },
+      }
+    }
+    case "RESET_GAME": {
+      return createNewGameState()
     }
     default:
       return state

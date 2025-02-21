@@ -1,31 +1,16 @@
 "use client"
 
-import { type Dispatch, createContext, useReducer } from "react"
-import { initializeBoard } from "@/features/board/utils"
-
+import { createContext, useReducer } from "react"
 import { localGameReducer } from "../reducer"
 import type { LocalGameAction, LocalGameState } from "../types"
-
-const initialState: LocalGameState = {
-  player: "w",
-  opponent: "b",
-  turn: "w",
-  check: null,
-  status: "waiting",
-  previousMoves: [],
-  capturedPieces: { w: [], b: [] },
-  boardState: {
-    disabled: false,
-    board: initializeBoard(),
-    selectedCell: null,
-    overCell: null,
-  },
-}
+import { createNewGameState } from "../utils"
 
 type LocalGameContextType = {
   state: LocalGameState
-  dispatch: Dispatch<LocalGameAction>
+  dispatch: React.Dispatch<LocalGameAction>
 }
+
+const initialState = createNewGameState()
 
 export const LocalGameContext = createContext<LocalGameContextType | null>(null)
 

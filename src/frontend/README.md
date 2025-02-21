@@ -2,41 +2,69 @@
 
 ## Getting Started
 
-**Prerequisites**
+1. **Prerequisites**
 
-Ensure you have [Node.js](https://nodejs.org/en/download/) (20.18.0 or higher) installed on your machine.
+   - Ensure you have [Node.js](https://nodejs.org/en/download/) (20.18.0 or higher) installed on your machine.
+   - For setting up the database locally, you will need [Docker](https://www.docker.com/products/docker-desktop) installed.
 
-**Install the dependencies**
+2. **Install dependencies**
 
-```bash
-npm install
-```
+   ```bash
+   npm install
+   ```
 
-**Run the development server**
+3. **Set up environment variables**
 
-```bash
-npm run dev
-```
+   Create a `.env` file in the root directory of the project and add the following environment variables:
+
+   ```bash
+   # MongoDB connection string
+   DATABASE_URL="mongodb://localhost:27017/pentachess?replicaSet=rs0"
+
+   # Better Auth
+   BETTER_AUTH_SECRET="DdyrIXdEu1XKE3c9TYk9fpWynBm0Qg1y"
+   BETTER_AUTH_URL="http://localhost:3000" # Base URL of your app
+   ```
+
+4. **Setup Local MongoDB instance (optional)**
+
+   If you don't have a MongoDB instance running, you can start a local instance using Docker Compose:
+
+   ```bash
+   npm run compose:dev:up
+   ```
+
+   To stop the local MongoDB instance, run:
+
+   ```bash
+   npm run compose:dev:down
+   ```
+
+5. **Sync database schema**
+
+   ```bash
+   npm run db:push
+   ```
+
+6. **Start the development server**
+
+   ```bash
+   npm run dev
+   ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result. You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
 **Available Scripts**
 
-| Command          | Description                                                  |
-| ---------------- | ------------------------------------------------------------ |
-| `npm run dev`    | Runs the app in the development mode (http://localhost:3000) |
-| `npm run build`  | Builds the app for production                                |
-| `npm start`      | Runs the app in the production mode                          |
-| `npm run format` | Formats the code using Prettier                              |
-| `npm run lint`   | Lints the code using ESLint                                  |
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js. Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Command                    | Description                                             |
+| -------------------------- | ------------------------------------------------------- |
+| `npm run dev`              | Run the app in development mode (http://localhost:3000) |
+| `npm run build`            | Build the app for production                            |
+| `npm start`                | Run the app in production mode                          |
+| `npm run format`           | Format the code using Prettier                          |
+| `npm run lint`             | Lint the code using ESLint                              |
+| `npm run db:generate`      | Generate the Prisma client                              |
+| `npm run db:push`          | Push Prisma schema to the database                      |
+| `npm run db:studio`        | Open Prisma Studio                                      |
+| `npm run compose:dev:up`   | Startup local MongoDB instance with Docker Compose      |
+| `npm run compose:dev:down` | Shutdown local MongoDB instance with Docker Compose     |
