@@ -101,7 +101,23 @@ export default function RulesAndRegulationsPage() {
       </section>
       <section>
         <h2 className="mb-2 text-2xl font-semibold tracking-tight">Movement</h2>
-        <p>The rules of movement can be seen for each piece below:</p>
+        <p>
+          The rules of movement can be seen for each piece in the next section.
+          Just a few notes to properly understand all the notation:
+        </p>
+        <ul className="ml-8 list-disc">
+          <li>
+            <strong>Orange Cell Highlight:</strong> The currently selected cell.
+          </li>
+          <li>
+            <strong>Green/Red Cell Highlight:</strong> Available cell to move
+            to. Green is passively moving. Red is capturing an enemy piece.
+          </li>
+          <li>
+            <strong>Red/Yellow Cell Outlines:</strong> Indicates the cell which
+            the corresponding rule is talking about.
+          </li>
+        </ul>
         <div className="mt-4 space-y-4">
           {pieceMovementRules.map((piece, i) => (
             <div key={i}>
