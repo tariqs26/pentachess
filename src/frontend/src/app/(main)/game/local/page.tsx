@@ -62,7 +62,14 @@ export default function LocalGamePage() {
       ) : (
         <div className="flex w-full justify-center gap-x-2">
           <div className="relative w-full max-w-[600px]">
-            {state.status === "promoting" && <PawnPromotionModal />}
+            {state.status === "promoting" && (
+              <PawnPromotionModal
+                turn={state.turn}
+                handlePromotion={(piece) =>
+                  dispatch({ type: "PROMOTE_PAWN", payload: piece })
+                }
+              />
+            )}
             <CapturedPieces pieces={state.capturedPieces.w} />
             <div className="relative">
               <Timer duration={state.timer.b} />
