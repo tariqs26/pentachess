@@ -251,11 +251,9 @@ export function getPossibleMoves(
               possibleMoves.add(vertex)
             }
           } else if (cell.x === vertex.x) {
-            if ((cell.y + 2) % 10 !== vertex.y) {
+            if ((cell.y + 8) % 10 === vertex.y) {
               possibleMoves.add(vertex)
             }
-          } else if (forwForwVertexIds.includes(vertex.id)) {
-            possibleMoves.add(vertex)
           }
         }
       }
@@ -309,11 +307,9 @@ export function getPossibleMoves(
               possibleMoves.add(vertex)
             }
           } else if (cell.x === vertex.x) {
-            if ((cell.y + 8) % 10 !== vertex.y) {
+            if ((cell.y + 2) % 10 === vertex.y) {
               possibleMoves.add(vertex)
             }
-          } else if (forwForwVertexIds.includes(vertex.id)) {
-            possibleMoves.add(vertex)
           }
         }
       }
@@ -369,11 +365,9 @@ export function getPossibleMoves(
                 possibleMoves.add(vertex)
               }
             } else if (cell.x === vertex.x) {
-              if ((cell.y + 2) % 10 !== vertex.y) {
+              if ((cell.y + 8) % 10 === vertex.y) {
                 possibleMoves.add(vertex)
               }
-            } else if (forwForwVertexIds.includes(vertex.id)) {
-              possibleMoves.add(vertex)
             }
           }
         }
@@ -430,11 +424,9 @@ export function getPossibleMoves(
                 possibleMoves.add(vertex)
               }
             } else if (cell.x === vertex.x) {
-              if ((cell.y + 8) % 10 !== vertex.y) {
+              if ((cell.y + 2) % 10 === vertex.y) {
                 possibleMoves.add(vertex)
               }
-            } else if (forwForwVertexIds.includes(vertex.id)) {
-              possibleMoves.add(vertex)
             }
           }
         }
