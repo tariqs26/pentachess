@@ -13,11 +13,11 @@ export function localGameReducer(
         ...state,
         boardState: {
           ...state.boardState,
-          selectedCell: action.payload
+          selectedCell: action.cell
             ? {
-                cell: action.payload,
+                cell: action.cell,
                 availableMoves: getPossibleMoves(
-                  action.payload,
+                  action.cell,
                   state.boardState.board
                 ),
               }
@@ -28,7 +28,7 @@ export function localGameReducer(
     case "SET_OVER_CELL": {
       return {
         ...state,
-        boardState: { ...state.boardState, overCell: action.payload },
+        boardState: { ...state.boardState, overCell: action.cell },
       }
     }
     case "DISABLE_BOARD": {
@@ -38,7 +38,7 @@ export function localGameReducer(
       }
     }
     case "MOVE_PIECE": {
-      const { to, from, piece } = action.payload
+      const { to, from, piece } = action.move
       const capturedPiece = to.piece
       piece.hasMoved = true
 
@@ -114,14 +114,14 @@ export function localGameReducer(
       const { from, to, piece } = state.promotionCoordinates
       const { x, y } = to
 
-      state.boardState.board[x][y].piece = action.payload
+      state.boardState.board[x][y].piece = action.piece
 
       const newMove = getMove(
         state.turn,
         from,
         to,
         piece,
-        action.payload,
+        action.piece,
         checkedColor,
         status
       )
@@ -137,27 +137,27 @@ export function localGameReducer(
       }
     }
     case "START_GAME": {
-      const duration = action.payload ? action.payload : 1200
+      const duration = action.duration ?? 1200
       return {
         ...state,
         status: "playing",
         timer: { w: duration, b: duration },
       }
     }
-    case "UPDATE_STATUS": {
-      return { ...state, status: action.payload }
+    case "SET_STATUS": {
+      return { ...state, status: action.status }
     }
     case "DECREMENT_TIMER": {
       return {
         ...state,
         timer: {
           ...state.timer,
-          [action.payload]: state.timer[action.payload] - 1,
+          [action.player]: state.timer[action.player] - 1,
         },
       }
     }
     case "SET_WINNER": {
-      return { ...state, winner: action.payload }
+      return { ...state, winner: action.player }
     }
     case "END_GAME": {
       return {

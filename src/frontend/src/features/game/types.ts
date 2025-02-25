@@ -42,11 +42,11 @@ export type LocalGameState = {
 }
 
 export type LocalGameAction =
-  | { type: "START_GAME"; payload?: number }
-  | { type: "UPDATE_STATUS"; payload: GameStatus }
-  | { type: "PROMOTE_PAWN"; payload: Piece }
-  | { type: "DECREMENT_TIMER"; payload: PieceColor }
-  | { type: "SET_WINNER"; payload: PieceColor }
+  | { type: "START_GAME"; duration?: number }
+  | { type: "SET_STATUS"; status: GameStatus }
+  | { type: "PROMOTE_PAWN"; piece: Piece }
+  | { type: "DECREMENT_TIMER"; player: PieceColor }
+  | { type: "SET_WINNER"; player: PieceColor }
   | { type: "END_GAME" }
   | { type: "RESET_GAME" }
   | BoardAction
