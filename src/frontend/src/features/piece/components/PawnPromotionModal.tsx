@@ -1,8 +1,8 @@
 import Image from "next/image"
-import type { Piece, PieceColor } from "@/features/piece/types"
-import { makePiece } from "@/features/piece/utils"
 import { cn } from "@/lib/utils"
 import { PROMOTION_PIECES } from "../constants"
+import type { Piece, PieceColor } from "../types"
+import { makePiece } from "../utils"
 
 type PawnPromotionModalProps = Readonly<{
   turn: PieceColor
