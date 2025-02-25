@@ -22,10 +22,10 @@ export type BoardState = {
 }
 
 export type BoardAction =
-  | { type: "SELECT_CELL"; payload: Cell | null }
-  | { type: "SET_OVER_CELL"; payload: Cell | null }
+  | { type: "SELECT_CELL"; cell: Cell | null }
+  | { type: "SET_OVER_CELL"; cell: Cell | null }
   | {
       type: "MOVE_PIECE"
-      payload: { to: Cell; from: Cell; piece: Piece }
+      move: { to: Cell; from: Cell; piece: Piece }
     }
   | { type: "DISABLE_BOARD" }

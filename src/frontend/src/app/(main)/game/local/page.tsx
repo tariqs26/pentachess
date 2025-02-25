@@ -19,17 +19,14 @@ export default function LocalGamePage() {
   useEffect(() => {
     if (state.status !== "playing" && state.status !== "promoting") return
     const interval = setInterval(() => {
-      dispatch({ type: "DECREMENT_TIMER", payload: state.turn })
+      dispatch({ type: "DECREMENT_TIMER", player: state.turn })
 
       if (
         (state.status === "playing" || state.status === "promoting") &&
         (state.timer.w <= 0 || state.timer.b <= 0)
       ) {
-        dispatch({
-          type: "SET_WINNER",
-          payload: state.timer.w <= 0 ? "b" : "w",
-        })
-        dispatch({ type: "UPDATE_STATUS", payload: "time-expired" })
+        dispatch({ type: "SET_WINNER", player: state.timer.w <= 0 ? "b" : "w" })
+        dispatch({ type: "SET_STATUS", status: "time-expired" })
       }
     }, 1000)
 
@@ -54,7 +51,7 @@ export default function LocalGamePage() {
               isOnline={false}
               startHandler={(duration) => {
                 dispatch({ type: "RESET_GAME" })
-                dispatch({ type: "START_GAME", payload: duration })
+                dispatch({ type: "START_GAME", duration })
               }}
             />
           </CardContent>
@@ -66,7 +63,7 @@ export default function LocalGamePage() {
               <PawnPromotionModal
                 turn={state.turn}
                 handlePromotion={(piece) =>
-                  dispatch({ type: "PROMOTE_PAWN", payload: piece })
+                  dispatch({ type: "PROMOTE_PAWN", piece })
                 }
               />
             )}
@@ -109,7 +106,7 @@ export default function LocalGamePage() {
                 winner={state.winner}
                 status={state.status}
                 onPlayAgain={() =>
-                  dispatch({ type: "UPDATE_STATUS", payload: "waiting" })
+                  dispatch({ type: "SET_STATUS", status: "waiting" })
                 }
               />
             )}

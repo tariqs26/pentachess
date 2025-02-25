@@ -64,7 +64,7 @@ export const CellComponent = (cell: Cell) => {
   const handlePieceMouseDown = () => {
     if (state.boardState.disabled) return
     if (cell.piece?.color !== state.turn) return
-    dispatch({ type: "SELECT_CELL", payload: isCellSelected ? null : cell })
+    dispatch({ type: "SELECT_CELL", cell: isCellSelected ? null : cell })
   }
 
   const handleCellMouseUp = () => {
@@ -76,24 +76,24 @@ export const CellComponent = (cell: Cell) => {
     const piece = state.boardState.selectedCell.cell.piece
     const to = state.boardState.overCell
 
-    dispatch({ type: "MOVE_PIECE", payload: { from, to, piece } })
+    dispatch({ type: "MOVE_PIECE", move: { from, to, piece } })
   }
 
   const handleCellMouseEnter = () => {
     if (state.boardState.disabled) return
     if (!state.boardState.selectedCell || isCellSelected || !isAvailableMove) {
       if (isCellSelected) {
-        dispatch({ type: "SET_OVER_CELL", payload: null })
+        dispatch({ type: "SET_OVER_CELL", cell: null })
       }
       return
     }
-    dispatch({ type: "SET_OVER_CELL", payload: cell })
+    dispatch({ type: "SET_OVER_CELL", cell })
   }
 
   const handleCellMouseLeave = () => {
     if (state.boardState.disabled) return
     if (!state.boardState.selectedCell || !isAvailableMove) return
-    dispatch({ type: "SET_OVER_CELL", payload: null })
+    dispatch({ type: "SET_OVER_CELL", cell: null })
   }
 
   return (
