@@ -63,37 +63,30 @@ export const CellComponent = (cell: Cell) => {
 
   const handlePieceMouseDown = () => {
     if (state.boardState.disabled) return
-    if (cell.piece === null || cell.piece.color !== state.turn) return
-    if (isCellSelected) {
-      dispatch({ type: "SELECT_CELL", payload: null })
-      return
-    }
-    dispatch({ type: "SELECT_CELL", payload: cell })
+    if (cell.piece?.color !== state.turn) return
+    dispatch({ type: "SELECT_CELL", payload: isCellSelected ? null : cell })
   }
 
-  const handlePieceMouseUp = () => {
+  const handleCellMouseUp = () => {
     if (state.boardState.disabled) return
-    if (!state.boardState.selectedCell) {
-      state.boardState.selectedCell = null
-      return
-    }
-    if (!state.boardState.selectedCell.cell.piece) return
-    if (state.boardState.overCell === null) return
+    if (!state.boardState.selectedCell?.cell.piece) return
+    if (!state.boardState.overCell) return
 
     const from = state.boardState.selectedCell.cell
     const piece = state.boardState.selectedCell.cell.piece
     const to = state.boardState.overCell
 
-    dispatch({
-      type: "MOVE_PIECE",
-      payload: { from, to, piece },
-    })
+    dispatch({ type: "MOVE_PIECE", payload: { from, to, piece } })
   }
 
   const handleCellMouseEnter = () => {
     if (state.boardState.disabled) return
-    if (!state.boardState.selectedCell || isCellSelected || !isAvailableMove)
+    if (!state.boardState.selectedCell || isCellSelected || !isAvailableMove) {
+      if (isCellSelected) {
+        dispatch({ type: "SET_OVER_CELL", payload: null })
+      }
       return
+    }
     dispatch({ type: "SET_OVER_CELL", payload: cell })
   }
 
@@ -107,11 +100,11 @@ export const CellComponent = (cell: Cell) => {
     <div
       id={`cell-container-${cell.id}`}
       className="relative"
-      onMouseUp={handlePieceMouseUp}
+      onMouseUp={handleCellMouseUp}
       onMouseEnter={handleCellMouseEnter}
       onMouseLeave={handleCellMouseLeave}
       onDragEnter={handleCellMouseEnter}
-      onDragEnd={handlePieceMouseUp}
+      onDragEnd={handleCellMouseUp}
     >
       <div
         id={`cell-${cell.id}`}
