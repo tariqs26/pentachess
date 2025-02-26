@@ -31,10 +31,10 @@ export const pieceMovementRules = [
   {
     title: "Berolina's pawn (CW/CCW)",
     description:
-      "Similar to pawns but with reversed passive and capture moves.",
+      "Similar to pawns but with reversed passive and capture moves. They also don't move two cells forward on their first move.",
     details: [
-      "Berolina's pawns move passively like pawns capture and capture like pawns passively move.",
-      "They do not move two cells forward on the first move.",
+      "Berolina pawns move passively like pawns capture.",
+      "Berolina pawns capture like pawns passively move.",
     ],
     images: [berolina1, berolina2],
   },
