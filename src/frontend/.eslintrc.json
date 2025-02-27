@@ -1,0 +1,17 @@
+{
+  "extends": ["eslint:recommended", "next/core-web-vitals", "next/typescript"],
+  "rules": {
+    "arrow-body-style": ["warn", "as-needed"],
+    "eqeqeq": ["warn", "always"],
+    "no-console": ["warn", { "allow": ["info", "warn", "error"] }],
+    "no-else-return": "warn",
+    "no-lonely-if": "warn",
+    "no-param-reassign": "warn",
+    "no-useless-concat": "warn",
+    "no-useless-return": "warn",
+    "no-var": "warn",
+    "object-shorthand": "warn",
+    "prefer-const": "warn",
+    "prefer-template": "warn"
+  }
+}

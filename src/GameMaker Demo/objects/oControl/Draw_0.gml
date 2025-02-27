@@ -9,6 +9,16 @@ for (var i = 0; i < 50; i ++) {
     outerSpaces[i].draw();
 }
 
+for (var i = 0; i < 10; i ++) {
+    innerSpaces[i].draw_name();
+}
+for (var i = 0; i < 30; i ++) {
+    middleSpaces[i].draw_name();
+}
+for (var i = 0; i < 50; i ++) {
+    outerSpaces[i].draw_name();
+}
+
 var name = "";
 switch (global.piece) {
     case PIECE.ROOK:
