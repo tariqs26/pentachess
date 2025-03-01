@@ -26,6 +26,25 @@ export function canPromote(piece: Piece, to: { x: number; y: number }) {
   )
 }
 
+function isNotAlly(cellTo: Cell, currPiece: Piece): boolean {
+  return cellTo.piece === null || cellTo.piece.color !== currPiece.color
+}
+function isEnemy(cellTo: Cell, currPiece: Piece): boolean {
+  return cellTo.piece !== null && cellTo.piece.color !== currPiece.color
+}
+function isEmpty(cell: Cell) {
+  return cell.piece === null
+}
+function getSideEdge(cell: Cell, board: Board): Cell {
+  return board[cell.edges[2][0]][cell.edges[2][1]]
+}
+function getCWEdge(cell: Cell, board: Board): Cell {
+  return board[cell.edges[1][0]][cell.edges[1][1]]
+}
+function getCCWEdge(cell: Cell, board: Board): Cell {
+  return board[cell.edges[0][0]][cell.edges[0][1]]
+}
+
 export function getPossibleMoves(
   cell: Cell,
   board: Board,
@@ -37,14 +56,10 @@ export function getPossibleMoves(
 
   switch (cell.piece.type) {
     case "knight": {
-      for (const vertexTuple of cell.vertices) {
-        const vertex = board[vertexTuple[0]][vertexTuple[1]]
-        if (
-          vertex.color !== cell.color &&
-          (vertex.piece === null || vertex.piece.color !== cell.piece.color)
-        ) {
+      for (const [x, y] of cell.vertices) {
+        const vertex = board[x][y]
+        if (vertex.color !== cell.color && isNotAlly(vertex, cell.piece))
           possibleMoves.add(vertex)
-        }
       }
       break
     }
@@ -66,16 +81,16 @@ export function getPossibleMoves(
     }
     case "rook": {
       if (cell.edges.length === 3) {
-        const edge = board[cell.edges[2][0]][cell.edges[2][1]]
-        if (edge.piece === null || edge.piece.color !== cell.piece.color) {
-          possibleMoves.add(edge)
+        const sideEdge = getSideEdge(cell, board)
+        if (isNotAlly(sideEdge, cell.piece)) {
+          possibleMoves.add(sideEdge)
         }
       }
 
       let currEdge: Cell
       for (let i = 0; i < 2; i++) {
-        if (i === 0) currEdge = board[cell.edges[0][0]][cell.edges[0][1]]
-        else currEdge = board[cell.edges[1][0]][cell.edges[1][1]]
+        if (i === 0) currEdge = getCCWEdge(cell, board)
+        else currEdge = getCWEdge(cell, board)
         while (currEdge !== cell) {
           if (currEdge.piece !== null) {
             if (currEdge.piece.color !== cell.piece.color) {
@@ -83,9 +98,8 @@ export function getPossibleMoves(
             }
             break
           } else possibleMoves.add(currEdge)
-          if (i === 0)
-            currEdge = board[currEdge.edges[0][0]][currEdge.edges[0][1]]
-          else currEdge = board[currEdge.edges[1][0]][currEdge.edges[1][1]]
+          if (i === 0) currEdge = getCCWEdge(currEdge, board)
+          else currEdge = getCWEdge(currEdge, board)
         }
       }
       break
@@ -190,252 +204,127 @@ export function getPossibleMoves(
       break
     }
     case "king": {
-      for (const edgeTuple of Array.from(cell.edges)) {
-        const edge = board[edgeTuple[0]][edgeTuple[1]]
-        if (edge.piece === null || edge.piece.color !== cell.piece.color) {
-          possibleMoves.add(edge)
-        }
+      for (const [x, y] of cell.edges) {
+        const edge = board[x][y]
+        if (isNotAlly(edge, cell.piece)) possibleMoves.add(edge)
       }
-      for (const vertexTuple of cell.vertices) {
-        const vertex = board[vertexTuple[0]][vertexTuple[1]]
-        if (vertex.color === cell.color) {
-          if (vertex.piece !== null) {
-            if (vertex.piece.color !== cell.piece.color) {
-              possibleMoves.add(vertex)
-            }
-          } else possibleMoves.add(vertex)
-        }
+      for (const [x, y] of cell.vertices) {
+        const vertex = board[x][y]
+        if (vertex.color === cell.color && isNotAlly(vertex, cell.piece))
+          possibleMoves.add(vertex)
       }
       break
     }
     case "berolina-pawn-cw": {
       if (cell.edges.length === 3) {
-        const sideEdge = board[cell.edges[2][0]][cell.edges[2][1]]
-        if (
-          sideEdge.piece !== null &&
-          sideEdge.piece.color !== cell.piece.color
-        ) {
-          possibleMoves.add(sideEdge)
-        }
+        const sideEdge = getSideEdge(cell, board)
+        if (isEnemy(sideEdge, cell.piece)) possibleMoves.add(sideEdge)
       }
 
-      const forwEdge = board[cell.edges[1][0]][cell.edges[1][1]]
+      const forwEdge = getCWEdge(cell, board)
+      if (isEnemy(forwEdge, cell.piece)) possibleMoves.add(forwEdge)
+
+      const forwForwEdge = getCWEdge(forwEdge, board)
+      if (isEmpty(forwForwEdge)) possibleMoves.add(forwForwEdge)
       if (
-        forwEdge.piece !== null &&
-        forwEdge.piece.color !== cell.piece.color
+        (cell.x === 2 && (cell.y % 5 === 0 || cell.y % 5 === 2)) ||
+        (cell.x === 1 && cell.y % 3 !== 2)
       ) {
-        possibleMoves.add(forwEdge)
+        const sideEdge = getSideEdge(cell, board)
+        const sideForwEdge = getCWEdge(sideEdge, board)
+        if (isEmpty(sideForwEdge)) possibleMoves.add(sideForwEdge)
+      } else if ((cell.x === 2 && cell.y % 5 === 4) || cell.x === 1) {
+        const backEdge = getCCWEdge(cell, board)
+        const sideBackEdge = getSideEdge(backEdge, board)
+        if (isEmpty(sideBackEdge)) possibleMoves.add(sideBackEdge)
       }
-
-      for (const [x, y] of cell.vertices) {
-        const vertex = board[x][y]
-        if (vertex.color === cell.color && vertex.piece === null) {
-          const forwForwEdge = board[forwEdge.edges[1][0]][forwEdge.edges[1][1]]
-          const forwForwVertexIds = forwForwEdge.vertices.map(
-            ([x, y]) => board[x][y].id
-          )
-          if (cell.x === 2) {
-            if (cell.x === vertex.x) {
-              if ((cell.y + 2) % 50 !== vertex.y) {
-                possibleMoves.add(vertex)
-              }
-            } else if (forwForwVertexIds.includes(vertex.id)) {
-              possibleMoves.add(vertex)
-            }
-          } else if (cell.x === 1) {
-            if (cell.x === vertex.x) {
-              if ((cell.y + 2) % 30 !== vertex.y) {
-                possibleMoves.add(vertex)
-              }
-            } else if (forwForwVertexIds.includes(vertex.id)) {
-              possibleMoves.add(vertex)
-            }
-          } else if (cell.x === vertex.x) {
-            if ((cell.y + 8) % 10 === vertex.y) {
-              possibleMoves.add(vertex)
-            }
-          }
-        }
-      }
-      if (forwEdge.edges.length === 3) {
-        const forwSideEdge = board[forwEdge.edges[2][0]][forwEdge.edges[2][1]]
-        possibleMoves.delete(forwSideEdge)
-      }
-
       break
     }
     case "berolina-pawn-ccw": {
       if (cell.edges.length === 3) {
-        const sideEdge = board[cell.edges[2][0]][cell.edges[2][1]]
-        if (
-          sideEdge.piece !== null &&
-          sideEdge.piece.color !== cell.piece.color
-        ) {
-          possibleMoves.add(sideEdge)
-        }
+        const sideEdge = getSideEdge(cell, board)
+        if (isEnemy(sideEdge, cell.piece)) possibleMoves.add(sideEdge)
       }
 
-      const forwEdge = board[cell.edges[0][0]][cell.edges[0][1]]
+      const forwEdge = getCCWEdge(cell, board)
+      if (isEnemy(forwEdge, cell.piece)) possibleMoves.add(forwEdge)
+
+      const forwForwEdge = getCCWEdge(forwEdge, board)
+      if (isEmpty(forwForwEdge)) possibleMoves.add(forwForwEdge)
       if (
-        forwEdge.piece !== null &&
-        forwEdge.piece.color !== cell.piece.color
+        (cell.x === 2 && (cell.y % 5 === 0 || cell.y % 5 === 2)) ||
+        (cell.x === 1 && cell.y % 3 !== 1)
       ) {
-        possibleMoves.add(forwEdge)
+        const sideEdge = getSideEdge(cell, board)
+        const sideForwEdge = getCCWEdge(sideEdge, board)
+        if (isEmpty(sideForwEdge)) possibleMoves.add(sideForwEdge)
+      } else if ((cell.x === 2 && cell.y % 5 === 3) || cell.x === 1) {
+        const backEdge = getCWEdge(cell, board)
+        const sideBackEdge = getSideEdge(backEdge, board)
+        if (isEmpty(sideBackEdge)) possibleMoves.add(sideBackEdge)
       }
-
-      for (const [x, y] of cell.vertices) {
-        const vertex = board[x][y]
-        if (vertex.color === cell.color && vertex.piece === null) {
-          const forwForwEdge = board[forwEdge.edges[0][0]][forwEdge.edges[0][1]]
-          const forwForwVertexIds = forwForwEdge.vertices.map(
-            ([x, y]) => board[x][y].id
-          )
-          if (cell.x === 2) {
-            if (cell.x === vertex.x) {
-              if ((cell.y + 48) % 50 !== vertex.y) {
-                possibleMoves.add(vertex)
-              }
-            } else if (forwForwVertexIds.includes(vertex.id)) {
-              possibleMoves.add(vertex)
-            }
-          } else if (cell.x === 1) {
-            if (cell.x === vertex.x) {
-              if ((cell.y + 28) % 30 !== vertex.y) {
-                possibleMoves.add(vertex)
-              }
-            } else if (forwForwVertexIds.includes(vertex.id)) {
-              possibleMoves.add(vertex)
-            }
-          } else if (cell.x === vertex.x) {
-            if ((cell.y + 2) % 10 === vertex.y) {
-              possibleMoves.add(vertex)
-            }
-          }
-        }
-      }
-      if (forwEdge.edges.length === 3) {
-        const forwSideEdge = board[forwEdge.edges[2][0]][forwEdge.edges[2][1]]
-        possibleMoves.delete(forwSideEdge)
-      }
-
       break
     }
     case "pawn-cw": {
-      // cell.edges.next = ccw direction, cell.edges.prev = cw direction
-
       if (cell.edges.length === 3) {
-        const sideEdge = board[cell.edges[2][0]][cell.edges[2][1]]
-        if (sideEdge.piece === null) {
-          possibleMoves.add(sideEdge)
-        }
+        const sideEdge = getSideEdge(cell, board)
+        if (isEmpty(sideEdge)) possibleMoves.add(sideEdge)
       }
 
-      const forwEdge = board[cell.edges[1][0]][cell.edges[1][1]]
-      if (forwEdge.piece === null) {
+      const forwEdge = getCWEdge(cell, board)
+      if (isEmpty(forwEdge)) {
         possibleMoves.add(forwEdge)
         if (!cell.piece.hasMoved) {
-          const firstMoveEdge = board[cell.edges[1][0]][cell.edges[1][1] - 1]
-          if (firstMoveEdge.piece === null) possibleMoves.add(firstMoveEdge)
+          const forwForwEdge = getCWEdge(forwEdge, board)
+          if (isEmpty(forwForwEdge)) possibleMoves.add(forwForwEdge)
         }
       }
 
-      for (const [x, y] of cell.vertices) {
-        const vertex = board[x][y]
-        if (vertex.color === cell.color && vertex.piece !== null) {
-          if (vertex.piece.color !== cell.piece.color) {
-            const forwForwEdge =
-              board[forwEdge.edges[1][0]][forwEdge.edges[1][1]]
-            const forwForwVertexIds = forwForwEdge.vertices.map(
-              ([x, y]) => board[x][y].id
-            )
-            if (cell.x === 2) {
-              if (cell.x === vertex.x) {
-                if ((cell.y + 2) % 50 !== vertex.y) {
-                  possibleMoves.add(vertex)
-                }
-              } else if (forwForwVertexIds.includes(vertex.id)) {
-                possibleMoves.add(vertex)
-              }
-            } else if (cell.x === 1) {
-              if (cell.x === vertex.x) {
-                if ((cell.y + 2) % 30 !== vertex.y) {
-                  possibleMoves.add(vertex)
-                }
-              } else if (forwForwVertexIds.includes(vertex.id)) {
-                possibleMoves.add(vertex)
-              }
-            } else if (cell.x === vertex.x) {
-              if ((cell.y + 8) % 10 === vertex.y) {
-                possibleMoves.add(vertex)
-              }
-            }
-          }
-        }
+      const forwForwEdge = getCWEdge(forwEdge, board)
+      if (isEnemy(forwForwEdge, cell.piece)) possibleMoves.add(forwForwEdge)
+      if (
+        (cell.x === 2 && (cell.y % 5 === 0 || cell.y % 5 === 2)) ||
+        (cell.x === 1 && cell.y % 3 !== 2)
+      ) {
+        const sideEdge = getSideEdge(cell, board)
+        const sideForwEdge = getCWEdge(sideEdge, board)
+        if (isEnemy(sideForwEdge, cell.piece)) possibleMoves.add(sideForwEdge)
+      } else if ((cell.x === 2 && cell.y % 5 === 4) || cell.x === 1) {
+        const backEdge = getCCWEdge(cell, board)
+        const sideBackEdge = getSideEdge(backEdge, board)
+        if (isEnemy(sideBackEdge, cell.piece)) possibleMoves.add(sideBackEdge)
       }
-      if (forwEdge.edges.length === 3) {
-        const forwSideEdge = board[forwEdge.edges[2][0]][forwEdge.edges[2][1]]
-        possibleMoves.delete(forwSideEdge)
-      }
-
       break
     }
     case "pawn-ccw": {
-      // cell.edges.next = ccw direction, cell.edges.prev = cw direction
-
       if (cell.edges.length === 3) {
-        const sideEdge = board[cell.edges[2][0]][cell.edges[2][1]]
-        if (sideEdge.piece === null) {
-          possibleMoves.add(sideEdge)
-        }
+        const sideEdge = getSideEdge(cell, board)
+        if (isEmpty(sideEdge)) possibleMoves.add(sideEdge)
       }
 
-      const forwEdge = board[cell.edges[0][0]][cell.edges[0][1]]
-      if (forwEdge.piece === null) {
+      const forwEdge = getCCWEdge(cell, board)
+      if (isEmpty(forwEdge)) {
         possibleMoves.add(forwEdge)
         if (!cell.piece.hasMoved) {
-          const firstMoveEdge = board[cell.edges[0][0]][cell.edges[0][1] + 1]
-          if (firstMoveEdge.piece === null) possibleMoves.add(firstMoveEdge)
+          const forwForwEdge = getCCWEdge(forwEdge, board)
+          if (isEmpty(forwForwEdge)) possibleMoves.add(forwForwEdge)
         }
       }
 
-      for (const [x, y] of cell.vertices) {
-        const vertex = board[x][y]
-        if (vertex.color === cell.color && vertex.piece !== null) {
-          if (vertex.piece.color !== cell.piece.color) {
-            const forwForwEdge =
-              board[forwEdge.edges[0][0]][forwEdge.edges[0][1]]
-            const forwForwVertexIds = forwForwEdge.vertices.map(
-              ([x, y]) => board[x][y].id
-            )
-            if (cell.x === 2) {
-              if (cell.x === vertex.x) {
-                if ((cell.y + 48) % 50 !== vertex.y) {
-                  possibleMoves.add(vertex)
-                }
-              } else if (forwForwVertexIds.includes(vertex.id)) {
-                possibleMoves.add(vertex)
-              }
-            } else if (cell.x === 1) {
-              if (cell.x === vertex.x) {
-                if ((cell.y + 28) % 30 !== vertex.y) {
-                  possibleMoves.add(vertex)
-                }
-              } else if (forwForwVertexIds.includes(vertex.id)) {
-                possibleMoves.add(vertex)
-              }
-            } else if (cell.x === vertex.x) {
-              if ((cell.y + 2) % 10 === vertex.y) {
-                possibleMoves.add(vertex)
-              }
-            }
-          }
-        }
+      const forwForwEdge = getCCWEdge(forwEdge, board)
+      if (isEnemy(forwForwEdge, cell.piece)) possibleMoves.add(forwForwEdge)
+      if (
+        (cell.x === 2 && (cell.y % 5 === 0 || cell.y % 5 === 2)) ||
+        (cell.x === 1 && cell.y % 3 !== 1)
+      ) {
+        const sideEdge = getSideEdge(cell, board)
+        const sideForwEdge = getCCWEdge(sideEdge, board)
+        if (isEnemy(sideForwEdge, cell.piece)) possibleMoves.add(sideForwEdge)
+      } else if ((cell.x === 2 && cell.y % 5 === 3) || cell.x === 1) {
+        const backEdge = getCWEdge(cell, board)
+        const sideBackEdge = getSideEdge(backEdge, board)
+        if (isEnemy(sideBackEdge, cell.piece)) possibleMoves.add(sideBackEdge)
       }
-      if (forwEdge.edges.length === 3) {
-        const forwSideEdge = board[forwEdge.edges[2][0]][forwEdge.edges[2][1]]
-        possibleMoves.delete(forwSideEdge)
-      }
-
       break
     }
   }
