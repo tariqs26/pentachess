@@ -29,8 +29,8 @@ export function canPromote(piece: Piece, to: { x: number; y: number }) {
 function isNotAlly(cellTo: Cell, currPiece: Piece): boolean {
   return cellTo.piece === null || cellTo.piece.color !== currPiece.color
 }
-function isEnemy(cellTo: Cell, currPiece: Piece): boolean {
-  return cellTo.piece !== null && cellTo.piece.color !== currPiece.color
+function isEnemy(cellTo: Cell, currPiece: Piece | null): boolean {
+  return cellTo.piece !== null && cellTo.piece.color !== currPiece?.color
 }
 function isEmpty(cell: Cell) {
   return cell.piece === null
@@ -44,6 +44,57 @@ function getCWEdge(cell: Cell, board: Board): Cell {
 function getCCWEdge(cell: Cell, board: Board): Cell {
   return board[cell.edges[0][0]][cell.edges[0][1]]
 }
+function getCWPawnTypeMoves(
+  possibleMoves: Set<Cell>,
+  cell: Cell,
+  board: Board,
+  type: "p" | "b",
+  dir: "cw" | "ccw"
+): void {
+  const var1 = dir === "cw" ? 2 : 1
+  const var2 = dir === "cw" ? 4 : 3
+  if (cell.edges.length === 3) {
+    const sideEdge = getSideEdge(cell, board)
+    if (type === "p" ? isEmpty(sideEdge) : isEnemy(sideEdge, cell.piece))
+      possibleMoves.add(sideEdge)
+  }
+
+  const forwEdge =
+    dir === "cw" ? getCWEdge(cell, board) : getCCWEdge(cell, board)
+  if (type === "p" ? isEmpty(forwEdge) : isEnemy(forwEdge, cell.piece)) {
+    possibleMoves.add(forwEdge)
+    if (type === "p" && !cell.piece?.hasMoved) {
+      const forwForwEdge =
+        dir === "cw" ? getCWEdge(forwEdge, board) : getCCWEdge(forwEdge, board)
+      if (isEmpty(forwForwEdge)) possibleMoves.add(forwForwEdge)
+    }
+  }
+
+  const forwForwEdge =
+    dir === "cw" ? getCWEdge(forwEdge, board) : getCCWEdge(forwEdge, board)
+  if (type === "p" ? isEnemy(forwForwEdge, cell.piece) : isEmpty(forwForwEdge))
+    possibleMoves.add(forwForwEdge)
+  if (
+    (cell.x === 2 && (cell.y % 5 === 0 || cell.y % 5 === 2)) ||
+    (cell.x === 1 && cell.y % 3 !== var1)
+  ) {
+    const sideEdge = getSideEdge(cell, board)
+    const sideForwEdge =
+      dir === "cw" ? getCWEdge(sideEdge, board) : getCCWEdge(sideEdge, board)
+    if (
+      type === "p" ? isEnemy(sideForwEdge, cell.piece) : isEmpty(sideForwEdge)
+    )
+      possibleMoves.add(sideForwEdge)
+  } else if ((cell.x === 2 && cell.y % 5 === var2) || cell.x === 1) {
+    const backEdge =
+      dir === "cw" ? getCCWEdge(cell, board) : getCWEdge(cell, board)
+    const sideBackEdge = getSideEdge(backEdge, board)
+    if (
+      type === "p" ? isEnemy(sideBackEdge, cell.piece) : isEmpty(sideBackEdge)
+    )
+      possibleMoves.add(sideBackEdge)
+  }
+}
 
 export function getPossibleMoves(
   cell: Cell,
@@ -55,28 +106,28 @@ export function getPossibleMoves(
   if (cell.piece === null) return possibleMoves
 
   switch (cell.piece.type) {
+    case "pawn-cw": {
+      getCWPawnTypeMoves(possibleMoves, cell, board, "p", "cw")
+      break
+    }
+    case "pawn-ccw": {
+      getCWPawnTypeMoves(possibleMoves, cell, board, "p", "ccw")
+      break
+    }
+    case "berolina-pawn-cw": {
+      getCWPawnTypeMoves(possibleMoves, cell, board, "b", "cw")
+      break
+    }
+    case "berolina-pawn-ccw": {
+      getCWPawnTypeMoves(possibleMoves, cell, board, "b", "ccw")
+      break
+    }
     case "knight": {
       for (const [x, y] of cell.vertices) {
         const vertex = board[x][y]
         if (vertex.color !== cell.color && isNotAlly(vertex, cell.piece))
           possibleMoves.add(vertex)
       }
-      break
-    }
-    case "queen": {
-      // get rook moves
-      const rookMoves = getPossibleMoves(
-        { ...cell, piece: makePiece("rook", cell.piece.color) },
-        board,
-        simulate
-      )
-      // get bishop moves
-      const bishopMoves = getPossibleMoves(
-        { ...cell, piece: makePiece("bishop", cell.piece.color) },
-        board,
-        simulate
-      )
-      possibleMoves = bishopMoves.union(rookMoves)
       break
     }
     case "rook": {
@@ -101,6 +152,34 @@ export function getPossibleMoves(
           if (i === 0) currEdge = getCCWEdge(currEdge, board)
           else currEdge = getCWEdge(currEdge, board)
         }
+      }
+      break
+    }
+    case "queen": {
+      // get rook moves
+      const rookMoves = getPossibleMoves(
+        { ...cell, piece: makePiece("rook", cell.piece.color) },
+        board,
+        simulate
+      )
+      // get bishop moves
+      const bishopMoves = getPossibleMoves(
+        { ...cell, piece: makePiece("bishop", cell.piece.color) },
+        board,
+        simulate
+      )
+      possibleMoves = bishopMoves.union(rookMoves)
+      break
+    }
+    case "king": {
+      for (const [x, y] of cell.edges) {
+        const edge = board[x][y]
+        if (isNotAlly(edge, cell.piece)) possibleMoves.add(edge)
+      }
+      for (const [x, y] of cell.vertices) {
+        const vertex = board[x][y]
+        if (vertex.color === cell.color && isNotAlly(vertex, cell.piece))
+          possibleMoves.add(vertex)
       }
       break
     }
@@ -200,130 +279,6 @@ export function getPossibleMoves(
             break
           }
         }
-      }
-      break
-    }
-    case "king": {
-      for (const [x, y] of cell.edges) {
-        const edge = board[x][y]
-        if (isNotAlly(edge, cell.piece)) possibleMoves.add(edge)
-      }
-      for (const [x, y] of cell.vertices) {
-        const vertex = board[x][y]
-        if (vertex.color === cell.color && isNotAlly(vertex, cell.piece))
-          possibleMoves.add(vertex)
-      }
-      break
-    }
-    case "berolina-pawn-cw": {
-      if (cell.edges.length === 3) {
-        const sideEdge = getSideEdge(cell, board)
-        if (isEnemy(sideEdge, cell.piece)) possibleMoves.add(sideEdge)
-      }
-
-      const forwEdge = getCWEdge(cell, board)
-      if (isEnemy(forwEdge, cell.piece)) possibleMoves.add(forwEdge)
-
-      const forwForwEdge = getCWEdge(forwEdge, board)
-      if (isEmpty(forwForwEdge)) possibleMoves.add(forwForwEdge)
-      if (
-        (cell.x === 2 && (cell.y % 5 === 0 || cell.y % 5 === 2)) ||
-        (cell.x === 1 && cell.y % 3 !== 2)
-      ) {
-        const sideEdge = getSideEdge(cell, board)
-        const sideForwEdge = getCWEdge(sideEdge, board)
-        if (isEmpty(sideForwEdge)) possibleMoves.add(sideForwEdge)
-      } else if ((cell.x === 2 && cell.y % 5 === 4) || cell.x === 1) {
-        const backEdge = getCCWEdge(cell, board)
-        const sideBackEdge = getSideEdge(backEdge, board)
-        if (isEmpty(sideBackEdge)) possibleMoves.add(sideBackEdge)
-      }
-      break
-    }
-    case "berolina-pawn-ccw": {
-      if (cell.edges.length === 3) {
-        const sideEdge = getSideEdge(cell, board)
-        if (isEnemy(sideEdge, cell.piece)) possibleMoves.add(sideEdge)
-      }
-
-      const forwEdge = getCCWEdge(cell, board)
-      if (isEnemy(forwEdge, cell.piece)) possibleMoves.add(forwEdge)
-
-      const forwForwEdge = getCCWEdge(forwEdge, board)
-      if (isEmpty(forwForwEdge)) possibleMoves.add(forwForwEdge)
-      if (
-        (cell.x === 2 && (cell.y % 5 === 0 || cell.y % 5 === 2)) ||
-        (cell.x === 1 && cell.y % 3 !== 1)
-      ) {
-        const sideEdge = getSideEdge(cell, board)
-        const sideForwEdge = getCCWEdge(sideEdge, board)
-        if (isEmpty(sideForwEdge)) possibleMoves.add(sideForwEdge)
-      } else if ((cell.x === 2 && cell.y % 5 === 3) || cell.x === 1) {
-        const backEdge = getCWEdge(cell, board)
-        const sideBackEdge = getSideEdge(backEdge, board)
-        if (isEmpty(sideBackEdge)) possibleMoves.add(sideBackEdge)
-      }
-      break
-    }
-    case "pawn-cw": {
-      if (cell.edges.length === 3) {
-        const sideEdge = getSideEdge(cell, board)
-        if (isEmpty(sideEdge)) possibleMoves.add(sideEdge)
-      }
-
-      const forwEdge = getCWEdge(cell, board)
-      if (isEmpty(forwEdge)) {
-        possibleMoves.add(forwEdge)
-        if (!cell.piece.hasMoved) {
-          const forwForwEdge = getCWEdge(forwEdge, board)
-          if (isEmpty(forwForwEdge)) possibleMoves.add(forwForwEdge)
-        }
-      }
-
-      const forwForwEdge = getCWEdge(forwEdge, board)
-      if (isEnemy(forwForwEdge, cell.piece)) possibleMoves.add(forwForwEdge)
-      if (
-        (cell.x === 2 && (cell.y % 5 === 0 || cell.y % 5 === 2)) ||
-        (cell.x === 1 && cell.y % 3 !== 2)
-      ) {
-        const sideEdge = getSideEdge(cell, board)
-        const sideForwEdge = getCWEdge(sideEdge, board)
-        if (isEnemy(sideForwEdge, cell.piece)) possibleMoves.add(sideForwEdge)
-      } else if ((cell.x === 2 && cell.y % 5 === 4) || cell.x === 1) {
-        const backEdge = getCCWEdge(cell, board)
-        const sideBackEdge = getSideEdge(backEdge, board)
-        if (isEnemy(sideBackEdge, cell.piece)) possibleMoves.add(sideBackEdge)
-      }
-      break
-    }
-    case "pawn-ccw": {
-      if (cell.edges.length === 3) {
-        const sideEdge = getSideEdge(cell, board)
-        if (isEmpty(sideEdge)) possibleMoves.add(sideEdge)
-      }
-
-      const forwEdge = getCCWEdge(cell, board)
-      if (isEmpty(forwEdge)) {
-        possibleMoves.add(forwEdge)
-        if (!cell.piece.hasMoved) {
-          const forwForwEdge = getCCWEdge(forwEdge, board)
-          if (isEmpty(forwForwEdge)) possibleMoves.add(forwForwEdge)
-        }
-      }
-
-      const forwForwEdge = getCCWEdge(forwEdge, board)
-      if (isEnemy(forwForwEdge, cell.piece)) possibleMoves.add(forwForwEdge)
-      if (
-        (cell.x === 2 && (cell.y % 5 === 0 || cell.y % 5 === 2)) ||
-        (cell.x === 1 && cell.y % 3 !== 1)
-      ) {
-        const sideEdge = getSideEdge(cell, board)
-        const sideForwEdge = getCCWEdge(sideEdge, board)
-        if (isEnemy(sideForwEdge, cell.piece)) possibleMoves.add(sideForwEdge)
-      } else if ((cell.x === 2 && cell.y % 5 === 3) || cell.x === 1) {
-        const backEdge = getCWEdge(cell, board)
-        const sideBackEdge = getSideEdge(backEdge, board)
-        if (isEnemy(sideBackEdge, cell.piece)) possibleMoves.add(sideBackEdge)
       }
       break
     }
