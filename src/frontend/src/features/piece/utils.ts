@@ -44,7 +44,7 @@ function getCWEdge(cell: Cell, board: Board): Cell {
 function getCCWEdge(cell: Cell, board: Board): Cell {
   return board[cell.edges[0][0]][cell.edges[0][1]]
 }
-function getCWPawnTypeMoves(
+function getPawnTypeMoves(
   possibleMoves: Set<Cell>,
   cell: Cell,
   board: Board,
@@ -107,19 +107,19 @@ export function getPossibleMoves(
 
   switch (cell.piece.type) {
     case "pawn-cw": {
-      getCWPawnTypeMoves(possibleMoves, cell, board, "p", "cw")
+      getPawnTypeMoves(possibleMoves, cell, board, "p", "cw")
       break
     }
     case "pawn-ccw": {
-      getCWPawnTypeMoves(possibleMoves, cell, board, "p", "ccw")
+      getPawnTypeMoves(possibleMoves, cell, board, "p", "ccw")
       break
     }
     case "berolina-pawn-cw": {
-      getCWPawnTypeMoves(possibleMoves, cell, board, "b", "cw")
+      getPawnTypeMoves(possibleMoves, cell, board, "b", "cw")
       break
     }
     case "berolina-pawn-ccw": {
-      getCWPawnTypeMoves(possibleMoves, cell, board, "b", "ccw")
+      getPawnTypeMoves(possibleMoves, cell, board, "b", "ccw")
       break
     }
     case "knight": {
