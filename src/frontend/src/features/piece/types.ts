@@ -13,9 +13,11 @@ export type PieceType =
   | "berolina-pawn-cw"
   | "berolina-pawn-ccw"
 
+export type PieceAbbr = "K" | "Q" | "R" | "B" | "N" | "P" | "L"
+
 export type Piece = {
   type: PieceType
-  abbr: string
+  abbr: PieceAbbr
   color: PieceColor
   value: number
   image: StaticImageData
