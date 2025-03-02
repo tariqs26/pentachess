@@ -1,3 +1,4 @@
+import { getCCWEdge, getCWEdge, getSideEdge } from "../board/cell"
 import type { Board, Cell } from "../board/types"
 import { checkForCheckOrMate, cloneBoard } from "../board/utils"
 import { PIECE_DATA } from "./constants"
@@ -36,18 +37,6 @@ function isEnemy(cellTo: Cell, currPiece: Piece | null) {
 
 function isEmpty(cell: Cell) {
   return cell.piece === null
-}
-
-function getSideEdge(cell: Cell, board: Board) {
-  return board[cell.edges[2][0]][cell.edges[2][1]]
-}
-
-function getCWEdge(cell: Cell, board: Board) {
-  return board[cell.edges[1][0]][cell.edges[1][1]]
-}
-
-function getCCWEdge(cell: Cell, board: Board) {
-  return board[cell.edges[0][0]][cell.edges[0][1]]
 }
 
 function getPawnTypeMoves(

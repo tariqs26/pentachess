@@ -158,3 +158,15 @@ export function cloneCell(cell: Cell): Cell {
     vertices: cell.vertices.map((vertex) => [...vertex]),
   }
 }
+
+export function getSideEdge(cell: Cell, board: Board) {
+  return board[cell.edges[2][0]][cell.edges[2][1]]
+}
+
+export function getCWEdge(cell: Cell, board: Board) {
+  return board[cell.edges[1][0]][cell.edges[1][1]]
+}
+
+export function getCCWEdge(cell: Cell, board: Board) {
+  return board[cell.edges[0][0]][cell.edges[0][1]]
+}
