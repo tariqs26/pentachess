@@ -144,9 +144,8 @@ export function getPossibleMoves(
         else currEdge = getCWEdge(cell, board)
         while (currEdge !== cell) {
           if (currEdge.piece !== null) {
-            if (currEdge.piece.color !== cell.piece.color) {
+            if (currEdge.piece.color !== cell.piece.color)
               possibleMoves.add(currEdge)
-            }
             break
           } else possibleMoves.add(currEdge)
           if (i === 0) currEdge = getCCWEdge(currEdge, board)
@@ -184,40 +183,29 @@ export function getPossibleMoves(
       break
     }
     case "bishop": {
-      for (const vertexTuple of cell.vertices) {
-        const vertex = board[vertexTuple[0]][vertexTuple[1]]
-        if (
-          vertex.color === cell.color &&
-          (vertex.piece === null || vertex.piece.color !== cell.piece.color)
-        ) {
+      for (const [x, y] of cell.vertices) {
+        const vertex = board[x][y]
+        if (vertex.color === cell.color && isNotAlly(vertex, cell.piece)) {
           possibleMoves.add(vertex)
-
           if (vertex.angle === cell.angle && vertex.piece === null) {
-            for (const attachedVertexTuple of vertex.vertices) {
-              const attachedVertex =
-                board[attachedVertexTuple[0]][attachedVertexTuple[1]]
+            for (const [attachedX, attachedY] of vertex.vertices) {
+              const attachedVertex = board[attachedX][attachedY]
               if (
                 attachedVertex.angle === vertex.angle &&
                 attachedVertex.color === vertex.color &&
-                (attachedVertex.piece === null ||
-                  attachedVertex.piece.color !== cell.piece.color) &&
+                isNotAlly(attachedVertex, cell.piece) &&
                 cell.x !== 1
               ) {
-                if (cell.x === 0) {
-                  if (
+                if (
+                  (cell.x === 0 &&
                     attachedVertex.x === 2 &&
                     ((cell.y * 5) % 50 === attachedVertex.y ||
                       (cell.y * 5 + 4) % 50 === attachedVertex.y ||
-                      (cell.y * 5 + 8) % 50 === attachedVertex.y)
-                  ) {
-                    possibleMoves.add(attachedVertex)
-                    break
-                  }
-                  // cell.x = 2
-                } else if (
-                  attachedVertex.x === 0 &&
-                  (cell.y + 4) % 5 !== 0 &&
-                  (cell.y + 3) % 5 !== 0
+                      (cell.y * 5 + 8) % 50 === attachedVertex.y)) ||
+                  (cell.x === 2 &&
+                    attachedVertex.x === 0 &&
+                    cell.y % 5 !== 1 &&
+                    cell.y % 5 !== 2)
                 ) {
                   possibleMoves.add(attachedVertex)
                   break
@@ -228,56 +216,18 @@ export function getPossibleMoves(
         }
       }
 
-      // cycles for center and outer ring
-      if (cell.x === 1) {
-        // counter clockwise check
-        for (let counter = 2; counter < 28; counter += 2) {
-          const currVertex = board[cell.x][(cell.y + counter) % 30]
-          if (currVertex.piece === null) {
-            possibleMoves.add(currVertex)
-          } else {
-            if (currVertex.piece.color !== cell.piece?.color) {
-              possibleMoves.add(currVertex)
-            }
+      let currEdge: Cell
+      for (let i = 0; i < 2; i++) {
+        if (i === 0) currEdge = getCCWEdge(getCCWEdge(cell, board), board)
+        else currEdge = getCWEdge(getCWEdge(cell, board), board)
+        while (currEdge !== cell) {
+          if (currEdge.piece !== null) {
+            if (currEdge.piece.color !== cell.piece.color)
+              possibleMoves.add(currEdge)
             break
-          }
-        }
-        // clockwise check
-        for (let counter = 2; counter < 28; counter += 2) {
-          const currVertex = board[cell.x][(cell.y - counter + 30) % 30]
-          if (currVertex.piece === null) {
-            possibleMoves.add(currVertex)
-          } else {
-            if (currVertex.piece.color !== cell.piece?.color) {
-              possibleMoves.add(currVertex)
-            }
-            break
-          }
-        }
-      } else if (cell.x === 2) {
-        // counter clockwise check
-        for (let counter = 2; counter < 48; counter += 2) {
-          const currVertex = board[cell.x][(cell.y + counter) % 50]
-          if (currVertex.piece === null) {
-            possibleMoves.add(currVertex)
-          } else {
-            if (currVertex.piece.color !== cell.piece?.color) {
-              possibleMoves.add(currVertex)
-            }
-            break
-          }
-        }
-        // clockwise check
-        for (let counter = 2; counter < 48; counter += 2) {
-          const currVertex = board[cell.x][(cell.y - counter + 50) % 50]
-          if (currVertex.piece === null) {
-            possibleMoves.add(currVertex)
-          } else {
-            if (currVertex.piece.color !== cell.piece?.color) {
-              possibleMoves.add(currVertex)
-            }
-            break
-          }
+          } else possibleMoves.add(currEdge)
+          if (i === 0) currEdge = getCCWEdge(getCCWEdge(currEdge, board), board)
+          else currEdge = getCWEdge(getCWEdge(currEdge, board), board)
         }
       }
       break
