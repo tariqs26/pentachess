@@ -16,7 +16,8 @@ export const createInitialMultiplayerState = (): MultiplayerGameState => ({
   timer: { w: 0, b: 0 },
   previousMoves: [],
   capturedPieces: { w: [], b: [] },
-  players: [],
+  player: { id: '', color: 'w' },
+  opponent: { id: '', color: 'b' },
 });
 
 export const multiplayerGameReducer = (

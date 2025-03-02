@@ -1,6 +1,11 @@
 import type { BoardAction, BoardState, Cell } from "../board/types"
 import type { Piece, PieceColor } from "../piece/types"
 
+export type Player = {
+  id: string
+  color: PieceColor
+}
+
 // Shared types between local and multiplayer
 export type Move = {
   player: PieceColor
@@ -53,23 +58,14 @@ export type LocalGameAction =
   | { type: "RESET_GAME" }
   | BoardAction
 
-// Multiplayer Types
-export type MultiplayerPlayer = {
-  id: string
-  name: string
-  color: PieceColor
-  timeRemaining: number
-}
-
 export type MultiplayerGameState = Omit<LocalGameState, 'player' | 'opponent'> & {
   id: string
-  players: MultiplayerPlayer[]
-  currentPlayerId?: string // The current player's ID in the multiplayer game
-  drawOffer?: string // ID of player who offered draw
+  player: Player
+  opponent: Player
 }
 
 export type MultiplayerGameAction =
-  | { type: "GAME_JOIN"; payload: MultiplayerPlayer }
+  | { type: "GAME_JOIN"; payload: Player }
   | { type: "GAME_START"; payload: MultiplayerGameState }
   | { type: "MOVE_MADE"; payload: Move }
   | { type: "TIMER_UPDATE"; payload: Record<string, number> }
