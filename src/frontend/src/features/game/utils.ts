@@ -29,12 +29,10 @@ export const getMove = (
   check: PieceColor | null,
   status: GameStatus
 ): Move => {
-  const fromId = from.id.toLowerCase()
-  const toId = to.id.toLowerCase()
   const moveType = to.piece ? "x" : "-"
   const promotion = piecePromoted ? `=${piecePromoted.abbr}` : ""
   const postfix = status === "checkmate" ? "#" : check ? "+" : ""
-  const notation = `${piece.abbr}:${fromId}${moveType}${toId}${promotion}${postfix}`
+  const notation = `${piece.abbr}:${from.id}${moveType}${to.id}${promotion}${postfix}`
 
   return {
     player,
