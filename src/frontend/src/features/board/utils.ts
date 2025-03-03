@@ -121,9 +121,15 @@ function checkIfMovesExist(board: Board, color: PieceColor) {
   return true
 }
 
-function checkThreeMoveRep(moves: string[]) {
-  if (moves.length >= 12) {
-    const lastTwelve = moves.slice(-12)
+export function checkThreeMoveRep(
+  moves: { from: Cell; to: Cell; piece: Piece; piecePromoted: Piece | null }[]
+) {
+  const movesNotation = moves.map(
+    ({ from, to, piece, piecePromoted }) =>
+      `${piece.abbr}:${from.id.toLowerCase()}${to.piece ? "x" : "-"}${to.id.toLowerCase()}${piecePromoted ? `=${piecePromoted.abbr}` : ""}`
+  )
+  if (movesNotation.length >= 12) {
+    const lastTwelve = movesNotation.slice(-12)
     for (let i = 0; i < 8; i++) {
       if (lastTwelve[i] !== lastTwelve[i + 4]) {
         console.log(i, i + 4)
@@ -135,7 +141,7 @@ function checkThreeMoveRep(moves: string[]) {
   return false
 }
 
-function checkFiftyMoveNoCap(moves: { to: Cell; piece: Piece }[]) {
+export function checkFiftyMoveNoCap(moves: { to: Cell; piece: Piece }[]) {
   if (moves.length >= 50) {
     const lastFifty = moves.slice(-50)
     for (const { to, piece } of lastFifty) {
@@ -147,22 +153,6 @@ function checkFiftyMoveNoCap(moves: { to: Cell; piece: Piece }[]) {
   return false
 }
 
-export function checkForStalemate(
-  board: Board,
-  color: PieceColor,
-  moves: { from: Cell; to: Cell; piece: Piece; piecePromoted: Piece | null }[]
-): boolean {
-  if (checkIfMovesExist(board, color)) return true
-  else {
-    const movesNotation = moves.map(
-      ({ from, to, piece, piecePromoted }) =>
-        `${piece.abbr}:${from.id.toLowerCase()}${to.piece ? "x" : "-"}${to.id.toLowerCase()}${piecePromoted ? `=${piecePromoted.abbr}` : ""}`
-    )
-    if (checkThreeMoveRep(movesNotation)) return true
-    else {
-      const movesPawnCap = moves.map(({ to, piece }) => ({ to, piece }))
-      if (checkFiftyMoveNoCap(movesPawnCap)) return true
-      else return false
-    }
-  }
+export function checkForStalemate(board: Board, color: PieceColor) {
+  return checkIfMovesExist(board, color)
 }

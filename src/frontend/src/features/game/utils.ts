@@ -1,5 +1,10 @@
-import type { Cell } from "../board/types"
-import { initializeBoard } from "../board/utils"
+import type { Board, Cell } from "../board/types"
+import {
+  initializeBoard,
+  checkForStalemate,
+  checkThreeMoveRep,
+  checkFiftyMoveNoCap,
+} from "../board/utils"
 import type { Piece, PieceColor } from "../piece/types"
 import type { GameStatus, LocalGameState, Move } from "./types"
 
@@ -66,3 +71,40 @@ export const isGameOver = (status: GameStatus) =>
   status.startsWith("draw") ||
   status === "resignation" ||
   status === "time-expired"
+
+export function getStatus(
+  isCheckmate: boolean,
+  board: Board,
+  turn: PieceColor,
+  moves: Move[],
+  nextMove: { from: Cell; to: Cell; piece: Piece; piecePromoted: Piece | null }
+) {
+  return isCheckmate
+    ? "checkmate"
+    : checkForStalemate(board, turn)
+      ? "draw-stalemate"
+      : checkThreeMoveRep(
+            moves
+              .map(({ from, to, piece, piecePromoted }) => ({
+                from,
+                to,
+                piece,
+                piecePromoted,
+              }))
+              .concat(nextMove)
+          )
+        ? "draw-threefold"
+        : checkFiftyMoveNoCap(
+              moves
+                .map(({ to, piece }) => ({
+                  to,
+                  piece,
+                }))
+                .concat({
+                  to: nextMove.to,
+                  piece: nextMove.piece,
+                })
+            )
+          ? "draw-fifty-move"
+          : "playing"
+}

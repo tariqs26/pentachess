@@ -1,7 +1,7 @@
-import { checkForCheckOrMate, checkForStalemate } from "../board/utils"
+import { checkForCheckOrMate } from "../board/utils"
 import { canPromote, getPossibleMoves } from "../piece/utils"
 import type { LocalGameAction, LocalGameState } from "./types"
-import { createNewGameState, getMove } from "./utils"
+import { createNewGameState, getMove, getStatus } from "./utils"
 
 export function localGameReducer(
   state: LocalGameState,
@@ -52,27 +52,13 @@ export function localGameReducer(
         turn
       )
 
-      const status = isCheckmate
-        ? "checkmate"
-        : checkForStalemate(
-              state.boardState.board,
-              turn,
-              state.previousMoves
-                .map(({ from, to, piece, piecePromoted }) => ({
-                  from,
-                  to,
-                  piece,
-                  piecePromoted,
-                }))
-                .concat({
-                  from: from,
-                  to: to,
-                  piece: piece,
-                  piecePromoted: null,
-                })
-            )
-          ? "draw-stalemate"
-          : "playing"
+      const status = getStatus(
+        isCheckmate,
+        state.boardState.board,
+        turn,
+        state.previousMoves,
+        { from: from, to: to, piece: piece, piecePromoted: null }
+      )
 
       const newMove = getMove(
         state.turn,
@@ -124,27 +110,13 @@ export function localGameReducer(
       const { from, to, piece } = state.promotionCoordinates
       const { x, y } = to
 
-      const status = isCheckmate
-        ? "checkmate"
-        : checkForStalemate(
-              state.boardState.board,
-              turn,
-              state.previousMoves
-                .map(({ from, to, piece, piecePromoted }) => ({
-                  from,
-                  to,
-                  piece,
-                  piecePromoted,
-                }))
-                .concat({
-                  from: from,
-                  to: to,
-                  piece: piece,
-                  piecePromoted: action.piece,
-                })
-            )
-          ? "draw-stalemate"
-          : "playing"
+      const status = getStatus(
+        isCheckmate,
+        state.boardState.board,
+        turn,
+        state.previousMoves,
+        { from: from, to: to, piece: piece, piecePromoted: action.piece }
+      )
 
       state.boardState.board[x][y].piece = action.piece
 
