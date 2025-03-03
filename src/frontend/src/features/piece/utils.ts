@@ -200,17 +200,15 @@ export function getPossibleMoves(
       }
 
       let currEdge: Cell
-      for (let i = 0; i < 2; i++) {
-        if (i === 0) currEdge = getCCWEdge(getCCWEdge(cell, board), board)
-        else currEdge = getCWEdge(getCWEdge(cell, board), board)
+      for (const getForwardEdge of [getCCWEdge, getCWEdge]) {
+        currEdge = getForwardEdge(getForwardEdge(cell, board), board)
         while (currEdge !== cell) {
           if (currEdge.piece !== null) {
             if (currEdge.piece.color !== cell.piece.color)
               possibleMoves.add(currEdge)
             break
           } else possibleMoves.add(currEdge)
-          if (i === 0) currEdge = getCCWEdge(getCCWEdge(currEdge, board), board)
-          else currEdge = getCWEdge(getCWEdge(currEdge, board), board)
+          currEdge = getForwardEdge(getForwardEdge(currEdge, board), board)
         }
       }
       break
