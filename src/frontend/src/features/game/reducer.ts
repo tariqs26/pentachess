@@ -57,7 +57,7 @@ export function localGameReducer(
         state.boardState.board,
         turn,
         state.previousMoves,
-        { from: from, to: to, piece: piece, piecePromoted: null }
+        { from, to, piece, piecePromoted: null }
       )
 
       const newMove = getMove(
@@ -115,7 +115,7 @@ export function localGameReducer(
         state.boardState.board,
         turn,
         state.previousMoves,
-        { from: from, to: to, piece: piece, piecePromoted: action.piece }
+        { from, to, piece, piecePromoted: action.piece }
       )
 
       state.boardState.board[x][y].piece = action.piece

@@ -30,10 +30,10 @@ export function initializeBoard() {
         } else angle = (angle + 36) % 360
       }
       // outter ring (pattern is down, up, down, up, up)
-      else {
-        if (flipCounter % 5 === 0 || flipCounter % 5 === 2) {
-          angle = (angle - 36 + 360) % 360
-        } else angle = (angle + 36) % 360
+      else if (flipCounter % 5 === 0 || flipCounter % 5 === 2) {
+        angle = (angle - 36 + 360) % 360
+      } else {
+        angle = (angle + 36) % 360
       }
       flipCounter += 1
     }
