@@ -120,12 +120,12 @@ export default function LocalGamePage() {
                 <ResignButton
                   className="bottom-[48px]"
                   handleResign={() => {
-                    state.status === "playing"
-                      ? dispatch({
-                          type: "SET_STATUS",
-                          status: "resign-confirmation",
-                        })
-                      : null
+                    if (state.status === "playing") {
+                      dispatch({
+                        type: "SET_STATUS",
+                        status: "resign-confirmation",
+                      })
+                    }
                   }}
                 />
               </div>
