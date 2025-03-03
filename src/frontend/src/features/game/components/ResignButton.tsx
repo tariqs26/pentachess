@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils"
 
 type ResignButtonProps = Readonly<{
   className?: string
-  handleResign: () => void
+  handleResign: () => void | null
 }>
 
 export const ResignButton = ({
