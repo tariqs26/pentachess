@@ -83,16 +83,7 @@ export function getStatus(
     ? "checkmate"
     : checkForStalemate(board, turn)
       ? "draw-stalemate"
-      : checkThreeMoveRep(
-            moves
-              .map(({ from, to, piece, piecePromoted }) => ({
-                from,
-                to,
-                piece,
-                piecePromoted,
-              }))
-              .concat(nextMove)
-          )
+      : checkThreeMoveRep()
         ? "draw-threefold"
         : checkFiftyMoveNoCap(
               moves

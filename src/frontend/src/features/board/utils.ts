@@ -121,23 +121,7 @@ function checkIfMovesExist(board: Board, color: PieceColor) {
   return true
 }
 
-export function checkThreeMoveRep(
-  moves: { from: Cell; to: Cell; piece: Piece; piecePromoted: Piece | null }[]
-) {
-  const movesNotation = moves.map(
-    ({ from, to, piece, piecePromoted }) =>
-      `${piece.abbr}:${from.id.toLowerCase()}${to.piece ? "x" : "-"}${to.id.toLowerCase()}${piecePromoted ? `=${piecePromoted.abbr}` : ""}`
-  )
-  if (movesNotation.length >= 12) {
-    const lastTwelve = movesNotation.slice(-12)
-    for (let i = 0; i < 8; i++) {
-      if (lastTwelve[i] !== lastTwelve[i + 4]) {
-        console.log(i, i + 4)
-        return false
-      }
-    }
-    return true
-  }
+export function checkThreeMoveRep() {
   return false
 }
 
