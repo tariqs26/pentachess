@@ -167,7 +167,11 @@ export function getPossibleMoves(
         const vertex = board[x][y]
         if (vertex.color === cell.color && isNotAlly(vertex, cell.piece)) {
           possibleMoves.add(vertex)
-          if (cell.x !== 1 && vertex.angle === cell.angle && vertex.piece === null) {
+          if (
+            cell.x !== 1 &&
+            vertex.angle === cell.angle &&
+            vertex.piece === null
+          ) {
             for (const [attachedX, attachedY] of vertex.vertices) {
               const attachedVertex = board[attachedX][attachedY]
               if (
