@@ -1,8 +1,8 @@
 import { INITIAL_PIECES } from "../piece/constants"
-import type { PieceColor } from "../piece/types"
+import type { PieceColor, Piece } from "../piece/types"
 import { getPossibleMoves, makePiece } from "../piece/utils"
 import { cloneCell, makeCell, setCellEdges, setCellVertices } from "./cell"
-import type { Board } from "./types"
+import type { Board, Cell } from "./types"
 
 export function initializeBoard() {
   const rings = [new Array(10), new Array(30), new Array(50)]
@@ -121,6 +121,48 @@ function checkIfMovesExist(board: Board, color: PieceColor) {
   return true
 }
 
-export function checkForStalemate(board: Board, color: PieceColor): boolean {
-  return checkIfMovesExist(board, color)
+function checkThreeMoveRep(moves: string[]) {
+  if (moves.length >= 12) {
+    const lastTwelve = moves.slice(-12)
+    for (let i = 0; i < 8; i++) {
+      if (lastTwelve[i] !== lastTwelve[i + 4]) {
+        console.log(i, i + 4)
+        return false
+      }
+    }
+    return true
+  }
+  return false
+}
+
+function checkFiftyMoveNoCap(moves: { to: Cell; piece: Piece }[]) {
+  if (moves.length >= 50) {
+    const lastFifty = moves.slice(-50)
+    for (const { to, piece } of lastFifty) {
+      if (piece.abbr === "P") return false
+      if (to.piece) return false
+    }
+    return true
+  }
+  return false
+}
+
+export function checkForStalemate(
+  board: Board,
+  color: PieceColor,
+  moves: { from: Cell; to: Cell; piece: Piece; piecePromoted: Piece | null }[]
+): boolean {
+  if (checkIfMovesExist(board, color)) return true
+  else {
+    const movesNotation = moves.map(
+      ({ from, to, piece, piecePromoted }) =>
+        `${piece.abbr}:${from.id.toLowerCase()}${to.piece ? "x" : "-"}${to.id.toLowerCase()}${piecePromoted ? `=${piecePromoted.abbr}` : ""}`
+    )
+    if (checkThreeMoveRep(movesNotation)) return true
+    else {
+      const movesPawnCap = moves.map(({ to, piece }) => ({ to, piece }))
+      if (checkFiftyMoveNoCap(movesPawnCap)) return true
+      else return false
+    }
+  }
 }

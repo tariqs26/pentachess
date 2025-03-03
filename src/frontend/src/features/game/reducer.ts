@@ -54,7 +54,23 @@ export function localGameReducer(
 
       const status = isCheckmate
         ? "checkmate"
-        : checkForStalemate(state.boardState.board, turn)
+        : checkForStalemate(
+              state.boardState.board,
+              turn,
+              state.previousMoves
+                .map(({ from, to, piece, piecePromoted }) => ({
+                  from,
+                  to,
+                  piece,
+                  piecePromoted,
+                }))
+                .concat({
+                  from: from,
+                  to: to,
+                  piece: piece,
+                  piecePromoted: null,
+                })
+            )
           ? "draw-stalemate"
           : "playing"
 
@@ -105,14 +121,30 @@ export function localGameReducer(
         turn
       )
 
-      const status = isCheckmate
-        ? "checkmate"
-        : checkForStalemate(state.boardState.board, turn)
-          ? "draw-stalemate"
-          : "playing"
-
       const { from, to, piece } = state.promotionCoordinates
       const { x, y } = to
+
+      const status = isCheckmate
+        ? "checkmate"
+        : checkForStalemate(
+              state.boardState.board,
+              turn,
+              state.previousMoves
+                .map(({ from, to, piece, piecePromoted }) => ({
+                  from,
+                  to,
+                  piece,
+                  piecePromoted,
+                }))
+                .concat({
+                  from: from,
+                  to: to,
+                  piece: piece,
+                  piecePromoted: action.piece,
+                })
+            )
+          ? "draw-stalemate"
+          : "playing"
 
       state.boardState.board[x][y].piece = action.piece
 
