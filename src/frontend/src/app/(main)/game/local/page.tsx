@@ -11,6 +11,7 @@ import { CreateGameForm } from "@/features/game/components/CreateGameForm"
 import { GameEndModal } from "@/features/game/components/GameEndModal"
 import { PreviousMoves } from "@/features/game/components/PreviousMoves"
 import { Timer } from "@/features/game/components/Timer"
+import { ResignButton } from "@/features/game/components/ResignButton"
 import { PawnPromotionModal } from "@/features/piece/components/PawnPromotionModal"
 
 export default function LocalGamePage() {
@@ -95,7 +96,17 @@ export default function LocalGamePage() {
                   `(${state.status === "checkmate" ? "checkmate" : "check"})`) ||
                   (state.status.startsWith("draw") && `(draw)`)}
               </p>
-              <Timer duration={state.timer.w} className="bottom-0" />
+              <div>
+                <Timer duration={state.timer.w} className="bottom-0" />
+                <ResignButton
+                  className="bottom-[48px]"
+                  handleResign={() => {
+                    dispatch({ type: "END_GAME" })
+                    dispatch({ type: "SET_STATUS", status: "resignation" })
+                    dispatch({ type: "SET_WINNER", player: "b" })
+                  }}
+                />
+              </div>
             </div>
             <CapturedPieces pieces={state.capturedPieces.b} />
           </div>
