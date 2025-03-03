@@ -12,6 +12,7 @@ import { GameEndModal } from "@/features/game/components/GameEndModal"
 import { PreviousMoves } from "@/features/game/components/PreviousMoves"
 import { Timer } from "@/features/game/components/Timer"
 import { ResignButton } from "@/features/game/components/ResignButton"
+import { ResignConfModal } from "@/features/game/components/ResignConfModal"
 import { PawnPromotionModal } from "@/features/piece/components/PawnPromotionModal"
 
 export default function LocalGamePage() {
@@ -68,6 +69,24 @@ export default function LocalGamePage() {
                 }
               />
             )}
+            {state.status === "resign-confirmation" && (
+              <ResignConfModal
+                handleResignYes={() => {
+                  dispatch({ type: "END_GAME" })
+                  dispatch({
+                    type: "SET_STATUS",
+                    status: "resignation",
+                  })
+                  dispatch({ type: "SET_WINNER", player: "b" })
+                }}
+                handleResignNo={() => {
+                  dispatch({
+                    type: "SET_STATUS",
+                    status: "playing",
+                  })
+                }}
+              />
+            )}
             <CapturedPieces pieces={state.capturedPieces.w} />
             <div className="relative">
               <Timer duration={state.timer.b} />
@@ -101,9 +120,12 @@ export default function LocalGamePage() {
                 <ResignButton
                   className="bottom-[48px]"
                   handleResign={() => {
-                    dispatch({ type: "END_GAME" })
-                    dispatch({ type: "SET_STATUS", status: "resignation" })
-                    dispatch({ type: "SET_WINNER", player: "b" })
+                    state.status === "playing"
+                      ? dispatch({
+                          type: "SET_STATUS",
+                          status: "resign-confirmation",
+                        })
+                      : null
                   }}
                 />
               </div>
