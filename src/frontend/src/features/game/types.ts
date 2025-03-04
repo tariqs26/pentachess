@@ -24,7 +24,6 @@ export type GameStatus =
   | "draw-threefold"
   | "draw-fifty-move"
   | "draw-insufficient"
-  | "resign-confirmation"
   | "resignation"
   | "time-expired"
 
