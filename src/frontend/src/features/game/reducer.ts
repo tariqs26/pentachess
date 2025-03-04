@@ -102,15 +102,15 @@ export function localGameReducer(
 
       const turn = state.turn === "w" ? "b" : "w"
 
-      const [checkedColor, isCheckmate] = checkForCheckOrMate(
-        state.boardState.board,
-        turn
-      )
-
       const { from, to, piece } = state.promotionCoordinates
       const { x, y } = to
 
       state.boardState.board[x][y].piece = action.piece
+
+      const [checkedColor, isCheckmate] = checkForCheckOrMate(
+        state.boardState.board,
+        turn
+      )
 
       const status = getStatus(
         isCheckmate,
