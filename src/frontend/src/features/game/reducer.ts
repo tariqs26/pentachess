@@ -1,6 +1,6 @@
 import { canPromote, getPossibleMoves } from "../piece/utils"
 import type { LocalGameAction, LocalGameState } from "./types"
-import { createNewGameState, moveHelper } from "./utils"
+import { createLocalGameState, moveHelper } from "./utils"
 
 export function localGameReducer(
   state: LocalGameState,
@@ -44,7 +44,7 @@ export function localGameReducer(
       state.boardState.board[to.x][to.y].piece = piece
       state.boardState.board[from.x][from.y].piece = null
 
-      const { turn, checkedColor, status, newMove } = moveHelper(
+      const { turn, checkedColor, status, move } = moveHelper(
         state.turn,
         state.boardState.board,
         state.previousMoves,
@@ -67,7 +67,7 @@ export function localGameReducer(
             }
           : state.capturedPieces,
         check: checkedColor,
-        previousMoves: [...state.previousMoves, newMove],
+        previousMoves: [...state.previousMoves, move],
         ...(canPromote(piece, to) && {
           status: "promoting",
           check: state.check,
@@ -86,7 +86,7 @@ export function localGameReducer(
 
       state.boardState.board[to.x][to.y].piece = action.piece
 
-      const { turn, checkedColor, status, newMove } = moveHelper(
+      const { turn, checkedColor, status, move } = moveHelper(
         state.turn,
         state.boardState.board,
         state.previousMoves,
@@ -99,7 +99,7 @@ export function localGameReducer(
         status,
         turn,
         boardState: { ...state.boardState },
-        previousMoves: [...state.previousMoves, newMove],
+        previousMoves: [...state.previousMoves, move],
         promotionCoordinates: undefined,
         check: checkedColor,
       }
@@ -141,7 +141,7 @@ export function localGameReducer(
       }
     }
     case "RESET_GAME": {
-      return createNewGameState()
+      return createLocalGameState()
     }
     default:
       return state

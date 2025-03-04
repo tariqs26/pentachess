@@ -1,8 +1,8 @@
 import { INITIAL_PIECES } from "../piece/constants"
-import type { PieceColor, Piece } from "../piece/types"
+import type { PieceColor } from "../piece/types"
 import { getPossibleMoves, makePiece } from "../piece/utils"
 import { cloneCell, makeCell, setCellEdges, setCellVertices } from "./cell"
-import type { Board, Cell } from "./types"
+import type { Board } from "./types"
 
 export function initializeBoard() {
   const rings = [new Array(10), new Array(30), new Array(50)]
@@ -13,12 +13,10 @@ export function initializeBoard() {
     let angle = 0
     let flipCounter = 0
 
-    // loop through loopRange
     for (let tile = 0; tile < tiles.length; tile++) {
       const cell = makeCell(ring, tile, angle)
       board[ring].push(cell)
 
-      // logic for angle and counters...
       // inner ring (increment every cell by 36)
       if (ring === 0) {
         angle = (angle + 36) % 360
@@ -29,7 +27,7 @@ export function initializeBoard() {
           angle = (angle - 36 + 360) % 360
         } else angle = (angle + 36) % 360
       }
-      // outter ring (pattern is down, up, down, up, up)
+      // outer ring (pattern is down, up, down, up, up)
       else if (flipCounter % 5 === 0 || flipCounter % 5 === 2) {
         angle = (angle - 36 + 360) % 360
       } else {
@@ -121,22 +119,10 @@ function checkIfMovesExist(board: Board, color: PieceColor) {
   return true
 }
 
-export function checkThreeMoveRep() {
-  return false
-}
-
-export function checkFiftyMoveNoCap(moves: { to: Cell; piece: Piece }[]) {
-  if (moves.length >= 50) {
-    const lastFifty = moves.slice(-50)
-    for (const { to, piece } of lastFifty) {
-      if (piece.abbr === "P") return false
-      if (to.piece) return false
-    }
-    return true
-  }
-  return false
-}
-
 export function checkForStalemate(board: Board, color: PieceColor) {
   return checkIfMovesExist(board, color)
+}
+
+export function checkThreeMoveRep() {
+  return false
 }

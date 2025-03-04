@@ -1,15 +1,14 @@
 import type { Board, Cell } from "../board/types"
 import {
-  initializeBoard,
+  checkForCheckOrMate,
   checkForStalemate,
   checkThreeMoveRep,
-  checkFiftyMoveNoCap,
+  initializeBoard,
 } from "../board/utils"
 import type { Piece, PieceColor } from "../piece/types"
 import type { GameStatus, LocalGameState, Move } from "./types"
-import { checkForCheckOrMate } from "../board/utils"
 
-export const createNewGameState = (): LocalGameState => ({
+export const createLocalGameState = (): LocalGameState => ({
   player: "w",
   opponent: "b",
   turn: "w",
@@ -26,7 +25,7 @@ export const createNewGameState = (): LocalGameState => ({
   capturedPieces: { w: [], b: [] },
 })
 
-export const getMove = (
+export const createMove = (
   player: PieceColor,
   from: Cell,
   to: Cell,
@@ -73,36 +72,54 @@ export const isGameOver = (status: GameStatus) =>
   status === "resignation" ||
   status === "time-expired"
 
-export function moveHelper(
+const checkFiftyMoveNoCap = (moves: { to: Cell; piece: Piece }[]) => {
+  if (moves.length >= 50) {
+    const lastFifty = moves.slice(-50)
+    for (const { to, piece } of lastFifty) {
+      if (piece.abbr === "P" || to.piece) return false
+    }
+    return true
+  }
+  return false
+}
+
+export const getNewStatus = (
+  isCheckmate: boolean,
+  board: Board,
+  turn: PieceColor,
+  moves: Move[],
+  nextMove: Pick<Move, "from" | "to" | "piece" | "piecePromoted">
+): GameStatus => {
+  if (isCheckmate) return "checkmate"
+  if (checkForStalemate(board, turn)) return "draw-stalemate"
+  if (checkThreeMoveRep()) return "draw-threefold"
+  if (
+    checkFiftyMoveNoCap([...moves, { to: nextMove.to, piece: nextMove.piece }])
+  )
+    return "draw-fifty-move"
+  return "playing"
+}
+
+export const moveHelper = (
   oldTurn: PieceColor,
   board: Board,
   previousMoves: Move[],
   promotionCoordinates: { from: Cell; to: Cell; piece: Piece },
   piecePromoted: Piece | null
-): {
-  turn: PieceColor
-  checkedColor: PieceColor | null
-  status:
-    | "playing"
-    | "checkmate"
-    | "draw-stalemate"
-    | "draw-threefold"
-    | "draw-fifty-move"
-  newMove: Move
-} {
+) => {
   const { to, from, piece } = promotionCoordinates
-  const turn = oldTurn === "w" ? "b" : "w"
+  const turn: PieceColor = oldTurn === "w" ? "b" : "w"
 
   const [checkedColor, isCheckmate] = checkForCheckOrMate(board, turn)
 
-  const status = getStatus(isCheckmate, board, turn, previousMoves, {
+  const status = getNewStatus(isCheckmate, board, turn, previousMoves, {
     from,
     to,
     piece,
     piecePromoted,
   })
 
-  const newMove = getMove(
+  const move = createMove(
     oldTurn,
     from,
     to,
@@ -112,33 +129,5 @@ export function moveHelper(
     status
   )
 
-  return { turn, checkedColor, status, newMove }
-}
-
-export function getStatus(
-  isCheckmate: boolean,
-  board: Board,
-  turn: PieceColor,
-  moves: Move[],
-  nextMove: { from: Cell; to: Cell; piece: Piece; piecePromoted: Piece | null }
-) {
-  return isCheckmate
-    ? "checkmate"
-    : checkForStalemate(board, turn)
-      ? "draw-stalemate"
-      : checkThreeMoveRep()
-        ? "draw-threefold"
-        : checkFiftyMoveNoCap(
-              moves
-                .map(({ to, piece }) => ({
-                  to,
-                  piece,
-                }))
-                .concat({
-                  to: nextMove.to,
-                  piece: nextMove.piece,
-                })
-            )
-          ? "draw-fifty-move"
-          : "playing"
+  return { turn, status, checkedColor, move }
 }
