@@ -17,13 +17,13 @@ export const ResignConfModal = ({
         </h2>
         <div className="mt-2 flex justify-center gap-4">
           <Button
-            className="bg-primary px-8 py-2 text-white"
+            className="bg-primary px-8 py-2 text-primary-foreground"
             onClick={handleResignYes}
           >
             Yes
           </Button>
           <Button
-            className="bg-secondary px-8 py-2 text-white"
+            className="bg-secondary px-8 py-2 text-secondary-foreground"
             onClick={handleResignNo}
           >
             No
