@@ -110,6 +110,8 @@ export function localGameReducer(
       const { from, to, piece } = state.promotionCoordinates
       const { x, y } = to
 
+      state.boardState.board[x][y].piece = action.piece
+
       const status = getStatus(
         isCheckmate,
         state.boardState.board,
@@ -117,8 +119,6 @@ export function localGameReducer(
         state.previousMoves,
         { from, to, piece, piecePromoted: action.piece }
       )
-
-      state.boardState.board[x][y].piece = action.piece
 
       const newMove = getMove(
         state.turn,
