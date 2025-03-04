@@ -7,6 +7,7 @@ import {
 } from "../board/utils"
 import type { Piece, PieceColor } from "../piece/types"
 import type { GameStatus, LocalGameState, Move } from "./types"
+import { checkForCheckOrMate } from "../board/utils"
 
 export const createNewGameState = (): LocalGameState => ({
   player: "w",
@@ -71,6 +72,48 @@ export const isGameOver = (status: GameStatus) =>
   status.startsWith("draw") ||
   status === "resignation" ||
   status === "time-expired"
+
+export function moveHelper(
+  oldTurn: PieceColor,
+  board: Board,
+  previousMoves: Move[],
+  promotionCoordinates: { from: Cell; to: Cell; piece: Piece },
+  piecePromoted: Piece | null
+): {
+  turn: PieceColor
+  checkedColor: PieceColor | null
+  status:
+    | "playing"
+    | "checkmate"
+    | "draw-stalemate"
+    | "draw-threefold"
+    | "draw-fifty-move"
+  newMove: Move
+} {
+  const { to, from, piece } = promotionCoordinates
+  const turn = oldTurn === "w" ? "b" : "w"
+
+  const [checkedColor, isCheckmate] = checkForCheckOrMate(board, turn)
+
+  const status = getStatus(isCheckmate, board, turn, previousMoves, {
+    from,
+    to,
+    piece,
+    piecePromoted,
+  })
+
+  const newMove = getMove(
+    oldTurn,
+    from,
+    to,
+    piece,
+    piecePromoted,
+    checkedColor,
+    status
+  )
+
+  return { turn, checkedColor, status, newMove }
+}
 
 export function getStatus(
   isCheckmate: boolean,

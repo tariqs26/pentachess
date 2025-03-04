@@ -1,7 +1,6 @@
-import { checkForCheckOrMate } from "../board/utils"
 import { canPromote, getPossibleMoves } from "../piece/utils"
 import type { LocalGameAction, LocalGameState } from "./types"
-import { createNewGameState, getMove, getStatus } from "./utils"
+import { createNewGameState, moveHelper } from "./utils"
 
 export function localGameReducer(
   state: LocalGameState,
@@ -45,29 +44,12 @@ export function localGameReducer(
       state.boardState.board[to.x][to.y].piece = piece
       state.boardState.board[from.x][from.y].piece = null
 
-      const turn = state.turn === "w" ? "b" : "w"
-
-      const [checkedColor, isCheckmate] = checkForCheckOrMate(
-        state.boardState.board,
-        turn
-      )
-
-      const status = getStatus(
-        isCheckmate,
-        state.boardState.board,
-        turn,
-        state.previousMoves,
-        { from, to, piece, piecePromoted: null }
-      )
-
-      const newMove = getMove(
+      const { turn, checkedColor, status, newMove } = moveHelper(
         state.turn,
-        from,
-        to,
-        piece,
-        null,
-        checkedColor,
-        status
+        state.boardState.board,
+        state.previousMoves,
+        { to, from, piece },
+        null
       )
 
       return {
@@ -100,34 +82,16 @@ export function localGameReducer(
         return state
       }
 
-      const turn = state.turn === "w" ? "b" : "w"
+      const { to, from, piece } = state.promotionCoordinates
 
-      const { from, to, piece } = state.promotionCoordinates
-      const { x, y } = to
+      state.boardState.board[to.x][to.y].piece = action.piece
 
-      state.boardState.board[x][y].piece = action.piece
-
-      const [checkedColor, isCheckmate] = checkForCheckOrMate(
-        state.boardState.board,
-        turn
-      )
-
-      const status = getStatus(
-        isCheckmate,
-        state.boardState.board,
-        turn,
-        state.previousMoves,
-        { from, to, piece, piecePromoted: action.piece }
-      )
-
-      const newMove = getMove(
+      const { turn, checkedColor, status, newMove } = moveHelper(
         state.turn,
-        from,
-        to,
-        piece,
-        action.piece,
-        checkedColor,
-        status
+        state.boardState.board,
+        state.previousMoves,
+        { to, from, piece },
+        action.piece
       )
 
       return {
