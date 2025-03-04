@@ -13,12 +13,10 @@ export function initializeBoard() {
     let angle = 0
     let flipCounter = 0
 
-    // loop through loopRange
     for (let tile = 0; tile < tiles.length; tile++) {
       const cell = makeCell(ring, tile, angle)
       board[ring].push(cell)
 
-      // logic for angle and counters...
       // inner ring (increment every cell by 36)
       if (ring === 0) {
         angle = (angle + 36) % 360
@@ -29,11 +27,11 @@ export function initializeBoard() {
           angle = (angle - 36 + 360) % 360
         } else angle = (angle + 36) % 360
       }
-      // outter ring (pattern is down, up, down, up, up)
-      else {
-        if (flipCounter % 5 === 0 || flipCounter % 5 === 2) {
-          angle = (angle - 36 + 360) % 360
-        } else angle = (angle + 36) % 360
+      // outer ring (pattern is down, up, down, up, up)
+      else if (flipCounter % 5 === 0 || flipCounter % 5 === 2) {
+        angle = (angle - 36 + 360) % 360
+      } else {
+        angle = (angle + 36) % 360
       }
       flipCounter += 1
     }
@@ -121,6 +119,10 @@ function checkIfMovesExist(board: Board, color: PieceColor) {
   return true
 }
 
-export function checkForStalemate(board: Board, color: PieceColor): boolean {
+export function checkForStalemate(board: Board, color: PieceColor) {
   return checkIfMovesExist(board, color)
+}
+
+export function checkThreeMoveRep() {
+  return false
 }

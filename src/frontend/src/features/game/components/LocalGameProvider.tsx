@@ -3,14 +3,14 @@
 import { createContext, useReducer } from "react"
 import { localGameReducer } from "../reducer"
 import type { LocalGameAction, LocalGameState } from "../types"
-import { createNewGameState } from "../utils"
+import { createLocalGameState } from "../utils"
 
 type LocalGameContextType = {
   state: LocalGameState
   dispatch: React.Dispatch<LocalGameAction>
 }
 
-const initialState = createNewGameState()
+const initialState = createLocalGameState()
 
 export const LocalGameContext = createContext<LocalGameContextType | null>(null)
 
