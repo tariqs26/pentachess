@@ -10,6 +10,8 @@ import { CapturedPieces } from "@/features/game/components/CapturedPieces"
 import { CreateGameForm } from "@/features/game/components/CreateGameForm"
 import { GameEndModal } from "@/features/game/components/GameEndModal"
 import { PreviousMoves } from "@/features/game/components/PreviousMoves"
+import { RequestDrawModal } from "@/features/game/components/RequestDrawModal"
+import { ResignModal } from "@/features/game/components/ResignModal"
 import { Timer } from "@/features/game/components/Timer"
 import { PawnPromotionModal } from "@/features/piece/components/PawnPromotionModal"
 
@@ -80,7 +82,7 @@ export default function LocalGamePage() {
                 Opponent{" "}
                 {(state.check === "b" &&
                   `(${state.status === "checkmate" ? "checkmate" : "check"})`) ||
-                  (state.status.startsWith("draw") && `(draw)`)}
+                  (state.status.startsWith("draw") && "(draw)")}
               </p>
               <Board />
               <p
@@ -93,7 +95,7 @@ export default function LocalGamePage() {
                 You{" "}
                 {(state.check === "w" &&
                   `(${state.status === "checkmate" ? "checkmate" : "check"})`) ||
-                  (state.status.startsWith("draw") && `(draw)`)}
+                  (state.status.startsWith("draw") && "(draw)")}
               </p>
               <Timer duration={state.timer.w} className="bottom-0" />
             </div>
@@ -101,7 +103,7 @@ export default function LocalGamePage() {
           </div>
           <div className="flex flex-col gap-2 [&>aside]:flex-1">
             <PreviousMoves startingPlayer="w" moves={state.previousMoves} />
-            {isGameOver(state.status) && (
+            {isGameOver(state.status) ? (
               <GameEndModal
                 winner={state.winner}
                 status={state.status}
@@ -109,6 +111,15 @@ export default function LocalGamePage() {
                   dispatch({ type: "SET_STATUS", status: "waiting" })
                 }
               />
+            ) : (
+              <div className="flex gap-2">
+                <RequestDrawModal />
+                <ResignModal
+                  handleResign={() =>
+                    dispatch({ type: "SET_STATUS", status: "resignation" })
+                  }
+                />
+              </div>
             )}
           </div>
         </div>
