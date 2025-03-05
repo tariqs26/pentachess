@@ -61,6 +61,10 @@ export const CellComponent = (cell: Cell) => {
     .values()
     .some((move) => move.id === cell.id)
 
+  const isDisabledMove = state.boardState.selectedCell?.disabledMoves
+    .values()
+    .some((move) => move.id === cell.id)
+
   const handlePieceMouseDown = () => {
     if (state.boardState.disabled) return
     if (cell.piece?.color !== state.turn) return
@@ -111,6 +115,7 @@ export const CellComponent = (cell: Cell) => {
         className={cn(
           "flex size-[100px] items-center justify-center bg-gray-500",
           cell.color === "w" && "bg-white",
+          isDisabledMove && "bg-gray-400",
           isAvailableMove && "bg-green-500 hover:cursor-pointer",
           isAvailableMove && cell.piece && "bg-red-500",
           isCellSelected && "bg-orange-500",
