@@ -251,7 +251,5 @@ export function getDisabledMoves(
     invalidMoves.delete(move)
   })
 
-  console.log(invalidMoves)
-
   return invalidMoves
 }
