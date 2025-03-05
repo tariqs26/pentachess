@@ -1,4 +1,4 @@
-import { canPromote, getDisabledMoves, getPossibleMoves } from "../piece/utils"
+import { canPromote, getInvalidMoves, getPossibleMoves } from "../piece/utils"
 import type { LocalGameAction, LocalGameState } from "./types"
 import { createLocalGameState, moveHelper } from "./utils"
 
@@ -13,7 +13,7 @@ export function localGameReducer(
           action.cell,
           state.boardState.board
         )
-        const invalidMoves = getDisabledMoves(
+        const invalidMoves = getInvalidMoves(
           action.cell,
           state.boardState.board,
           possibleMoves
@@ -26,7 +26,7 @@ export function localGameReducer(
             selectedCell: {
               cell: action.cell,
               availableMoves: possibleMoves,
-              disabledMoves: invalidMoves,
+              invalidMoves,
             },
           },
         }

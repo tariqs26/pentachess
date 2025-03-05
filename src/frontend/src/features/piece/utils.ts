@@ -240,7 +240,7 @@ function checkKingSafety(
   return possibleMoves
 }
 
-export function getDisabledMoves(
+export function getInvalidMoves(
   cell: Cell,
   board: Board,
   validMoves: Set<Cell>
