@@ -1,16 +1,14 @@
-import { io, Socket } from 'socket.io';
+import { Socket } from 'socket.io-client';
+import { socket } from '../lib/socket';
 import type { 
   MultiplayerGameState,
   Move,
-  MultiplayerGameAction,
-  MultiplayerPlayer
+  MultiplayerGameAction
 } from '../features/game/types';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001/api';
-const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:3001';
 
 class GameService {
-  private socket: Socket | null = null;
   private gameStateCallback: ((state: MultiplayerGameState) => void) | null = null;
 
   // REST API Methods
@@ -49,59 +47,62 @@ class GameService {
   // Socket Methods
   connectToGame(gameId: string, onGameState: (state: MultiplayerGameState) => void): void {
     this.gameStateCallback = onGameState;
-    this.socket = io(SOCKET_URL, {
-      query: { gameId },
-    });
+    
+    // Connect to socket if not already connected
+    if (!socket.connected) {
+      socket.connect();
+    }
+
+    // Join the game room
+    socket.emit('joinGame', gameId);
 
     this.setupSocketListeners();
   }
 
   private setupSocketListeners(): void {
-    if (!this.socket) return;
-
-    this.socket.on('gameEvent', (event: MultiplayerGameAction) => {
+    socket.on('gameEvent', (event: MultiplayerGameAction) => {
       if (this.gameStateCallback) {
-        // For GAME_START and MOVE_MADE events, the payload contains the full game state
-        if (event.type === 'GAME_START' || event.type === 'MOVE_MADE') {
-          this.gameStateCallback(event.payload as MultiplayerGameState);
+        // Handle different event types
+        switch (event.type) {
+          case 'GAME_START':
+          case 'MOVE_PIECE':
+          case 'END_GAME':
+            this.gameStateCallback(event.payload as MultiplayerGameState);
+            break;
+          default:
+            console.log('Unhandled event type:', event.type);
         }
       }
     });
 
-    this.socket.on('error', (error: Error) => {
+    socket.on('error', (error: Error) => {
       console.error('Socket error:', error);
     });
   }
 
   makeMove(move: Move): void {
-    if (!this.socket) return;
-    this.socket.emit('gameEvent', {
-      type: 'MOVE_MADE',
+    socket.emit('gameEvent', {
+      type: 'MOVE_PIECE',
       payload: move,
     });
   }
 
   offerDraw(playerId: string): void {
-    if (!this.socket) return;
-    this.socket.emit('gameEvent', {
+    socket.emit('gameEvent', {
       type: 'DRAW_OFFER',
       payload: { playerId },
     });
   }
 
   respondToDraw(accepted: boolean): void {
-    if (!this.socket) return;
-    this.socket.emit('gameEvent', {
+    socket.emit('gameEvent', {
       type: 'DRAW_RESPONSE',
       payload: { accepted },
     });
   }
 
   disconnect(): void {
-    if (this.socket) {
-      this.socket.disconnect();
-      this.socket = null;
-    }
+    socket.disconnect();
   }
 }
 
