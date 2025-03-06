@@ -239,3 +239,17 @@ function checkKingSafety(
   }
   return possibleMoves
 }
+
+export function getInvalidMoves(
+  cell: Cell,
+  board: Board,
+  validMoves: Set<Cell>
+): Set<Cell> {
+  const invalidMoves = getPossibleMoves(cell, board, true)
+
+  validMoves.forEach((move) => {
+    invalidMoves.delete(move)
+  })
+
+  return invalidMoves
+}

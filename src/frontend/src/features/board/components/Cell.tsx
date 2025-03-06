@@ -57,7 +57,12 @@ export const CellComponent = (cell: Cell) => {
   const { state, dispatch } = useLocalGame()
 
   const isCellSelected = state.boardState.selectedCell?.cell.id === cell.id
+
   const isAvailableMove = state.boardState.selectedCell?.availableMoves
+    .values()
+    .some((move) => move.id === cell.id)
+
+  const isInvalidMove = state.boardState.selectedCell?.invalidMoves
     .values()
     .some((move) => move.id === cell.id)
 
@@ -111,6 +116,7 @@ export const CellComponent = (cell: Cell) => {
         className={cn(
           "flex size-[100px] items-center justify-center bg-gray-500",
           cell.color === "w" && "bg-white",
+          isInvalidMove && "bg-gray-400",
           isAvailableMove && "bg-green-500 hover:cursor-pointer",
           isAvailableMove && cell.piece && "bg-red-500",
           isCellSelected && "bg-orange-500",
