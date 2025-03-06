@@ -67,8 +67,5 @@ export type MultiplayerGameState = Omit<LocalGameState, 'player' | 'opponent'> &
 export type MultiplayerGameAction =
   | { type: "GAME_JOIN"; payload: Player }
   | { type: "GAME_START"; payload: MultiplayerGameState }
-  | { type: "MOVE_MADE"; payload: Move }
-  | { type: "TIMER_UPDATE"; payload: Record<string, number> }
-  | { type: "DRAW_OFFER"; payload: { playerId: string } }
-  | { type: "DRAW_RESPONSE"; payload: { accepted: boolean } }
+  | { type: "GAME_END"; payload: MultiplayerGameState }
   | LocalGameAction // Reuse local game actions where possible

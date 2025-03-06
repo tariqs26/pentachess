@@ -1,7 +1,7 @@
 import { checkForCheckOrMate, checkForStalemate } from "../board/utils"
 import { canPromote, getPossibleMoves } from "../piece/utils"
 import type { LocalGameAction, LocalGameState } from "./types"
-import { createNewGameState, getMove } from "./utils"
+import { createNewLocalGameState, getMove } from "./utils"
 
 export function localGameReducer(
   state: LocalGameState,
@@ -173,7 +173,7 @@ export function localGameReducer(
       }
     }
     case "RESET_GAME": {
-      return createNewGameState()
+      return createNewLocalGameState()
     }
     default:
       return state

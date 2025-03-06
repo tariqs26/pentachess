@@ -1,9 +1,9 @@
 import type { Cell } from "../board/types"
 import { initializeBoard } from "../board/utils"
 import type { Piece, PieceColor } from "../piece/types"
-import type { GameStatus, LocalGameState, Move } from "./types"
+import type { GameStatus, LocalGameState, Move, MultiplayerGameState } from "./types"
 
-export const createNewGameState = (): LocalGameState => ({
+export const createNewLocalGameState = (): LocalGameState => ({
   player: "w",
   opponent: "b",
   turn: "w",
@@ -18,6 +18,13 @@ export const createNewGameState = (): LocalGameState => ({
   timer: { w: 0, b: 0 },
   previousMoves: [],
   capturedPieces: { w: [], b: [] },
+})
+
+export const createNewMultiplayerGameState = (): MultiplayerGameState => ({
+  ...createNewLocalGameState(),
+  id: "",
+  player: { id: "", color: "w" },
+  opponent: { id: "", color: "b" },
 })
 
 export const getMove = (

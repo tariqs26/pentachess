@@ -1,16 +1,16 @@
 "use client"
 
 import { createContext, useReducer } from "react"
-import { localGameReducer } from "../reducer"
+import { localGameReducer } from "../localGameReducer"
 import type { LocalGameAction, LocalGameState } from "../types"
-import { createNewGameState } from "../utils"
+import { createNewLocalGameState } from "../utils"
 
 type LocalGameContextType = {
   state: LocalGameState
   dispatch: React.Dispatch<LocalGameAction>
 }
 
-const initialState = createNewGameState()
+const initialState = createNewLocalGameState()
 
 export const LocalGameContext = createContext<LocalGameContextType | null>(null)
 
