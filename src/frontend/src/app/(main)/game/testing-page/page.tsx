@@ -37,7 +37,7 @@ export default function TestingPage() {
     <div className="mx-auto flex min-h-screen items-center justify-center gap-x-2 p-6">
       <div className="flex rounded-md border bg-accent p-2 shadow">
         {colors.map((color) => (
-          <div>
+          <div key={color}>
             {pieces.map((piece) => (
               <Image
                 key={piece + color}
