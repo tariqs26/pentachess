@@ -26,6 +26,7 @@ export default function TestingPage() {
     "knight",
     "rook",
     "queen",
+    "king",
   ]
   const colors: PieceColor[] = ["w", "b"]
   const [selectPiece, setSelectPiece] = useState<{
@@ -62,15 +63,13 @@ export default function TestingPage() {
                       type: "SET_STATUS",
                       status: "playing",
                     })
-                  } else {
-                    if (state.boardState.overCell === null) {
-                      setSelectPiece({ type: piece, color: color })
-                      state.testPiece = makePiece(piece, color)
-                      dispatch({
-                        type: "SET_STATUS",
-                        status: "testing",
-                      })
-                    }
+                  } else if (state.boardState.overCell === null) {
+                    setSelectPiece({ type: piece, color })
+                    state.testPiece = makePiece(piece, color)
+                    dispatch({
+                      type: "SET_STATUS",
+                      status: "testing",
+                    })
                   }
                 }}
               />
