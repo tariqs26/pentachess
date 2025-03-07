@@ -159,6 +159,8 @@ export function localGameReducer(
       const { to } = action.move
       if (to !== null && state.testPiece !== undefined)
         state.boardState.board[to.x][to.y].piece = state.testPiece
+      if (to !== null && state.testPiece === undefined)
+        state.boardState.board[to.x][to.y].piece = null
       return {
         ...state,
         boardState: { ...state.boardState },

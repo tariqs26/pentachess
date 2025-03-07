@@ -14,6 +14,7 @@ import { PIECE_DATA } from "@/features/piece/constants"
 import type { PieceType, PieceColor } from "@/features/piece/types"
 import Image from "next/image"
 import { makePiece } from "@/features/piece/utils"
+import { Eraser } from "lucide-react"
 
 export default function TestingPage() {
   const { state, dispatch } = useLocalGame()
@@ -29,10 +30,14 @@ export default function TestingPage() {
     "king",
   ]
   const colors: PieceColor[] = ["w", "b"]
-  const [selectPiece, setSelectPiece] = useState<{
-    type: PieceType
-    color: PieceColor
-  } | null>(null)
+  const [selectPiece, setSelectPiece] = useState<
+    | {
+        type: PieceType
+        color: PieceColor
+      }
+    | "eraser"
+    | null
+  >(null)
 
   return (
     <div className="mx-auto flex min-h-screen items-center justify-center gap-x-2 p-6">
@@ -47,6 +52,7 @@ export default function TestingPage() {
                 className={
                   state.status === "testing" &&
                   selectPiece !== null &&
+                  selectPiece !== "eraser" &&
                   selectPiece.type === piece &&
                   selectPiece.color === color
                     ? "h-14 w-14 rounded-md border-4 border-green-500"
@@ -55,6 +61,7 @@ export default function TestingPage() {
                 onClick={() => {
                   if (
                     selectPiece !== null &&
+                    selectPiece !== "eraser" &&
                     selectPiece.type === piece &&
                     selectPiece.color === color
                   ) {
@@ -75,7 +82,32 @@ export default function TestingPage() {
               />
             ))}
           </div>
-        ))}
+        ))}{" "}
+        <div className="v-full flex items-center justify-center">
+          <Eraser
+            className={
+              state.status === "testing" && selectPiece === "eraser"
+                ? "h-10 w-10 rounded-md border-4 border-green-500"
+                : "h-10 w-10"
+            }
+            onClick={() => {
+              if (selectPiece === "eraser") {
+                setSelectPiece(null)
+                dispatch({
+                  type: "SET_STATUS",
+                  status: "playing",
+                })
+              } else if (state.boardState.overCell === null) {
+                setSelectPiece("eraser")
+                state.testPiece = undefined
+                dispatch({
+                  type: "SET_STATUS",
+                  status: "testing",
+                })
+              }
+            }}
+          ></Eraser>
+        </div>
       </div>
       <div className="flex gap-x-2">
         <div className="relative w-full max-w-[600px]">
