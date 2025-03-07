@@ -40,8 +40,8 @@ export default function TestingPage() {
           <div>
             {pieces.map((piece) => (
               <Image
-                key={piece}
-                alt={piece}
+                key={piece + color}
+                alt={piece + color}
                 src={PIECE_DATA[piece].image[color]}
                 className={
                   state.status === "testing" &&
