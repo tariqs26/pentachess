@@ -16,6 +16,7 @@ export async function middleware(request: NextRequest) {
   } else if (
     !sessionCookie &&
     !requestUrl.pathname.startsWith("/game/local") &&
+    !requestUrl.pathname.startsWith("/game/testing-page") &&
     PROTECTED_ROUTES.some((path) => requestUrl.pathname.startsWith(path))
   ) {
     const redirectUrl = new URL("/login", requestUrl)

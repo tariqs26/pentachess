@@ -26,6 +26,7 @@ export type GameStatus =
   | "draw-insufficient"
   | "resignation"
   | "time-expired"
+  | "testing"
 
 export type LocalGameState = {
   player: PieceColor
@@ -39,6 +40,7 @@ export type LocalGameState = {
   status: GameStatus
   boardState: BoardState
   promotionCoordinates?: { from: Cell; to: Cell; piece: Piece }
+  testPiece?: Piece
 }
 
 export type LocalGameAction =
@@ -49,4 +51,6 @@ export type LocalGameAction =
   | { type: "SET_WINNER"; player: PieceColor }
   | { type: "END_GAME" }
   | { type: "RESET_GAME" }
+  | { type: "RESET_BOARD"; entire: boolean }
+  | { type: "SET_PIECE"; move: { to: Cell } }
   | BoardAction

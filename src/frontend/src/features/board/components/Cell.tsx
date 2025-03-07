@@ -56,18 +56,29 @@ const pieceRotation = (cell: Cell) =>
 export const CellComponent = (cell: Cell) => {
   const { state, dispatch } = useLocalGame()
 
+  const isTesting = state.status === "testing"
   const isCellSelected = state.boardState.selectedCell?.cell.id === cell.id
   const isAvailableMove = state.boardState.selectedCell?.availableMoves
     .values()
     .some((move) => move.id === cell.id)
 
   const handlePieceMouseDown = () => {
+    if (isTesting) return
     if (state.boardState.disabled) return
     if (cell.piece?.color !== state.turn) return
     dispatch({ type: "SELECT_CELL", cell: isCellSelected ? null : cell })
   }
 
   const handleCellMouseUp = () => {
+    if (isTesting) {
+      dispatch({
+        type: "SET_PIECE",
+        move: {
+          to: cell,
+        },
+      })
+      return
+    }
     if (state.boardState.disabled) return
     if (!state.boardState.selectedCell?.cell.piece) return
     if (!state.boardState.overCell) return
