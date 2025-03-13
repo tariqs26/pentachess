@@ -14,7 +14,7 @@ if (process.env.NODE_ENV !== "production") {
 const server = createServer()
 
 const io = new Server<ClientToServerEvents, ServerToClientEvents>(server, {
-  cors: { origin: "*" },
+  cors: { origin: "*", methods: ["GET", "POST"] },
 })
 
 const gamesMap = new Map<string, [Player, Player | null]>()
