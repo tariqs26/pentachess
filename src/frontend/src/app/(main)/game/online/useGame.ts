@@ -104,13 +104,11 @@ export function useGame(userId: string, username: string) {
   }, [state.status, state.turn])
 
   useEffect(() => {
-    if (state.status !== "playing") return
-
     const lastMove = state.previousMoves[state.previousMoves.length - 1]
     if (!lastMove) return
 
     if (lastMove.player === state.player.color) {
-      console.info("Sending move:", lastMove)
+      console.info("Sending move:", state)
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { opponent, player, promotionCoordinates, ...syncState } = state
 
@@ -123,7 +121,7 @@ export function useGame(userId: string, username: string) {
     if (isGameOver(state.status)) {
       if (state.status === "resignation") {
         socket.emit("end", {
-          status: "resignation",
+          status: state.status,
           winner: state.player.color === "w" ? "b" : "w",
         })
       }
