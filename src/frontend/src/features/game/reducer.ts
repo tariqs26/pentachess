@@ -13,7 +13,7 @@ export function localGameReducer(
           action.cell,
           state.boardState.board
         )
-        
+
         const invalidMoves = getInvalidMoves(
           action.cell,
           state.boardState.board,
