@@ -16,7 +16,6 @@ export type Board = Cell[][]
 
 export type BoardState = {
   board: Board
-  disabled: boolean
   selectedCell: {
     cell: Cell
     availableMoves: Set<Cell>
@@ -32,4 +31,3 @@ export type BoardAction =
       type: "MOVE_PIECE"
       move: { to: Cell; from: Cell; piece: Piece }
     }
-  | { type: "DISABLE_BOARD" }

@@ -9,13 +9,13 @@ import type { Piece, PieceColor } from "../piece/types"
 import type { GameStatus, LocalGameState, Move } from "./types"
 
 export const createLocalGameState = (): LocalGameState => ({
-  player: "w",
-  opponent: "b",
+  player: { id: "1", color: "w", userId: "1", username: "Player 1" },
+  opponent: { id: "2", color: "b", userId: "2", username: "Player 2" },
   turn: "w",
   check: null,
   status: "waiting",
+  disabled: false,
   boardState: {
-    disabled: false,
     board: initializeBoard(),
     selectedCell: null,
     overCell: null,
@@ -68,7 +68,8 @@ export const isGameOver = (status: GameStatus) =>
   status === "checkmate" ||
   status.startsWith("draw") ||
   status === "resignation" ||
-  status === "time-expired"
+  status === "time-expired" ||
+  status === "opponent-left"
 
 const checkFiftyMoveNoCap = (moves: { to: Cell; piece: Piece }[]) => {
   if (moves.length >= 50) {

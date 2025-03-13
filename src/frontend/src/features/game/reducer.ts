@@ -13,6 +13,7 @@ export function localGameReducer(
           action.cell,
           state.boardState.board
         )
+        
         const invalidMoves = getInvalidMoves(
           action.cell,
           state.boardState.board,
@@ -34,22 +35,13 @@ export function localGameReducer(
 
       return {
         ...state,
-        boardState: {
-          ...state.boardState,
-          selectedCell: null,
-        },
+        boardState: { ...state.boardState, selectedCell: null },
       }
     }
     case "SET_OVER_CELL": {
       return {
         ...state,
         boardState: { ...state.boardState, overCell: action.cell },
-      }
-    }
-    case "DISABLE_BOARD": {
-      return {
-        ...state,
-        boardState: { ...state.boardState, disabled: true },
       }
     }
     case "MOVE_PIECE": {
@@ -85,7 +77,6 @@ export function localGameReducer(
         check: checkedColor,
         previousMoves: [...state.previousMoves, move],
         ...(canPromote(piece, to) && {
-          status: "promoting",
           check: state.check,
           promotionCoordinates: { from, to, piece },
           previousMoves: state.previousMoves, // remove the new move, as it will be added after promotion
@@ -99,7 +90,6 @@ export function localGameReducer(
       }
 
       const { to, from, piece } = state.promotionCoordinates
-
       state.boardState.board[to.x][to.y].piece = action.piece
 
       const { turn, checkedColor, status, move } = moveHelper(
@@ -124,6 +114,8 @@ export function localGameReducer(
       const duration = action.duration ?? 1200
       return {
         ...state,
+        player: action.players ? action.players[0] : state.player,
+        opponent: action.players ? action.players[1] : state.opponent,
         status: "playing",
         timer: { w: duration, b: duration },
       }
@@ -153,11 +145,14 @@ export function localGameReducer(
             : state.turn === "w"
               ? "b"
               : "w"),
-        boardState: { ...state.boardState, disabled: true },
+        disabled: true,
       }
     }
     case "RESET_GAME": {
       return createLocalGameState()
+    }
+    case "SYNC_GAME": {
+      return { ...state, ...action.state }
     }
     default:
       return state

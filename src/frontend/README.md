@@ -24,6 +24,9 @@
    # Better Auth
    BETTER_AUTH_SECRET="DdyrIXdEu1XKE3c9TYk9fpWynBm0Qg1y"
    BETTER_AUTH_URL="http://localhost:3000" # Base URL of your app
+
+   # Socket.io
+   SERVER_URL="https://localhost:8080" # URL of the Socket.io server
    ```
 
 4. **Setup Local MongoDB instance (optional)**

@@ -1,61 +1,33 @@
 "use client"
 
-import { useEffect } from "react"
-import { useLocalGame } from "@/features/game/useLocalGame"
-import { isGameOver } from "@/features/game/utils"
 import { cn } from "@/lib/utils"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
 import { Board } from "@/features/board/components/Board"
 import { CapturedPieces } from "@/features/game/components/CapturedPieces"
-import { CreateGameForm } from "@/features/game/components/CreateGameForm"
 import { GameEndModal } from "@/features/game/components/GameEndModal"
 import { PreviousMoves } from "@/features/game/components/PreviousMoves"
 import { RequestDrawModal } from "@/features/game/components/RequestDrawModal"
 import { ResignModal } from "@/features/game/components/ResignModal"
 import { Timer } from "@/features/game/components/Timer"
 import { PawnPromotionModal } from "@/features/piece/components/PawnPromotionModal"
+import { useGame } from "./useGame"
+import { isGameOver } from "@/features/game/utils"
 
-export default function LocalGamePage() {
-  const { state, dispatch } = useLocalGame()
+type GameProps = Readonly<{ id: string; username: string }>
 
-  useEffect(() => {
-    if (state.status !== "playing") return
-    const interval = setInterval(() => {
-      dispatch({ type: "DECREMENT_TIMER", player: state.turn })
-
-      if (
-        state.status === "playing" &&
-        (state.timer.w <= 0 || state.timer.b <= 0)
-      ) {
-        dispatch({ type: "SET_WINNER", player: state.timer.w <= 0 ? "b" : "w" })
-        dispatch({ type: "SET_STATUS", status: "time-expired" })
-      }
-    }, 1000)
-
-    return () => clearInterval(interval)
-  }, [state, dispatch])
-
-  useEffect(() => {
-    if (isGameOver(state.status)) {
-      dispatch({ type: "END_GAME" })
-    }
-  }, [state.status, dispatch])
+export const Game = ({ id: userId, username }: GameProps) => {
+  const { state, connected, handlePlayAgain, handleResign, handlePromotion } =
+    useGame(userId, username)
 
   return (
     <div className="mx-auto grid min-h-screen place-items-center p-6">
       {state.status === "waiting" ? (
         <Card>
           <CardHeader>
-            <CardTitle className="text-xl">Create Local Game</CardTitle>
+            <CardTitle className="text-xl">Online Game</CardTitle>
           </CardHeader>
           <CardContent>
-            <CreateGameForm
-              isOnline={false}
-              startHandler={(duration) => {
-                dispatch({ type: "RESET_GAME" })
-                dispatch({ type: "START_GAME", duration })
-              }}
-            />
+            {connected ? "Waiting for opponent..." : "Connecting..."}
           </CardContent>
         </Card>
       ) : (
@@ -64,61 +36,64 @@ export default function LocalGamePage() {
             {state.promotionCoordinates && (
               <PawnPromotionModal
                 turn={state.turn}
-                handlePromotion={(piece) =>
-                  dispatch({ type: "PROMOTE_PAWN", piece })
-                }
+                handlePromotion={handlePromotion}
               />
             )}
-            <CapturedPieces pieces={state.capturedPieces.w} />
+            <CapturedPieces pieces={state.capturedPieces[state.player.color]} />
             <div className="relative">
-              <Timer duration={state.timer.b} />
+              <Timer duration={state.timer[state.opponent.color]} />
               <p
                 className={cn(
                   "absolute left-0 -mt-1 font-bold",
-                  state.check === "b" && "text-red-500",
+                  state.check === state.opponent.color && "text-red-500",
                   state.status.startsWith("draw") && "text-gray-500"
                 )}
               >
                 Opponent{" "}
-                {(state.check === "b" &&
+                {(state.check === state.opponent.color &&
                   `(${state.status === "checkmate" ? "checkmate" : "check"})`) ||
                   (state.status.startsWith("draw") && "(draw)")}
               </p>
-              <Board disabled={state.disabled} />
+              <Board
+                flipped={state.player.color === "b"}
+                disabled={state.disabled || state.turn !== state.player.color}
+              />
               <p
                 className={cn(
                   "absolute bottom-0 left-0 -mb-1 font-bold",
-                  state.check === "w" && "text-red-500",
+                  state.check === state.player.color && "text-red-500",
                   state.status.startsWith("draw") && "text-gray-500"
                 )}
               >
                 You{" "}
-                {(state.check === "w" &&
+                {(state.check === state.player.color &&
                   `(${state.status === "checkmate" ? "checkmate" : "check"})`) ||
                   (state.status.startsWith("draw") && "(draw)")}
               </p>
-              <Timer duration={state.timer.w} className="bottom-0" />
+              <Timer
+                duration={state.timer[state.player.color]}
+                className="bottom-0"
+              />
             </div>
-            <CapturedPieces pieces={state.capturedPieces.b} />
+            <CapturedPieces
+              pieces={state.capturedPieces[state.opponent.color]}
+            />
           </div>
           <div className="flex flex-col gap-2 [&>aside]:flex-1">
-            <PreviousMoves startingPlayer="w" moves={state.previousMoves} />
+            <PreviousMoves
+              startingPlayer={state.player.color}
+              moves={state.previousMoves}
+            />
             {isGameOver(state.status) ? (
               <GameEndModal
                 winner={state.winner}
                 status={state.status}
-                onPlayAgain={() =>
-                  dispatch({ type: "SET_STATUS", status: "waiting" })
-                }
+                onPlayAgain={handlePlayAgain}
               />
             ) : (
               <div className="flex gap-2">
                 <RequestDrawModal />
-                <ResignModal
-                  handleResign={() =>
-                    dispatch({ type: "SET_STATUS", status: "resignation" })
-                  }
-                />
+                <ResignModal handleResign={handleResign} />
               </div>
             )}
           </div>
