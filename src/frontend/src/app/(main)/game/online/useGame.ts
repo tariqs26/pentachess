@@ -10,6 +10,8 @@ export function useGame(userId: string, username: string) {
 
   useEffect(() => {
     const onConnect = () => {
+      // Prevent auto-reconnect after game ends
+      if (state.status !== "waiting") return
       console.info("Connected as:", { userId, username })
       setConnected(true)
       socket.emit("join", { userId, username })
@@ -31,6 +33,7 @@ export function useGame(userId: string, username: string) {
         // eslint-disable-next-line no-extra-semi
         ;[players[0], players[1]] = [players[1], players[0]]
       }
+      dispatch({ type: "RESET_GAME" })
       dispatch({ type: "START_GAME", players })
     }
 
@@ -46,6 +49,7 @@ export function useGame(userId: string, username: string) {
         dispatch({ type: "SET_WINNER", player: state.player.color })
         dispatch({ type: "SET_STATUS", status: "opponent-left" })
       } else {
+        // TODO: Might not be necessary
         console.info("Rejoining queue as:", { userId, username })
         dispatch({ type: "RESET_GAME" })
         socket.emit("join", { userId, username })
