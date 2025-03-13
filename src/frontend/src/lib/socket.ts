@@ -23,5 +23,5 @@ export type ClientToServerEvents = {
 }
 
 export const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
-  process.env.SERVER_URL
+  process.env.SERVER_URL ?? "http://localhost:8080"
 )
