@@ -8,6 +8,7 @@ export function useGame(userId: string, username: string) {
   const { state, dispatch } = useLocalGame()
   const [connected, setConnected] = useState(false)
 
+  // Effect: Socket events
   useEffect(() => {
     const onConnect = () => {
       // Prevent auto-reconnect after game ends
@@ -57,11 +58,11 @@ export function useGame(userId: string, username: string) {
     }
 
     const onGameEnd: ServerToClientEvents["end"] = (data) => {
-      console.info("📥 Received game end:", data)
-      if (data.winner !== "draw")
+      console.info("📥 Received game end:", data, state.status, state.winner)
+      if (data.winner !== "draw" && data.status === "resignation") {
         dispatch({ type: "SET_WINNER", player: data.winner })
-      dispatch({ type: "SET_STATUS", status: data.status })
-      dispatch({ type: "END_GAME" })
+        dispatch({ type: "SET_STATUS", status: data.status })
+      }
     }
 
     socket.on("connect", onConnect)
@@ -87,12 +88,12 @@ export function useGame(userId: string, username: string) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.player.color, state.status, userId, username])
 
+  // Effect: Timer
   useEffect(() => {
     if (state.status !== "playing") return
 
     const interval = setInterval(() => {
       dispatch({ type: "DECREMENT_TIMER", player: state.turn })
-
       if (state.timer[state.turn] <= 0) {
         dispatch({ type: "SET_WINNER", player: state.turn === "w" ? "b" : "w" })
         dispatch({ type: "SET_STATUS", status: "time-expired" })
@@ -101,30 +102,34 @@ export function useGame(userId: string, username: string) {
 
     return () => clearInterval(interval)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.status, state.turn])
+  }, [state.status, state.turn, state.timer])
 
+  // Effect: Sync game state between clients
   useEffect(() => {
     const lastMove = state.previousMoves[state.previousMoves.length - 1]
     if (!lastMove) return
-
     if (lastMove.player === state.player.color) {
       console.info("Sending move:", state)
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { opponent, player, promotionCoordinates, ...syncState } = state
-
       socket.emit("move", syncState)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.previousMoves.length])
 
+  // Effect: Handle game end
   useEffect(() => {
     if (isGameOver(state.status)) {
-      if (state.status === "resignation") {
-        socket.emit("end", {
-          status: state.status,
-          winner: state.player.color === "w" ? "b" : "w",
-        })
-      }
+      const winner =
+        state.winner ??
+        (state.status.startsWith("draw")
+          ? "draw"
+          : (state.status === "resignation"
+                ? state.player.color
+                : state.turn) === "w"
+            ? "b"
+            : "w")
+      socket.emit("end", { status: state.status, winner })
       dispatch({ type: "END_GAME" })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
