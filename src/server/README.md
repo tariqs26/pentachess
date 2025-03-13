@@ -33,5 +33,4 @@
 | `npm run dev`    | Run the app in development mode (http://localhost:8080) |
 | `npm run build`  | Build the app for production                            |
 | `npm start`      | Run the app in production mode                          |
-| `npm run lint`   | Lint the code using ESLint                              |
 | `npm run format` | Format the code using Prettier                          |
