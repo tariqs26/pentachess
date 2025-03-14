@@ -1,6 +1,6 @@
 "use client"
 
-import { io, Socket } from "socket.io-client"
+import { io, type Socket } from "socket.io-client"
 import type { GameStatus, Player, SyncState } from "@/features/game/types"
 import type { PieceColor } from "@/features/piece/types"
 
