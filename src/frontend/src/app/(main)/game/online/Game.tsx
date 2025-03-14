@@ -1,6 +1,7 @@
 "use client"
 
 import { cn } from "@/lib/utils"
+import { isGameOver } from "@/features/game/utils"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
 import { Board } from "@/features/board/components/Board"
 import { CapturedPieces } from "@/features/game/components/CapturedPieces"
@@ -11,7 +12,6 @@ import { ResignModal } from "@/features/game/components/ResignModal"
 import { Timer } from "@/features/game/components/Timer"
 import { PawnPromotionModal } from "@/features/piece/components/PawnPromotionModal"
 import { useGame } from "./useGame"
-import { isGameOver } from "@/features/game/utils"
 
 type GameProps = Readonly<{ id: string; username: string }>
 
@@ -41,7 +41,10 @@ export const Game = ({ id: userId, username }: GameProps) => {
             )}
             <CapturedPieces pieces={state.capturedPieces[state.player.color]} />
             <div className="relative">
-              <Timer duration={state.timer[state.opponent.color]} />
+              <Timer
+                duration={state.timer[state.opponent.color]}
+                disabled={state.turn !== state.opponent.color}
+              />
               <p
                 className={cn(
                   "absolute left-0 -mt-1 font-bold",
@@ -49,7 +52,7 @@ export const Game = ({ id: userId, username }: GameProps) => {
                   state.status.startsWith("draw") && "text-gray-500"
                 )}
               >
-                Opponent{" "}
+                {state.opponent.username}{" "}
                 {(state.check === state.opponent.color &&
                   `(${state.status === "checkmate" ? "checkmate" : "check"})`) ||
                   (state.status.startsWith("draw") && "(draw)")}
@@ -65,13 +68,14 @@ export const Game = ({ id: userId, username }: GameProps) => {
                   state.status.startsWith("draw") && "text-gray-500"
                 )}
               >
-                You{" "}
+                {username}{" "}
                 {(state.check === state.player.color &&
                   `(${state.status === "checkmate" ? "checkmate" : "check"})`) ||
                   (state.status.startsWith("draw") && "(draw)")}
               </p>
               <Timer
                 duration={state.timer[state.player.color]}
+                disabled={state.turn !== state.player.color}
                 className="bottom-0"
               />
             </div>
