@@ -71,7 +71,7 @@ export default function LocalGamePage() {
             )}
             <CapturedPieces pieces={state.capturedPieces.w} />
             <div className="relative">
-              <Timer duration={state.timer.b} />
+              <Timer duration={state.timer.b} disabled={state.turn === "w"} />
               <p
                 className={cn(
                   "absolute left-0 -mt-1 font-bold",
@@ -97,7 +97,11 @@ export default function LocalGamePage() {
                   `(${state.status === "checkmate" ? "checkmate" : "check"})`) ||
                   (state.status.startsWith("draw") && "(draw)")}
               </p>
-              <Timer duration={state.timer.w} className="bottom-0" />
+              <Timer
+                duration={state.timer.w}
+                className="bottom-0"
+                disabled={state.turn === "b"}
+              />
             </div>
             <CapturedPieces pieces={state.capturedPieces.b} />
           </div>
