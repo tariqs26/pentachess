@@ -114,8 +114,8 @@ export const CellComponent = (cell: Cell) => {
       <div
         id={`cell-${cell.id}`}
         className={cn(
-          "flex size-[100px] items-center justify-center bg-gray-500",
-          cell.color === "w" && "bg-white",
+          "flex size-[100px] items-center justify-center bg-[#739552]",
+          cell.color === "w" && "bg-[#ebecd0]",
           isInvalidMove && "bg-gray-400",
           isAvailableMove && "bg-green-500 hover:cursor-pointer",
           isAvailableMove && cell.piece && "bg-red-500",
