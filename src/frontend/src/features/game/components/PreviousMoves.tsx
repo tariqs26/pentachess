@@ -31,7 +31,7 @@ export const PreviousMoves = ({
   startingPlayer,
   moves,
 }: PreviousMovesProps) => (
-  <aside className="rounded-md bg-accent">
+  <aside className="rounded-md border bg-accent shadow-sm">
     <div className="flex px-4 pb-1 pt-4 text-sm font-semibold">
       <p>{startingPlayer === "w" ? "You" : "Opponent"}</p>
       <p className={startingPlayer === "w" ? "ml-[74px]" : "ml-[33px]"}>
