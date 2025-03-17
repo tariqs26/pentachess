@@ -114,8 +114,8 @@ export const CellComponent = (cell: Cell) => {
       <div
         id={`cell-${cell.id}`}
         className={cn(
-          "flex size-[100px] items-center justify-center bg-gray-500",
-          cell.color === "w" && "bg-white",
+          "flex size-[100px] items-center justify-center bg-[#739552]",
+          cell.color === "w" && "bg-[#ebecd0]",
           isInvalidMove && "bg-gray-400",
           isAvailableMove && "bg-green-500 hover:cursor-pointer",
           isAvailableMove && cell.piece && "bg-red-500",
@@ -132,6 +132,15 @@ export const CellComponent = (cell: Cell) => {
           marginTop: `${marginTopStyle(cell)}px`,
         }}
       >
+        <svg viewBox="0 0 100 100">
+          <polygon
+            points="0,41.2215 19.0983,100 80.9017,100 100,41.2215 50,77.5486"
+            fill="transparent"
+            stroke="black"
+            strokeWidth="1px"
+            vectorEffect="non-scaling-stroke"
+          />
+        </svg>
         {cell.piece && (
           <Image
             src={cell.piece.image}
