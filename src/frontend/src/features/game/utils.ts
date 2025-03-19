@@ -3,6 +3,8 @@ import {
   checkForCheckOrMate,
   checkForStalemate,
   checkThreeMoveRep,
+  checkFiftyMoveNoCap,
+  checkInsufficientMatrial,
   initializeBoard,
 } from "../board/utils"
 import type { Piece, PieceColor } from "../piece/types"
@@ -70,17 +72,6 @@ export const isGameOver = (status: GameStatus) =>
   status === "resignation" ||
   status === "time-expired"
 
-const checkFiftyMoveNoCap = (moves: { to: Cell; piece: Piece }[]) => {
-  if (moves.length >= 50) {
-    const lastFifty = moves.slice(-50)
-    for (const { to, piece } of lastFifty) {
-      if (piece.abbr === "P" || to.piece) return false
-    }
-    return true
-  }
-  return false
-}
-
 export const getNewStatus = (
   isCheckmate: boolean,
   board: Board,
@@ -90,11 +81,18 @@ export const getNewStatus = (
 ): GameStatus => {
   if (isCheckmate) return "checkmate"
   if (checkForStalemate(board, turn)) return "draw-stalemate"
-  if (checkThreeMoveRep()) return "draw-threefold"
+  if (
+    checkThreeMoveRep([
+      ...moves,
+      { from: nextMove.from, to: nextMove.to, piece: nextMove.piece },
+    ])
+  )
+    return "draw-threefold"
   if (
     checkFiftyMoveNoCap([...moves, { to: nextMove.to, piece: nextMove.piece }])
   )
     return "draw-fifty-move"
+  if (checkInsufficientMatrial(board)) return "draw-insufficient"
   return "playing"
 }
 
