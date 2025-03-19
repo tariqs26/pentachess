@@ -72,16 +72,26 @@ function getPawnTypeMoves(
     possibleMoves.add(nextForwardEdge)
 
   if (
-    (cell.x === 2 && (cell.y % 5 === 0 || cell.y % 5 === 2)) ||
-    (cell.x === 1 && cell.y % 3 !== (isCW ? 2 : 1))
+    cell.x !== 2 ||
+    (cell.x === 2 && (cell.y % 5 === 1 || cell.y % 5 === (isCW ? 3 : 4)))
   ) {
-    const sideEdge = getSideEdge(cell, board)
-    const sideForwardEdge = getForwardEdge(sideEdge, board)
+    const forwardSideEdge = getSideEdge(forwardEdge, board)
+    if (isPawn ? isEnemy(forwardSideEdge, piece) : isEmpty(forwardSideEdge))
+      possibleMoves.add(forwardSideEdge)
+  }
+  if (
+    (cell.x === 1 && (cell.y % 3 === 0 || cell.y % 3 === (isCW ? 1 : 2))) ||
+    (cell.x === 2 && (cell.y % 5 === 0 || cell.y % 5 === 2))
+  ) {
+    const sideForwardEdge = getForwardEdge(getSideEdge(cell, board), board)
     if (isPawn ? isEnemy(sideForwardEdge, piece) : isEmpty(sideForwardEdge))
       possibleMoves.add(sideForwardEdge)
-  } else if ((cell.x === 2 && cell.y % 5 === (isCW ? 4 : 3)) || cell.x === 1) {
-    const backwardEdge = getBackwardEdge(cell, board)
-    const backwardSideEdge = getSideEdge(backwardEdge, board)
+  }
+  if (
+    (cell.x === 1 && cell.y % 3 === (isCW ? 2 : 1)) ||
+    (cell.x === 2 && cell.y % 5 === (isCW ? 4 : 3))
+  ) {
+    const backwardSideEdge = getSideEdge(getBackwardEdge(cell, board), board)
     if (isPawn ? isEnemy(backwardSideEdge, piece) : isEmpty(backwardSideEdge))
       possibleMoves.add(backwardSideEdge)
   }
