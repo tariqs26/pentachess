@@ -142,9 +142,11 @@ export function localGameReducer(
           state.winner ??
           (state.status.startsWith("draw")
             ? "draw"
-            : state.turn === "w"
-              ? "b"
-              : "w"),
+            : state.status === "opponent-left"
+              ? state.player.color
+              : state.turn === "w"
+                ? "b"
+                : "w"),
         disabled: true,
       }
     }
