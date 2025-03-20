@@ -1,23 +1,23 @@
 "use client"
 
-import { isGameOver } from "@/features/game/utils"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
 import { Board } from "@/features/board/components/Board"
-import { CapturedPieces } from "@/features/game/components/CapturedPieces"
-import { GameEndModal } from "@/features/game/components/GameEndModal"
-import { PlayerCard } from "@/features/game/components/PlayerCard"
-import { PreviousMoves } from "@/features/game/components/PreviousMoves"
-import { RequestDrawModal } from "@/features/game/components/RequestDrawModal"
-import { ResignModal } from "@/features/game/components/ResignModal"
-import { Timer } from "@/features/game/components/Timer"
 import { PawnPromotionModal } from "@/features/piece/components/PawnPromotionModal"
-import { useGame } from "./useGame"
+import { useOnlineGame } from "../hooks/useOnlineGame"
+import { isGameOver } from "../utils"
+import { CapturedPieces } from "./CapturedPieces"
+import { GameEndModal } from "./GameEndModal"
+import { PlayerCard } from "./PlayerCard"
+import { PreviousMoves } from "./PreviousMoves"
+import { RequestDrawModal } from "./RequestDrawModal"
+import { ResignModal } from "./ResignModal"
+import { Timer } from "./Timer"
 
 type GameProps = Readonly<{ id: string; username: string }>
 
-export const Game = ({ id: userId, username }: GameProps) => {
+export const OnlineGame = ({ id: userId, username }: GameProps) => {
   const { state, connected, handlePlayAgain, handleResign, handlePromotion } =
-    useGame(userId, username)
+    useOnlineGame(userId, username)
 
   return (
     <div className="mx-auto grid min-h-screen place-items-center p-6">

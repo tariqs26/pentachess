@@ -1,11 +1,8 @@
 import { canPromote, getInvalidMoves, getPossibleMoves } from "../piece/utils"
-import type { LocalGameAction, LocalGameState } from "./types"
-import { createLocalGameState, moveHelper } from "./utils"
+import type { GameAction, GameState } from "./types"
+import { createGameState, moveHelper } from "./utils"
 
-export function localGameReducer(
-  state: LocalGameState,
-  action: LocalGameAction
-): LocalGameState {
+export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
     case "SELECT_CELL": {
       if (action.cell) {
@@ -151,7 +148,7 @@ export function localGameReducer(
       }
     }
     case "RESET_GAME": {
-      return createLocalGameState()
+      return createGameState()
     }
     case "SYNC_GAME": {
       return { ...state, ...action.state }

@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react"
-import { useLocalGame } from "@/features/game/useLocalGame"
-import { isGameOver } from "@/features/game/utils"
-import type { Piece } from "@/features/piece/types"
 import { type ServerToClientEvents, socket } from "@/lib/socket"
 import { sleep } from "@/lib/utils"
+import type { Piece } from "@/features/piece/types"
+import { isGameOver } from "../utils"
+import { useGame } from "./useGame"
 
-export function useGame(userId: string, username: string) {
-  const { state, dispatch } = useLocalGame()
+export function useOnlineGame(userId: string, username: string) {
+  const { state, dispatch } = useGame()
   const [connected, setConnected] = useState(false)
 
   // effect: socket connection/disconnection

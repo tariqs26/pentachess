@@ -1,7 +1,7 @@
 import { headers } from "next/headers"
-import { LocalGameProvider } from "@/features/game/components/LocalGameProvider"
+import { GameProvider } from "@/features/game/components/GameProvider"
 import { auth } from "@/lib/auth"
-import { Game } from "./Game"
+import { OnlineGame } from "@/features/game/components/OnlineGame"
 
 export default async function OnlineGamePage() {
   const session = await auth.api.getSession({ headers: headers() })
@@ -11,8 +11,8 @@ export default async function OnlineGamePage() {
   }
 
   return (
-    <LocalGameProvider>
-      <Game {...session.user} />
-    </LocalGameProvider>
+    <GameProvider>
+      <OnlineGame {...session.user} />
+    </GameProvider>
   )
 }

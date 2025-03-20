@@ -34,7 +34,7 @@ export type Player = {
   color: PieceColor
 }
 
-export type LocalGameState = {
+export type GameState = {
   player: Player
   opponent: Player
   winner?: PieceColor | "draw"
@@ -50,11 +50,11 @@ export type LocalGameState = {
 }
 
 export type SyncState = Omit<
-  LocalGameState,
+  GameState,
   "player" | "opponent" | "promotionCoordinates"
 >
 
-export type LocalGameAction =
+export type GameAction =
   | { type: "START_GAME"; duration?: number; players?: [Player, Player] }
   | { type: "SET_STATUS"; status: GameStatus }
   | { type: "PROMOTE_PAWN"; piece: Piece }

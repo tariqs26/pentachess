@@ -1,5 +1,5 @@
 import Image from "next/image"
-import { useLocalGame } from "@/features/game/useLocalGame"
+import { useGame } from "@/features/game/hooks/useGame"
 import { cn } from "@/lib/utils"
 import type { Cell } from "../types"
 import { sideRotation } from "./Side"
@@ -56,7 +56,7 @@ const pieceRotation = (cell: Cell & { flipped?: boolean }) =>
 type CellProps = Readonly<Cell & { disabled: boolean; flipped?: boolean }>
 
 export const CellComponent = (cell: CellProps) => {
-  const { state, dispatch } = useLocalGame()
+  const { state, dispatch } = useGame()
 
   const isCellSelected = state.boardState.selectedCell?.cell.id === cell.id
 

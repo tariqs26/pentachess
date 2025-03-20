@@ -1,4 +1,4 @@
-import { useLocalGame } from "@/features/game/useLocalGame"
+import { useGame } from "@/features/game/hooks/useGame"
 import { DECAGON_SIDES } from "../constants"
 import { getSides } from "../utils"
 import { CellComponent } from "./Cell"
@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils"
 type BoardProps = Readonly<{ disabled: boolean; flipped?: boolean }>
 
 export const Board = (props: BoardProps) => {
-  const { state } = useLocalGame()
+  const { state } = useGame()
 
   return (
     <div className="relative mx-auto my-2 h-[600px] w-[572px]">

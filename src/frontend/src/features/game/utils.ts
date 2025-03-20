@@ -6,9 +6,9 @@ import {
   initializeBoard,
 } from "../board/utils"
 import type { Piece, PieceColor } from "../piece/types"
-import type { GameStatus, LocalGameState, Move } from "./types"
+import type { GameStatus, GameState, Move } from "./types"
 
-export const createLocalGameState = (): LocalGameState => ({
+export const createGameState = (): GameState => ({
   player: { id: "1", color: "w", userId: "1", username: "Player 1" },
   opponent: { id: "2", color: "b", userId: "2", username: "Player 2" },
   turn: "w",
