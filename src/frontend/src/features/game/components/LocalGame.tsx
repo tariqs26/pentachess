@@ -19,15 +19,12 @@ export const LocalGame = () => {
   const { state, dispatch } = useGame()
 
   useEffect(() => {
-    if (state.status !== "playing") return
+    const timer = state.timer
+    if (state.status !== "playing" || !timer) return
     const interval = setInterval(() => {
       dispatch({ type: "DECREMENT_TIMER", player: state.turn })
-
-      if (
-        state.status === "playing" &&
-        (state.timer.w <= 0 || state.timer.b <= 0)
-      ) {
-        dispatch({ type: "SET_WINNER", player: state.timer.w <= 0 ? "b" : "w" })
+      if (timer.w <= 0 || timer.b <= 0) {
+        dispatch({ type: "SET_WINNER", player: timer.w <= 0 ? "b" : "w" })
         dispatch({ type: "SET_STATUS", status: "time-expired" })
       }
     }, 1000)
@@ -71,7 +68,7 @@ export const LocalGame = () => {
             )}
             <CapturedPieces pieces={state.capturedPieces.w} />
             <div className="relative">
-              <Timer duration={state.timer.b} disabled={state.turn === "w"} />
+              <Timer duration={state.timer?.b} disabled={state.turn === "w"} />
               <PlayerCard
                 username="Opponent"
                 isCheck={state.check === "b"}
@@ -88,7 +85,7 @@ export const LocalGame = () => {
               />
               <Timer
                 className="bottom-0"
-                duration={state.timer.w}
+                duration={state.timer?.w}
                 disabled={state.turn === "b"}
               />
             </div>

@@ -39,7 +39,7 @@ export type GameState = {
   opponent: Player
   winner?: PieceColor | "draw"
   turn: PieceColor
-  timer: Record<PieceColor, number>
+  timer?: Record<PieceColor, number>
   previousMoves: Move[]
   capturedPieces: Record<PieceColor, Piece[]>
   check: PieceColor | null
