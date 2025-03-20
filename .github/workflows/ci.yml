@@ -9,27 +9,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  changes:
-    runs-on: ubuntu-latest
-    permissions:
-      pull-requests: read
-    outputs:
-      frontend: ${{ steps.filter.outputs.frontend }}
-      server: ${{ steps.filter.outputs.server }}
-    steps:
-      - name: Check for file changes
-        uses: dorny/paths-filter@v3
-        id: filter
-        with:
-          filters: |
-            frontend:
-              - 'src/frontend/**'
-            server:
-              - 'src/server/**'
-
   frontend:
-    needs: changes
-    if: ${{ (github.event.action != 'closed' || github.event.pull_request.merged) && needs.changes.outputs.frontend == 'true' }}
+    if: ${{ github.event.action != 'closed' || github.event.pull_request.merged }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -53,8 +34,7 @@ jobs:
         run: npm run build -- --no-lint
 
   server:
-    needs: changes
-    if: ${{ (github.event.action != 'closed' || github.event.pull_request.merged) && needs.changes.outputs.server == 'true' }}
+    if: ${{ github.event.action != 'closed' || github.event.pull_request.merged }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
