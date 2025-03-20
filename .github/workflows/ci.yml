@@ -12,14 +12,11 @@ jobs:
   changes:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
       pull-requests: read
     outputs:
       frontend: ${{ steps.filter.outputs.frontend }}
       server: ${{ steps.filter.outputs.server }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
       - name: Check for file changes
         uses: dorny/paths-filter@v3
         id: filter
