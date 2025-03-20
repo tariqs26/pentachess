@@ -32,3 +32,23 @@ jobs:
       - name: Build
         working-directory: ./src/frontend
         run: npm run build -- --no-lint
+  server:
+    if: ${{github.event.action != 'closed' || github.event.pull_request.merged }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          check-latest: true
+      - name: Install dependencies
+        working-directory: ./src/server
+        run: npm ci
+      - name: Check Format
+        working-directory: ./src/server
+        run: npm run format:check
+      - name: Build
+        working-directory: ./src/server
+        run: npm run build
