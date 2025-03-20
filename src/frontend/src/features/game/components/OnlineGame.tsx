@@ -42,7 +42,7 @@ export const OnlineGame = ({ id: userId, username }: GameProps) => {
             <CapturedPieces pieces={state.capturedPieces[state.player.color]} />
             <div className="relative">
               <Timer
-                duration={state.timer[state.opponent.color]}
+                duration={state.timer?.[state.opponent.color]}
                 disabled={state.turn !== state.opponent.color}
               />
               <PlayerCard
@@ -63,7 +63,7 @@ export const OnlineGame = ({ id: userId, username }: GameProps) => {
                 className="bottom-0"
               />
               <Timer
-                duration={state.timer[state.player.color]}
+                duration={state.timer?.[state.player.color]}
                 disabled={state.turn !== state.player.color}
                 className="bottom-0"
               />

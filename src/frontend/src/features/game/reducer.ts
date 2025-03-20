@@ -108,19 +108,20 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       }
     }
     case "START_GAME": {
-      const duration = action.duration ?? 1200
+      const duration = action.duration
       return {
         ...state,
         player: action.players ? action.players[0] : state.player,
         opponent: action.players ? action.players[1] : state.opponent,
         status: "playing",
-        timer: { w: duration, b: duration },
+        timer: duration ? { w: duration, b: duration } : undefined,
       }
     }
     case "SET_STATUS": {
       return { ...state, status: action.status }
     }
     case "DECREMENT_TIMER": {
+      if (!state.timer) return state
       return {
         ...state,
         timer: {
