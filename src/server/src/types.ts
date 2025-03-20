@@ -7,19 +7,20 @@ export type Player = {
   username: string
 }
 
-type SyncState = {} // temporary placeholder
+// TODO: temporary placeholder
+type SyncState = {}
 
-type GameEndState = { status: string; winner: PieceColor | "draw" }
+type GameEndData = { status: string; winner: PieceColor | "draw" }
 
 export type ServerToClientEvents = {
   start: (data: { gameId: string; players: [Player, Player] }) => void
-  move: (state: SyncState) => void
-  end: (state: GameEndState) => void
+  move: (data: SyncState) => void
+  end: (data: GameEndData) => void
   leave: () => void
 }
 
 export type ClientToServerEvents = {
   join: (data: { userId: string; username: string }) => void
   move: (data: SyncState) => void
-  end: (data: GameEndState) => void
+  end: (data: GameEndData) => void
 }
