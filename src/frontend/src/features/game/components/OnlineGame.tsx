@@ -12,6 +12,7 @@ import { PreviousMoves } from "./PreviousMoves"
 import { RequestDrawModal } from "./RequestDrawModal"
 import { ResignModal } from "./ResignModal"
 import { Timer } from "./Timer"
+import { MoveConfirmation } from "./MoveConfirmation"
 
 type GameProps = Readonly<{ id: string; username: string }>
 
@@ -61,6 +62,14 @@ export const OnlineGame = ({ id: userId, username }: GameProps) => {
                 isCheckmate={state.status === "checkmate"}
                 isDraw={state.status.startsWith("draw")}
                 className="bottom-0"
+              />
+              <MoveConfirmation
+                className="bottom-12"
+                disabled={
+                  !state.boardState.pendingMove ||
+                  state.turn !== state.player.color ||
+                  state.status !== "playing"
+                }
               />
               <Timer
                 duration={state.timer[state.player.color]}

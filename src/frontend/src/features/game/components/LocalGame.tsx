@@ -14,6 +14,7 @@ import { ResignModal } from "../components/ResignModal"
 import { Timer } from "../components/Timer"
 import { useGame } from "../hooks/useGame"
 import { isGameOver } from "../utils"
+import { MoveConfirmation } from "./MoveConfirmation"
 
 export const LocalGame = () => {
   const { state, dispatch } = useGame()
@@ -85,6 +86,12 @@ export const LocalGame = () => {
                 isCheckmate={state.status === "checkmate"}
                 isDraw={state.status.startsWith("draw")}
                 className="bottom-0"
+              />
+              <MoveConfirmation
+                className={state.turn === "b" ? "top-12" : "bottom-12"}
+                disabled={
+                  !state.boardState.pendingMove || state.status !== "playing"
+                }
               />
               <Timer
                 className="bottom-0"
