@@ -11,7 +11,7 @@ type PlayerCardProps = Readonly<{
 export const PlayerCard = (props: PlayerCardProps) => (
   <p
     className={cn(
-      "absolute left-0 -mb-1 ml-1 font-bold",
+      "absolute left-0 -mb-1 ml-1 font-bold max-w-[20ch]",
       props.isCheck && "text-red-500",
       props.isDraw && "text-gray-500",
       props.className
