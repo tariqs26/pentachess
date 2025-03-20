@@ -17,6 +17,7 @@
    Create a `.env` file in the root directory of the project and add the following environment variables:
 
    ```bash
+   CORS_ORIGIN=http://localhost:3000 # Frontend URL
    PORT=8080 # [Optional] Port number for the server
    ```
 
@@ -28,9 +29,9 @@
 
 **Available Scripts**
 
-| Command          | Description                                             |
-| ---------------- | ------------------------------------------------------- |
-| `npm run dev`    | Run the app in development mode (http://localhost:8080) |
-| `npm run build`  | Build the app for production                            |
-| `npm start`      | Run the app in production mode                          |
-| `npm run format` | Format the code using Prettier                          |
+| Command          | Description                                                |
+| ---------------- | ---------------------------------------------------------- |
+| `npm run dev`    | Run the server in development mode (http://localhost:8080) |
+| `npm run build`  | Build the server for production                            |
+| `npm start`      | Run the server in production mode                          |
+| `npm run format` | Format the code using Prettier                             |
