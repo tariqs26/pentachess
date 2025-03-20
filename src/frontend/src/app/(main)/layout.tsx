@@ -17,7 +17,7 @@ export default function MainLayout({
       <article className="relative flex">
         <Sidebar />
         <main
-          className={`flex-grow transition-all duration-300 ${sidebarExpanded ? "ml-[180px]" : "ml-0"}`}
+          className={`flex-grow transition-all duration-300 ${sidebarExpanded ? "ml-[180px]" : ""}`}
         >
           {children}
         </main>

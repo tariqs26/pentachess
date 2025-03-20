@@ -23,9 +23,7 @@ export default function HomePage() {
           className="object-contain opacity-30"
         />
       </div>
-      <div
-        className={`pointer-events-none fixed inset-0 bg-radial-gradient opacity-30 transition-all duration-300 ${sidebarExpanded ? "" : "-ml-[180px]"}`}
-      ></div>
+      <div className="pointer-events-none fixed inset-0 bg-radial-gradient opacity-30"></div>
       <div className="container relative z-10 mx-auto flex min-h-screen flex-col items-center justify-center px-4 py-16">
         <div className="mb-10 animate-reveal-down text-center opacity-0">
           <h1 className="mb-2 text-6xl font-bold tracking-tight text-primary drop-shadow-glow">

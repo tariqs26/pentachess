@@ -14,6 +14,7 @@ import { UserDropdown } from "./UserDropdown"
 // Create a sidebar context
 export const SidebarContext = createContext({
   expanded: true,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   setExpanded: (value: boolean) => {},
 })
 
