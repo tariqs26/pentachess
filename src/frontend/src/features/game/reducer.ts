@@ -1,11 +1,8 @@
 import { canPromote, getInvalidMoves, getPossibleMoves } from "../piece/utils"
-import type { LocalGameAction, LocalGameState } from "./types"
-import { createLocalGameState, moveHelper } from "./utils"
+import type { GameAction, GameState } from "./types"
+import { createGameState, moveHelper } from "./utils"
 
-export function localGameReducer(
-  state: LocalGameState,
-  action: LocalGameAction
-): LocalGameState {
+export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
     case "SELECT_CELL": {
       if (action.cell) {
@@ -13,6 +10,7 @@ export function localGameReducer(
           action.cell,
           state.boardState.board
         )
+
         const invalidMoves = getInvalidMoves(
           action.cell,
           state.boardState.board,
@@ -34,22 +32,13 @@ export function localGameReducer(
 
       return {
         ...state,
-        boardState: {
-          ...state.boardState,
-          selectedCell: null,
-        },
+        boardState: { ...state.boardState, selectedCell: null },
       }
     }
     case "SET_OVER_CELL": {
       return {
         ...state,
         boardState: { ...state.boardState, overCell: action.cell },
-      }
-    }
-    case "DISABLE_BOARD": {
-      return {
-        ...state,
-        boardState: { ...state.boardState, disabled: true },
       }
     }
     case "MOVE_PIECE": {
@@ -85,7 +74,6 @@ export function localGameReducer(
         check: checkedColor,
         previousMoves: [...state.previousMoves, move],
         ...(canPromote(piece, to) && {
-          status: "promoting",
           check: state.check,
           promotionCoordinates: { from, to, piece },
           previousMoves: state.previousMoves, // remove the new move, as it will be added after promotion
@@ -99,7 +87,6 @@ export function localGameReducer(
       }
 
       const { to, from, piece } = state.promotionCoordinates
-
       state.boardState.board[to.x][to.y].piece = action.piece
 
       const { turn, checkedColor, status, move } = moveHelper(
@@ -124,6 +111,8 @@ export function localGameReducer(
       const duration = action.duration ?? 1200
       return {
         ...state,
+        player: action.players ? action.players[0] : state.player,
+        opponent: action.players ? action.players[1] : state.opponent,
         status: "playing",
         timer: { w: duration, b: duration },
       }
@@ -150,14 +139,19 @@ export function localGameReducer(
           state.winner ??
           (state.status.startsWith("draw")
             ? "draw"
-            : state.turn === "w"
-              ? "b"
-              : "w"),
-        boardState: { ...state.boardState, disabled: true },
+            : state.status === "opponent-left"
+              ? state.player.color
+              : state.turn === "w"
+                ? "b"
+                : "w"),
+        disabled: true,
       }
     }
     case "RESET_GAME": {
-      return createLocalGameState()
+      return createGameState()
+    }
+    case "SYNC_GAME": {
+      return { ...state, ...action.state }
     }
     default:
       return state

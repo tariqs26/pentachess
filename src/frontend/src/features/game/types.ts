@@ -17,7 +17,6 @@ export type Move = {
 export type GameStatus =
   | "waiting"
   | "playing"
-  | "promoting"
   | "checkmate"
   | "draw-stalemate"
   | "draw-agreement"
@@ -26,10 +25,18 @@ export type GameStatus =
   | "draw-insufficient"
   | "resignation"
   | "time-expired"
+  | "opponent-left"
 
-export type LocalGameState = {
-  player: PieceColor
-  opponent: PieceColor
+export type Player = {
+  id: string
+  userId: string
+  username: string
+  color: PieceColor
+}
+
+export type GameState = {
+  player: Player
+  opponent: Player
   winner?: PieceColor | "draw"
   turn: PieceColor
   timer: Record<PieceColor, number>
@@ -37,16 +44,23 @@ export type LocalGameState = {
   capturedPieces: Record<PieceColor, Piece[]>
   check: PieceColor | null
   status: GameStatus
+  disabled: boolean
   boardState: BoardState
   promotionCoordinates?: { from: Cell; to: Cell; piece: Piece }
 }
 
-export type LocalGameAction =
-  | { type: "START_GAME"; duration?: number }
+export type SyncState = Omit<
+  GameState,
+  "player" | "opponent" | "promotionCoordinates"
+>
+
+export type GameAction =
+  | { type: "START_GAME"; duration?: number; players?: [Player, Player] }
   | { type: "SET_STATUS"; status: GameStatus }
   | { type: "PROMOTE_PAWN"; piece: Piece }
   | { type: "DECREMENT_TIMER"; player: PieceColor }
   | { type: "SET_WINNER"; player: PieceColor }
   | { type: "END_GAME" }
   | { type: "RESET_GAME" }
+  | { type: "SYNC_GAME"; state: SyncState }
   | BoardAction

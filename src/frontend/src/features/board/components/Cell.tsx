@@ -1,5 +1,5 @@
 import Image from "next/image"
-import { useLocalGame } from "@/features/game/useLocalGame"
+import { useGame } from "@/features/game/hooks/useGame"
 import { cn } from "@/lib/utils"
 import type { Cell } from "../types"
 import { sideRotation } from "./Side"
@@ -50,11 +50,13 @@ const marginTopStyle = (cell: Cell) => {
   return cell.side % 2 !== 0 ? -30 : -10
 }
 
-const pieceRotation = (cell: Cell) =>
-  `calc(${-cellRotation(cell) - sideRotation[cell.x][cell.side]}deg )`
+const pieceRotation = (cell: Cell & { flipped?: boolean }) =>
+  `calc(${-cellRotation(cell) - sideRotation[cell.x][cell.side] + (cell.flipped ? -180 : 0)}deg )`
 
-export const CellComponent = (cell: Cell) => {
-  const { state, dispatch } = useLocalGame()
+type CellProps = Readonly<Cell & { disabled: boolean; flipped?: boolean }>
+
+export const CellComponent = (cell: CellProps) => {
+  const { state, dispatch } = useGame()
 
   const isCellSelected = state.boardState.selectedCell?.cell.id === cell.id
 
@@ -67,13 +69,12 @@ export const CellComponent = (cell: Cell) => {
     .some((move) => move.id === cell.id)
 
   const handlePieceMouseDown = () => {
-    if (state.boardState.disabled) return
-    if (cell.piece?.color !== state.turn) return
+    if (cell.disabled || cell.piece?.color !== state.turn) return
     dispatch({ type: "SELECT_CELL", cell: isCellSelected ? null : cell })
   }
 
   const handleCellMouseUp = () => {
-    if (state.boardState.disabled) return
+    if (cell.disabled) return
     if (!state.boardState.selectedCell?.cell.piece) return
     if (!state.boardState.overCell) return
 
@@ -85,7 +86,7 @@ export const CellComponent = (cell: Cell) => {
   }
 
   const handleCellMouseEnter = () => {
-    if (state.boardState.disabled) return
+    if (cell.disabled) return
     if (!state.boardState.selectedCell || isCellSelected || !isAvailableMove) {
       if (isCellSelected) {
         dispatch({ type: "SET_OVER_CELL", cell: null })
@@ -96,8 +97,8 @@ export const CellComponent = (cell: Cell) => {
   }
 
   const handleCellMouseLeave = () => {
-    if (state.boardState.disabled) return
-    if (!state.boardState.selectedCell || !isAvailableMove) return
+    if (cell.disabled || !state.boardState.selectedCell || !isAvailableMove)
+      return
     dispatch({ type: "SET_OVER_CELL", cell: null })
   }
 
@@ -120,9 +121,7 @@ export const CellComponent = (cell: Cell) => {
           isAvailableMove && "bg-green-500 hover:cursor-pointer",
           isAvailableMove && cell.piece && "bg-red-500",
           isCellSelected && "bg-orange-500",
-          state.promotionCoordinates &&
-            state.promotionCoordinates.to.id === cell.id &&
-            "bg-yellow-500"
+          state.promotionCoordinates?.to.id === cell.id && "bg-yellow-500"
         )}
         style={{
           clipPath:

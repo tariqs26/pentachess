@@ -38,7 +38,9 @@ export const GameEndModal = ({
         ? "Resignation"
         : status === "time-expired"
           ? "Time Expired"
-          : `Draw: ${status.replace("draw-", "")}`
+          : status === "opponent-left"
+            ? "Opponent Left"
+            : `Draw: ${status.replace("draw-", "")}`
 
   const message =
     winner === "draw"

@@ -169,7 +169,11 @@ export const CreateGameForm = ({ isOnline, startHandler }: CreateGameProps) => {
             )}
           />
         )}
-        <Button type="submit" className="w-full" disabled={isSubmitting}>
+        <Button
+          type="submit"
+          className="w-full"
+          disabled={isOnline || isSubmitting}
+        >
           Start
         </Button>
       </form>
