@@ -3,13 +3,22 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { BookText, Gamepad2, Trophy, ChevronLeft, Menu } from "lucide-react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, createContext, useContext } from "react"
 
 import { authClient } from "@/lib/auth-client"
 import { cn } from "@/lib/utils"
 import { ThemeToggle } from "./ThemeToggle"
 import { Button } from "./ui/Button"
 import { UserDropdown } from "./UserDropdown"
+
+// Create a sidebar context
+export const SidebarContext = createContext({
+  expanded: true,
+  setExpanded: (value: boolean) => {},
+})
+
+// Hook to use the sidebar context
+export const useSidebar = () => useContext(SidebarContext)
 
 const items = [
   {
@@ -29,18 +38,10 @@ const items = [
   },
 ] as const
 
-interface SidebarProps {
-  onExpandedChange?: (expanded: boolean) => void;
-}
-
-export const Sidebar = ({ onExpandedChange }: SidebarProps) => {
+export const Sidebar = () => {
   const pathname = usePathname()
   const { data: session, isPending } = authClient.useSession()
-  const [isExpanded, setIsExpanded] = useState(true)
-
-  useEffect(() => {
-    onExpandedChange?.(isExpanded);
-  }, [isExpanded, onExpandedChange]);
+  const { expanded: isExpanded, setExpanded: setIsExpanded } = useSidebar()
 
   const toggleSidebar = () => {
     setIsExpanded(!isExpanded)
@@ -61,7 +62,9 @@ export const Sidebar = ({ onExpandedChange }: SidebarProps) => {
       <aside
         className={cn(
           "fixed z-10 flex h-screen flex-col overflow-y-auto border-r bg-accent p-4 pt-2 transition-all duration-300 ease-in-out",
-          isExpanded ? "w-[180px] translate-x-0" : "w-[180px] -translate-x-[180px]"
+          isExpanded
+            ? "w-[180px] translate-x-0"
+            : "w-[180px] -translate-x-[180px]"
         )}
       >
         <div className="mb-4 flex items-center justify-between">

@@ -1,6 +1,6 @@
 "use client"
 
-import { Sidebar } from "@/components/Sidebar"
+import { Sidebar, SidebarContext } from "@/components/Sidebar"
 import { useState } from "react"
 
 export default function MainLayout({
@@ -8,14 +8,20 @@ export default function MainLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const [sidebarExpanded, setSidebarExpanded] = useState(true);
+  const [sidebarExpanded, setSidebarExpanded] = useState(true)
 
   return (
-    <article className="flex relative">
-      <Sidebar onExpandedChange={setSidebarExpanded} />
-      <main className={`transition-all duration-300 flex-grow ${sidebarExpanded ? "ml-[180px]" : "ml-0"}`}>
-        {children}
-      </main>
-    </article>
+    <SidebarContext.Provider
+      value={{ expanded: sidebarExpanded, setExpanded: setSidebarExpanded }}
+    >
+      <article className="relative flex">
+        <Sidebar />
+        <main
+          className={`flex-grow transition-all duration-300 ${sidebarExpanded ? "ml-[180px]" : "ml-0"}`}
+        >
+          {children}
+        </main>
+      </article>
+    </SidebarContext.Provider>
   )
 }
