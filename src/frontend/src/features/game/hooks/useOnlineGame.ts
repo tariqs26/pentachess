@@ -39,7 +39,7 @@ export function useOnlineGame(userId: string, username: string) {
     const onStartGame: ServerToClientEvents["start"] = (data) => {
       if (data.players[0].id !== socket.id) data.players.reverse()
       dispatch({ type: "RESET_GAME" })
-      dispatch({ type: "START_GAME", players: data.players })
+      dispatch({ type: "START_GAME", duration: 1200, players: data.players })
     }
 
     const onMove: ServerToClientEvents["move"] = (newState) => {
@@ -75,11 +75,11 @@ export function useOnlineGame(userId: string, username: string) {
 
   // effect: timer
   useEffect(() => {
-    if (state.status !== "playing") return
-
+    const timer = state.timer
+    if (state.status !== "playing" || !timer) return
     const interval = setInterval(() => {
       dispatch({ type: "DECREMENT_TIMER", player: state.turn })
-      if (state.timer[state.turn] <= 0) {
+      if (timer[state.turn] <= 0) {
         dispatch({ type: "SET_WINNER", player: state.turn === "w" ? "b" : "w" })
         dispatch({ type: "SET_STATUS", status: "time-expired" })
       }
