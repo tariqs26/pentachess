@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { BookText, Gamepad2, Trophy, ChevronLeft, Menu } from "lucide-react"
-import { useState, useEffect, createContext, useContext } from "react"
+import { createContext, useContext } from "react"
 
 import { authClient } from "@/lib/auth-client"
 import { cn } from "@/lib/utils"
