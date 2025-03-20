@@ -12,6 +12,7 @@ jobs:
   changes:
     runs-on: ubuntu-latest
     permissions:
+      contents: read
       pull-requests: read
     outputs:
       frontend: ${{ steps.filter.outputs.frontend }}
