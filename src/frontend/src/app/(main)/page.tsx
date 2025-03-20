@@ -20,18 +20,18 @@ export default function HomePage() {
           alt="Pentachess board"
           fill
           priority
-          className="object-contain opacity-30"
+          className="object-contain opacity-50"
         />
       </div>
       <div className="pointer-events-none fixed inset-0 bg-radial-gradient opacity-30"></div>
-      <div className="container relative z-10 mx-auto flex min-h-screen flex-col items-center justify-center px-4 py-16">
-        <div className="mb-10 animate-reveal-down text-center opacity-0">
-          <h1 className="mb-2 text-6xl font-bold tracking-tight text-primary drop-shadow-glow">
-            PentaChess
-          </h1>
-          <div className="mx-auto mb-6 h-1 w-40 rounded-full bg-gradient-to-r from-primary/50 via-primary to-primary/50"></div>
-        </div>
-        <div className="mb-14 max-w-2xl animate-reveal-up rounded-xl border border-primary/10 bg-card/70 p-8 text-center opacity-0 shadow-xl backdrop-blur-md">
+      <div className="container relative z-10 mx-auto mt-[40px] flex min-h-screen flex-col items-center justify-center px-4 py-16">
+        <div className="mb-15 max-w-2xl animate-reveal-up rounded-xl border border-primary/10 bg-card/70 p-8 text-center opacity-0 shadow-xl backdrop-blur-md">
+          <div className="mb-10 animate-reveal-down text-center opacity-0">
+            <h1 className="mb-2 text-6xl font-bold tracking-tight text-primary drop-shadow-glow">
+              PentaChess
+            </h1>
+            <div className="mx-auto mb-6 h-1 w-40 rounded-full bg-gradient-to-r from-primary/50 via-primary to-primary/50"></div>
+          </div>
           <p className="mb-6 text-xl leading-relaxed text-card-foreground">
             Enter Pentachess—where chess transforms into a mesmerizing polygonal
             adventure.

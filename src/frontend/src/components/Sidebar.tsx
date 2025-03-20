@@ -53,8 +53,8 @@ export const Sidebar = () => {
       <button
         onClick={toggleSidebar}
         className={cn(
-          "fixed z-20 flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-md transition-all",
-          isExpanded ? "left-[160px] top-4" : "left-4 top-4"
+          "fixed z-20 flex h-10 w-10 items-center justify-center rounded bg-accent text-secondary-foreground transition-all",
+          isExpanded ? "left-[175px] top-4" : "left-4 top-4"
         )}
         aria-label={isExpanded ? "Collapse sidebar" : "Expand sidebar"}
       >
@@ -68,7 +68,7 @@ export const Sidebar = () => {
             : "w-[180px] -translate-x-[180px]"
         )}
       >
-        <div className="mb-4 flex items-center justify-between">
+        <div className="mb-2 mt-3 flex items-center justify-between">
           <Link href="/" className="text-lg font-semibold">
             PentaChess.
           </Link>
