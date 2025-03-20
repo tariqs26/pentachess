@@ -4,13 +4,32 @@ on:
   pull_request:
     branches: develop
     types: [opened, synchronize, reopened, closed]
-    paths: "src/**"
-
+    paths:
+      - "src/**"
   workflow_dispatch:
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      frontend: ${{ steps.filter.outputs.frontend }}
+      server: ${{ steps.filter.outputs.server }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Check for file changes
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            frontend:
+              - 'src/frontend/**'
+            server:
+              - 'src/server/**'
+
   frontend:
-    if: ${{github.event.action != 'closed' || github.event.pull_request.merged }}
+    needs: changes
+    if: ${{ (github.event.action != 'closed' || github.event.pull_request.merged) && needs.changes.outputs.frontend == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -32,8 +51,10 @@ jobs:
       - name: Build
         working-directory: ./src/frontend
         run: npm run build -- --no-lint
+
   server:
-    if: ${{github.event.action != 'closed' || github.event.pull_request.merged }}
+    needs: changes
+    if: ${{ (github.event.action != 'closed' || github.event.pull_request.merged) && needs.changes.outputs.server == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
