@@ -68,15 +68,15 @@ export const CellComponent = (cell: CellProps) => {
     .values()
     .some((move) => move.id === cell.id)
 
+  const hasBorder =
+    cell.x === 0 ||
+    (cell.x === 1 && cell.y % 3 !== 0) ||
+    (cell.x === 2 && cell.y % 5 !== 0 && cell.y % 5 !== 2)
+
   const handlePieceMouseDown = () => {
     if (cell.disabled || cell.piece?.color !== state.turn) return
     dispatch({ type: "SELECT_CELL", cell: isCellSelected ? null : cell })
   }
-
-  const hasBorder = () =>
-    cell.x === 0 ||
-    (cell.x === 1 && cell.y % 3 !== 0) ||
-    (cell.x === 2 && cell.y % 5 !== 0 && cell.y % 5 !== 2)
 
   const handleCellMouseUp = () => {
     if (cell.disabled) return
@@ -144,7 +144,7 @@ export const CellComponent = (cell: CellProps) => {
             strokeWidth="1px"
             vectorEffect="non-scaling-stroke"
           />
-          {hasBorder() && (
+          {hasBorder && (
             <polygon
               points="0,41.2215 19.0983,100"
               fill="transparent"
