@@ -3,12 +3,12 @@
 import { useEffect } from "react"
 import { useLocalGame } from "@/features/game/useLocalGame"
 import { isGameOver } from "@/features/game/utils"
-import { cn } from "@/lib/utils"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
 import { Board } from "@/features/board/components/Board"
 import { CapturedPieces } from "@/features/game/components/CapturedPieces"
 import { CreateGameForm } from "@/features/game/components/CreateGameForm"
 import { GameEndModal } from "@/features/game/components/GameEndModal"
+import { PlayerCard } from "@/features/game/components/PlayerCard"
 import { PreviousMoves } from "@/features/game/components/PreviousMoves"
 import { RequestDrawModal } from "@/features/game/components/RequestDrawModal"
 import { ResignModal } from "@/features/game/components/ResignModal"
@@ -72,34 +72,23 @@ export default function LocalGamePage() {
             <CapturedPieces pieces={state.capturedPieces.w} />
             <div className="relative">
               <Timer duration={state.timer.b} disabled={state.turn === "w"} />
-              <p
-                className={cn(
-                  "absolute left-0 -mt-1 font-bold",
-                  state.check === "b" && "text-red-500",
-                  state.status.startsWith("draw") && "text-gray-500"
-                )}
-              >
-                Opponent{" "}
-                {(state.check === "b" &&
-                  `(${state.status === "checkmate" ? "checkmate" : "check"})`) ||
-                  (state.status.startsWith("draw") && "(draw)")}
-              </p>
+              <PlayerCard
+                username="Opponent"
+                isCheck={state.check === "b"}
+                isCheckmate={state.status === "checkmate"}
+                isDraw={state.status.startsWith("draw")}
+              />
               <Board disabled={state.disabled} />
-              <p
-                className={cn(
-                  "absolute bottom-0 left-0 -mb-1 font-bold",
-                  state.check === "w" && "text-red-500",
-                  state.status.startsWith("draw") && "text-gray-500"
-                )}
-              >
-                You{" "}
-                {(state.check === "w" &&
-                  `(${state.status === "checkmate" ? "checkmate" : "check"})`) ||
-                  (state.status.startsWith("draw") && "(draw)")}
-              </p>
-              <Timer
-                duration={state.timer.w}
+              <PlayerCard
+                username="You"
+                isCheck={state.check === "w"}
+                isCheckmate={state.status === "checkmate"}
+                isDraw={state.status.startsWith("draw")}
                 className="bottom-0"
+              />
+              <Timer
+                className="bottom-0"
+                duration={state.timer.w}
                 disabled={state.turn === "b"}
               />
             </div>
