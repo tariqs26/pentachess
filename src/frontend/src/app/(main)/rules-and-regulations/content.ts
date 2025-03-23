@@ -8,7 +8,6 @@ import berolina2 from "/public/pieces_rules/berolina-2-zoom.png"
 import knight from "/public/pieces_rules/knight-zoom.png"
 import bishop1 from "/public/pieces_rules/bishop-1-zoom.png"
 import bishop2 from "/public/pieces_rules/bishop-2-zoom.png"
-import bishop3 from "/public/pieces_rules/bishop-3-zoom.png"
 import rook1 from "/public/pieces_rules/rook-1-zoom.png"
 import rook2 from "/public/pieces_rules/rook-2-zoom.png"
 import queen from "/public/pieces_rules/queen-zoom.png"
@@ -18,59 +17,59 @@ export const pieceMovementRules = [
   {
     title: "Pawn (CW/CCW)",
     description:
-      "Pawns have three types of moves: passive moves, capture moves, and promotion.",
+      "The pawn has three types of actions: move, capture, and promotion. Each pawn is marked for direction, either clockwise or counterclockwise.",
     details: [
-      "Passive: Pawns can move one cell across an edge within its decagon using its given direction. If it is the pawn's first move, they can move two cells forward.",
-      "Passive: Pawns can also move one cell across an edge into a different decagon.",
-      "Capture: Pawns can capture one cell across a vertex within its decagon using its given direction.",
-      "Capture: Pawns can also capture one same-color cell across a vertex into a different decagon, that also shares the same vertex with the next same-color cell within the starting decagon using its given direction.",
-      "Promote: Pawns can promote to a knight, bishop, rook, or queen when reaching the opposite side of the board (cells A25-32 for team white and cells A0-7 for team black).",
+      "Move: The pawn can move within its decagon one cell across an edge in its given direction. If it is the pawn's first move, it can move two cells forward.",
+      "Move: The pawn can also move one cell across an edge into an adjacent decagon.",
+      "Capture: The pawn can capture within its decagon one cell across a vertex in its given direction.",
+      "Capture: The pawn can also capture onto a same-colour cell across a vertex into a different decagon, if the destination cell shares one vertex with the pawn's originating cell and with the next same-colour cell in its given direction in its originating decagon.",
+      "Promotion: The pawn can be promoted to a knight, bishop, rook, or queen upon reaching the opposite side of the board: any cell from a25 to a32 for team White, and any cell from a0 to a7 for team Black.",
     ],
     images: [pawn1, pawn2, pawn3, pawn4, pawn5],
   },
   {
-    title: "Berolina's pawn (CW/CCW)",
+    title: "Berolina pawn (CW/CCW)",
     description:
-      "Similar to pawns but with reversed passive and capture moves. They also don't move two cells forward on their first move.",
+      "Similar to the pawn but with reversed move and capture. It is also marked for clockwise or counterclockwise direction. It cannot, however, move two cell forward on its first move.",
     details: [
-      "Berolina pawns move passively like pawns capture.",
-      "Berolina pawns capture like pawns passively move.",
+      "The Berolina pawn moves as the pawn captures.",
+      "Capturures as the pawn moves and can also be promoted.",
     ],
     images: [berolina1, berolina2],
   },
   {
     title: "Knight",
-    description: "Knights are pretty straightforward, just one rule.",
+    description: "The knight is pretty straightforward, just one rule.",
     details: [
-      "Knights can move to or capture one cell across a vertex to a different-color cell, excluding any edge-adjacent cells.",
+      "The knight can move onto one cell across a vertex to a different-colour cell, excluding any edge-adjacent cells.",
     ],
     images: [knight],
   },
   {
     title: "Bishop",
-    description: "Bishops have three rules, two are simple, and one is tricky.",
+    description:
+      "The bishop has three types of move; two are simple, and one is tricky.",
     details: [
-      "Bishops can move to or capture any same-color cell within its decagon as long as the path to that cell is clear (meaning there are no other pieces in its path). Here, the path consists of all same-colored cells from the starting point to the desired cell.",
-      "Bishops can also move to or capture any same-color cell across a vertex into a different decagon.",
-      "Bishops can also move to or capture any same-color cell across two consecutive vertices in a straight line (two decagons away) as long as the cell has the same orientation as its starting cell, and the path to that cell is clear.",
+      "The bishop can move onto any same-colour cell within its decagon as long as the path to that cell is clear (meaning there are no other pieces in its path). Here, the path consists of all same-colour cells from the starting point to the destination cell.",
+      "The bishop can also move onto any same-colour cell across a vertex into a different decagon, and onto any same-colour cell across two consecutive vertices in a straight line (two decagons away) as long as the destination cell has the same orientation as its originating cell, and the path to that cell is clear.",
     ],
-    images: [bishop1, bishop2, bishop3],
+    images: [bishop1, bishop2],
   },
   {
     title: "Rook",
-    description: "Rooks are not too bad, just two rules.",
+    description: "The rook is not too difficult, just two types of move.",
     details: [
-      "Rooks can move to or capture any cell within its decagon as long as the path to that cell is clear. Here, the path consists of all cells from the starting point to the desired cell.",
-      "Rooks can also move to or capture one cell across an edge into a different decagon if such an edge exists.",
+      "The rook can move onto any cell within its decagon as long as the path to that cell is clear. Here, the path consists of all cells from the starting point to the destination cell.",
+      "The rook can also move onto one cell across an edge into a different decagon if such an edge exists.",
     ],
     images: [rook1, rook2],
   },
   {
     title: "Queen",
     description:
-      "Queen movement is simple to understand, assuming you have an understanding of bishops and rooks.",
+      "The queen's move is simple to understand, assuming you have an understanding of the bishop and rook.",
     details: [
-      "Queens can move/capture as a rook or bishop. This means all available moves that a rook or bishop can do on the cell that the queen is on are legal moves for the queen.",
+      "The queen can move as a rook or bishop. This means all available moves that the rook or bishop can make from the cell that the queen is on are legal moves for the queen.",
     ],
     images: [queen],
   },
@@ -78,7 +77,7 @@ export const pieceMovementRules = [
     title: "King",
     description: "Make sure to defend this piece at all costs! Just one rule.",
     details: [
-      "The king can move/capture as a rook or bishop using one step only. In simple terms, it can move to or capture any edge or vertex-adjacent cell a bishop or rook would be able to.",
+      "The king can move as a rook or bishop by one step only. In simple terms, it can move onto any edge or vertex-adjacent cell that the bishop or rook would be able to.",
     ],
     images: [king],
   },
