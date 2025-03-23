@@ -1,8 +1,8 @@
 import { INITIAL_PIECES } from "../piece/constants"
-import type { PieceColor } from "../piece/types"
+import type { Piece, PieceColor, PieceType } from "../piece/types"
 import { getPossibleMoves, makePiece } from "../piece/utils"
 import { cloneCell, makeCell, setCellEdges, setCellVertices } from "./cell"
-import type { Board } from "./types"
+import type { Board, Cell } from "./types"
 
 export function initializeBoard() {
   const rings = [new Array(10), new Array(30), new Array(50)]
@@ -123,6 +123,55 @@ export function checkForStalemate(board: Board, color: PieceColor) {
   return checkIfMovesExist(board, color)
 }
 
-export function checkThreeMoveRep() {
+export function checkThreeMoveRep(
+  moves: { from: Cell; to: Cell; piece: Piece }[]
+) {
+  if (moves.length >= 12) {
+    const lastTwelve = moves.slice(-12)
+    for (let i = 0; i < 8; i++) {
+      if (
+        lastTwelve[i].from.id !== lastTwelve[i + 4].from.id ||
+        lastTwelve[i].to.id !== lastTwelve[i + 4].to.id ||
+        lastTwelve[i].piece.type !== lastTwelve[i + 4].piece.type
+      ) {
+        return false
+      }
+    }
+    return true
+  }
+  return false
+}
+
+export function checkFiftyMoveNoCap(moves: { to: Cell; piece: Piece }[]) {
+  if (moves.length >= 50) {
+    const lastFifty = moves.slice(-50)
+    for (const { to, piece } of lastFifty) {
+      if (piece.abbr === "P" || to.piece) return false
+    }
+    return true
+  }
+  return false
+}
+
+export function checkInsufficientMatrial(board: Board) {
+  const whitePieces = new Set<PieceType>()
+  const blackPieces = new Set<PieceType>()
+  for (const ring of board) {
+    for (const cell of ring) {
+      if (cell.piece) {
+        if (cell.piece.color === "w") whitePieces.add(cell.piece.type)
+        else blackPieces.add(cell.piece.type)
+      }
+    }
+  }
+  // 1 possible condition for insuff mat (waiting on others from Dr. Paul)
+  if (
+    whitePieces.size === 1 &&
+    whitePieces.has("king") &&
+    blackPieces.size === 1 &&
+    blackPieces.has("king")
+  ) {
+    return true
+  }
   return false
 }
