@@ -68,6 +68,15 @@ export const CellComponent = (cell: CellProps) => {
     .values()
     .some((move) => move.id === cell.id)
 
+  const isPendingMove = state.boardState.pendingMove
+
+  const isPendingMoveCapturing =
+    state.boardState.pendingMove?.capturedPiece !== null &&
+    state.boardState.pendingMove?.to.id === cell.id
+
+  const canAvailableMoveBeCaptured =
+    cell.piece && cell.id !== state.boardState.pendingMove?.to.id
+
   const hasBorder =
     cell.x === 0 ||
     (cell.x === 1 && cell.y % 3 !== 0) ||
@@ -86,8 +95,10 @@ export const CellComponent = (cell: CellProps) => {
     const from = state.boardState.selectedCell.cell
     const piece = state.boardState.selectedCell.cell.piece
     const to = state.boardState.overCell
-
-    dispatch({ type: "MOVE_PIECE", move: { from, to, piece } })
+    dispatch({
+      type: "SET_PENDING_MOVE",
+      pendingMove: { from, to, piece, capturedPiece: to.piece },
+    })
   }
 
   const handleCellMouseEnter = () => {
@@ -126,7 +137,15 @@ export const CellComponent = (cell: CellProps) => {
           isAvailableMove && "bg-green-500 hover:cursor-pointer",
           isAvailableMove && cell.piece && "bg-red-500",
           isCellSelected && "bg-orange-500",
-          state.promotionCoordinates?.to.id === cell.id && "bg-yellow-500"
+          state.promotionCoordinates?.to.id === cell.id && "bg-yellow-500",
+          isAvailableMove &&
+            isPendingMove &&
+            !isPendingMoveCapturing &&
+            "bg-green-500",
+          isAvailableMove &&
+            isPendingMove &&
+            (isPendingMoveCapturing || canAvailableMoveBeCaptured) &&
+            "bg-red-500"
         )}
         style={{
           clipPath:

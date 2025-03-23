@@ -41,8 +41,41 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         boardState: { ...state.boardState, overCell: action.cell },
       }
     }
-    case "MOVE_PIECE": {
-      const { to, from, piece } = action.move
+    case "CANCEL_MOVE": {
+      if (!state.boardState.pendingMove) {
+        return state
+      }
+
+      const { to, from, piece, capturedPiece } = state.boardState.pendingMove
+      state.boardState.board[to.x][to.y].piece = capturedPiece
+      state.boardState.board[from.x][from.y].piece = piece
+      return {
+        ...state,
+        disabled: false,
+        boardState: {
+          ...state.boardState,
+          selectedCell: null,
+          overCell: null,
+          pendingMove: undefined,
+        },
+      }
+    }
+    case "SET_PENDING_MOVE": {
+      const { to, from, piece } = action.pendingMove
+      state.boardState.board[to.x][to.y].piece = piece
+      state.boardState.board[from.x][from.y].piece = null
+      return {
+        ...state,
+        disabled: true,
+        boardState: { ...state.boardState, pendingMove: action.pendingMove },
+      }
+    }
+    case "CONFIRM_MOVE": {
+      if (!state.boardState.pendingMove) {
+        return state
+      }
+
+      const { to, from, piece } = state.boardState.pendingMove
       const capturedPiece = to.piece
       piece.hasMoved = true
 
@@ -61,7 +94,13 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         ...state,
         turn,
         status,
-        boardState: { ...state.boardState, selectedCell: null, overCell: null },
+        disabled: false,
+        boardState: {
+          ...state.boardState,
+          selectedCell: null,
+          overCell: null,
+          pendingMove: undefined,
+        },
         capturedPieces: capturedPiece
           ? {
               ...state.capturedPieces,

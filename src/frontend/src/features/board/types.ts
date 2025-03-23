@@ -16,6 +16,12 @@ export type Board = Cell[][]
 
 export type BoardState = {
   board: Board
+  pendingMove?: {
+    to: Cell
+    from: Cell
+    piece: Piece
+    capturedPiece: Piece | null
+  }
   selectedCell: {
     cell: Cell
     availableMoves: Set<Cell>
@@ -28,6 +34,13 @@ export type BoardAction =
   | { type: "SELECT_CELL"; cell: Cell | null }
   | { type: "SET_OVER_CELL"; cell: Cell | null }
   | {
-      type: "MOVE_PIECE"
-      move: { to: Cell; from: Cell; piece: Piece }
+      type: "SET_PENDING_MOVE"
+      pendingMove: {
+        to: Cell
+        from: Cell
+        piece: Piece
+        capturedPiece: Piece | null
+      }
     }
+  | { type: "CONFIRM_MOVE" }
+  | { type: "CANCEL_MOVE" }
