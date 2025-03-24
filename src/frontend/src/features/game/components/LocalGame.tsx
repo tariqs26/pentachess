@@ -92,7 +92,7 @@ export const LocalGame = () => {
             <CapturedPieces pieces={state.capturedPieces.b} />
           </div>
           <div className="flex flex-col gap-2 [&>aside]:flex-1">
-            <PreviousMoves startingPlayer="w" moves={state.previousMoves} />
+            <PreviousMoves player="w" moves={state.previousMoves} />
             {isGameOver(state.status) ? (
               <GameEndModal
                 winner={state.winner}
