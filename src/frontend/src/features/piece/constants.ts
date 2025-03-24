@@ -1,5 +1,5 @@
 import type { StaticImageData } from "next/image"
-import type { PieceColor, PieceType } from "./types"
+import type { PieceAbbr, PieceColor, PieceType } from "./types"
 
 import berolinaBCw from "/public/pieces/berolina-b-cw.png"
 import berolinaBCcw from "/public/pieces/berolina-b-ccw.png"
@@ -20,17 +20,26 @@ import queenW from "/public/pieces/queen-w.png"
 import rookB from "/public/pieces/rook-b.png"
 import rookW from "/public/pieces/rook-w.png"
 
-const pawnCw = { abbr: "P", value: 1, image: { w: pawnWCw, b: pawnBCw } }
-const pawnCcw = { abbr: "P", value: 1, image: { w: pawnWCcw, b: pawnBCcw } }
+const pawnCw = {
+  abbr: "P" as const,
+  value: 1,
+  image: { w: pawnWCw, b: pawnBCw },
+}
+
+const pawnCcw = {
+  abbr: "P" as const,
+  value: 1,
+  image: { w: pawnWCcw, b: pawnBCcw },
+}
 
 const berolinaPawnCw = {
-  abbr: "Bp",
+  abbr: "L" as const,
   value: 1,
   image: { w: berolinaWCw, b: berolinaBCw },
 }
 
 const berolinaPawnCcw = {
-  abbr: "Bp",
+  abbr: "L" as const,
   value: 1,
   image: { w: berolinaWCcw, b: berolinaBCcw },
 }
@@ -38,7 +47,7 @@ const berolinaPawnCcw = {
 export const PIECE_DATA: Record<
   PieceType,
   {
-    abbr: string
+    abbr: PieceAbbr
     value: number
     image: Record<PieceColor, StaticImageData>
   }

@@ -1,28 +1,38 @@
-import { checkForCheckOrMate, checkForStalemate } from "../board/utils"
-import { canPromote, getPossibleMoves } from "../piece/utils"
-import type { LocalGameAction, LocalGameState } from "./types"
-import { createNewGameState, getMove } from "./utils"
+import { canPromote, getInvalidMoves, getPossibleMoves } from "../piece/utils"
+import type { GameAction, GameState } from "./types"
+import { createGameState, moveHelper } from "./utils"
 
-export function localGameReducer(
-  state: LocalGameState,
-  action: LocalGameAction
-): LocalGameState {
+export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
     case "SELECT_CELL": {
+      if (action.cell) {
+        const possibleMoves = getPossibleMoves(
+          action.cell,
+          state.boardState.board
+        )
+
+        const invalidMoves = getInvalidMoves(
+          action.cell,
+          state.boardState.board,
+          possibleMoves
+        )
+
+        return {
+          ...state,
+          boardState: {
+            ...state.boardState,
+            selectedCell: {
+              cell: action.cell,
+              availableMoves: possibleMoves,
+              invalidMoves,
+            },
+          },
+        }
+      }
+
       return {
         ...state,
-        boardState: {
-          ...state.boardState,
-          selectedCell: action.cell
-            ? {
-                cell: action.cell,
-                availableMoves: getPossibleMoves(
-                  action.cell,
-                  state.boardState.board
-                ),
-              }
-            : null,
-        },
+        boardState: { ...state.boardState, selectedCell: null },
       }
     }
     case "SET_OVER_CELL": {
@@ -31,48 +41,66 @@ export function localGameReducer(
         boardState: { ...state.boardState, overCell: action.cell },
       }
     }
-    case "DISABLE_BOARD": {
+    case "CANCEL_MOVE": {
+      if (!state.boardState.pendingMove) {
+        return state
+      }
+
+      const { to, from, piece, capturedPiece } = state.boardState.pendingMove
+      state.boardState.board[to.x][to.y].piece = capturedPiece
+      state.boardState.board[from.x][from.y].piece = piece
       return {
         ...state,
-        boardState: { ...state.boardState, disabled: true },
+        disabled: false,
+        boardState: {
+          ...state.boardState,
+          selectedCell: null,
+          overCell: null,
+          pendingMove: undefined,
+        },
       }
     }
-    case "MOVE_PIECE": {
-      const { to, from, piece } = action.move
+    case "SET_PENDING_MOVE": {
+      const { to, from, piece } = action.pendingMove
+      state.boardState.board[to.x][to.y].piece = piece
+      state.boardState.board[from.x][from.y].piece = null
+      return {
+        ...state,
+        disabled: true,
+        boardState: { ...state.boardState, pendingMove: action.pendingMove },
+      }
+    }
+    case "CONFIRM_MOVE": {
+      if (!state.boardState.pendingMove) {
+        return state
+      }
+
+      const { to, from, piece } = state.boardState.pendingMove
       const capturedPiece = to.piece
       piece.hasMoved = true
 
       state.boardState.board[to.x][to.y].piece = piece
       state.boardState.board[from.x][from.y].piece = null
 
-      const turn = state.turn === "w" ? "b" : "w"
-
-      const [checkedColor, isCheckmate] = checkForCheckOrMate(
-        state.boardState.board,
-        turn
-      )
-
-      const status = isCheckmate
-        ? "checkmate"
-        : checkForStalemate(state.boardState.board, turn)
-          ? "draw-stalemate"
-          : "playing"
-
-      const newMove = getMove(
+      const { turn, checkedColor, status, move } = moveHelper(
         state.turn,
-        from,
-        to,
-        piece,
-        null,
-        checkedColor,
-        status
+        state.boardState.board,
+        state.previousMoves,
+        { to, from, piece },
+        null
       )
 
       return {
         ...state,
         turn,
         status,
-        boardState: { ...state.boardState, selectedCell: null, overCell: null },
+        disabled: false,
+        boardState: {
+          ...state.boardState,
+          selectedCell: null,
+          overCell: null,
+          pendingMove: undefined,
+        },
         capturedPieces: capturedPiece
           ? {
               ...state.capturedPieces,
@@ -83,9 +111,8 @@ export function localGameReducer(
             }
           : state.capturedPieces,
         check: checkedColor,
-        previousMoves: [...state.previousMoves, newMove],
+        previousMoves: [...state.previousMoves, move],
         ...(canPromote(piece, to) && {
-          status: "promoting",
           check: state.check,
           promotionCoordinates: { from, to, piece },
           previousMoves: state.previousMoves, // remove the new move, as it will be added after promotion
@@ -98,32 +125,15 @@ export function localGameReducer(
         return state
       }
 
-      const turn = state.turn === "w" ? "b" : "w"
+      const { to, from, piece } = state.promotionCoordinates
+      state.boardState.board[to.x][to.y].piece = action.piece
 
-      const [checkedColor, isCheckmate] = checkForCheckOrMate(
-        state.boardState.board,
-        turn
-      )
-
-      const status = isCheckmate
-        ? "checkmate"
-        : checkForStalemate(state.boardState.board, turn)
-          ? "draw-stalemate"
-          : "playing"
-
-      const { from, to, piece } = state.promotionCoordinates
-      const { x, y } = to
-
-      state.boardState.board[x][y].piece = action.piece
-
-      const newMove = getMove(
+      const { turn, checkedColor, status, move } = moveHelper(
         state.turn,
-        from,
-        to,
-        piece,
-        action.piece,
-        checkedColor,
-        status
+        state.boardState.board,
+        state.previousMoves,
+        { to, from, piece },
+        action.piece
       )
 
       return {
@@ -131,23 +141,26 @@ export function localGameReducer(
         status,
         turn,
         boardState: { ...state.boardState },
-        previousMoves: [...state.previousMoves, newMove],
+        previousMoves: [...state.previousMoves, move],
         promotionCoordinates: undefined,
         check: checkedColor,
       }
     }
     case "START_GAME": {
-      const duration = action.duration ?? 1200
+      const duration = action.duration
       return {
         ...state,
+        player: action.players ? action.players[0] : state.player,
+        opponent: action.players ? action.players[1] : state.opponent,
         status: "playing",
-        timer: { w: duration, b: duration },
+        timer: duration ? { w: duration, b: duration } : undefined,
       }
     }
     case "SET_STATUS": {
       return { ...state, status: action.status }
     }
     case "DECREMENT_TIMER": {
+      if (!state.timer) return state
       return {
         ...state,
         timer: {
@@ -166,14 +179,19 @@ export function localGameReducer(
           state.winner ??
           (state.status.startsWith("draw")
             ? "draw"
-            : state.turn === "w"
-              ? "b"
-              : "w"),
-        boardState: { ...state.boardState, disabled: true },
+            : state.status === "opponent-left"
+              ? state.player.color
+              : state.turn === "w"
+                ? "b"
+                : "w"),
+        disabled: true,
       }
     }
     case "RESET_GAME": {
-      return createNewGameState()
+      return createGameState()
+    }
+    case "SYNC_GAME": {
+      return { ...state, ...action.state }
     }
     default:
       return state

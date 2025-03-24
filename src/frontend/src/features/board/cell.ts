@@ -2,11 +2,7 @@ import { DECAGON_SIDES, RING_SIZES } from "@/features/board/constants"
 import type { Board, Cell } from "./types"
 
 export function cellId(x: number, y: number) {
-  return `${"CBA"[x]}${y}`
-}
-
-export function cellCoords(id: string): [number, number] {
-  return [id.charCodeAt(0) - 65, Number.parseInt(id.slice(1))]
+  return `${"cba"[x]}${y}`
 }
 
 export function makeCell(x: number, y: number, angle: number): Cell {
@@ -157,4 +153,16 @@ export function cloneCell(cell: Cell): Cell {
     edges: cell.edges.map((edge) => [...edge]),
     vertices: cell.vertices.map((vertex) => [...vertex]),
   }
+}
+
+export function getSideEdge(cell: Cell, board: Board) {
+  return board[cell.edges[2][0]][cell.edges[2][1]]
+}
+
+export function getCWEdge(cell: Cell, board: Board) {
+  return board[cell.edges[1][0]][cell.edges[1][1]]
+}
+
+export function getCCWEdge(cell: Cell, board: Board) {
+  return board[cell.edges[0][0]][cell.edges[0][1]]
 }

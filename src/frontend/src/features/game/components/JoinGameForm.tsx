@@ -35,16 +35,16 @@ export const JoinGameForm = () => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="flex gap-2">
         <FormField
           control={form.control}
           name="code"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Code</FormLabel>
+            <FormItem className="space-y-0">
+              <FormLabel className="sr-only">Code</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="PC2024"
+                  placeholder="Enter code"
                   disabled={isSubmitting}
                   {...field}
                 />
@@ -53,7 +53,7 @@ export const JoinGameForm = () => {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full">
+        <Button type="submit" disabled>
           Join
         </Button>
       </form>

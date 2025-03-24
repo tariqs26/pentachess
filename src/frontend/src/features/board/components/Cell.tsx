@@ -1,5 +1,5 @@
 import Image from "next/image"
-import { useLocalGame } from "@/features/game/useLocalGame"
+import { useGame } from "@/features/game/hooks/useGame"
 import { cn } from "@/lib/utils"
 import type { Cell } from "../types"
 import { sideRotation } from "./Side"
@@ -50,37 +50,59 @@ const marginTopStyle = (cell: Cell) => {
   return cell.side % 2 !== 0 ? -30 : -10
 }
 
-const pieceRotation = (cell: Cell) =>
-  `calc(${-cellRotation(cell) - sideRotation[cell.x][cell.side]}deg )`
+const pieceRotation = (cell: Cell & { flipped?: boolean }) =>
+  `calc(${-cellRotation(cell) - sideRotation[cell.x][cell.side] + (cell.flipped ? -180 : 0)}deg )`
 
-export const CellComponent = (cell: Cell) => {
-  const { state, dispatch } = useLocalGame()
+type CellProps = Readonly<Cell & { disabled: boolean; flipped?: boolean }>
+
+export const CellComponent = (cell: CellProps) => {
+  const { state, dispatch } = useGame()
 
   const isCellSelected = state.boardState.selectedCell?.cell.id === cell.id
+
   const isAvailableMove = state.boardState.selectedCell?.availableMoves
     .values()
     .some((move) => move.id === cell.id)
 
+  const isInvalidMove = state.boardState.selectedCell?.invalidMoves
+    .values()
+    .some((move) => move.id === cell.id)
+
+  const isPendingMove = state.boardState.pendingMove
+
+  const isPendingMoveCapturing =
+    state.boardState.pendingMove?.capturedPiece !== null &&
+    state.boardState.pendingMove?.to.id === cell.id
+
+  const canAvailableMoveBeCaptured =
+    cell.piece && cell.id !== state.boardState.pendingMove?.to.id
+
+  const hasBorder =
+    cell.x === 0 ||
+    (cell.x === 1 && cell.y % 3 !== 0) ||
+    (cell.x === 2 && cell.y % 5 !== 0 && cell.y % 5 !== 2)
+
   const handlePieceMouseDown = () => {
-    if (state.boardState.disabled) return
-    if (cell.piece?.color !== state.turn) return
+    if (cell.disabled || cell.piece?.color !== state.turn) return
     dispatch({ type: "SELECT_CELL", cell: isCellSelected ? null : cell })
   }
 
   const handleCellMouseUp = () => {
-    if (state.boardState.disabled) return
+    if (cell.disabled) return
     if (!state.boardState.selectedCell?.cell.piece) return
     if (!state.boardState.overCell) return
 
     const from = state.boardState.selectedCell.cell
     const piece = state.boardState.selectedCell.cell.piece
     const to = state.boardState.overCell
-
-    dispatch({ type: "MOVE_PIECE", move: { from, to, piece } })
+    dispatch({
+      type: "SET_PENDING_MOVE",
+      pendingMove: { from, to, piece, capturedPiece: to.piece },
+    })
   }
 
   const handleCellMouseEnter = () => {
-    if (state.boardState.disabled) return
+    if (cell.disabled) return
     if (!state.boardState.selectedCell || isCellSelected || !isAvailableMove) {
       if (isCellSelected) {
         dispatch({ type: "SET_OVER_CELL", cell: null })
@@ -91,8 +113,8 @@ export const CellComponent = (cell: Cell) => {
   }
 
   const handleCellMouseLeave = () => {
-    if (state.boardState.disabled) return
-    if (!state.boardState.selectedCell || !isAvailableMove) return
+    if (cell.disabled || !state.boardState.selectedCell || !isAvailableMove)
+      return
     dispatch({ type: "SET_OVER_CELL", cell: null })
   }
 
@@ -109,14 +131,21 @@ export const CellComponent = (cell: Cell) => {
       <div
         id={`cell-${cell.id}`}
         className={cn(
-          "flex size-[100px] items-center justify-center bg-gray-500",
-          cell.color === "w" && "bg-white",
+          "flex size-[100px] items-center justify-center bg-[#739552]",
+          cell.color === "w" && "bg-[#ebecd0]",
+          isInvalidMove && "bg-gray-400",
           isAvailableMove && "bg-green-500 hover:cursor-pointer",
           isAvailableMove && cell.piece && "bg-red-500",
           isCellSelected && "bg-orange-500",
-          state.promotionCoordinates &&
-            state.promotionCoordinates.to.id === cell.id &&
-            "bg-yellow-500"
+          state.promotionCoordinates?.to.id === cell.id && "bg-yellow-500",
+          isAvailableMove &&
+            isPendingMove &&
+            !isPendingMoveCapturing &&
+            "bg-green-500",
+          isAvailableMove &&
+            isPendingMove &&
+            (isPendingMoveCapturing || canAvailableMoveBeCaptured) &&
+            "bg-red-500"
         )}
         style={{
           clipPath:
@@ -126,6 +155,24 @@ export const CellComponent = (cell: Cell) => {
           marginTop: `${marginTopStyle(cell)}px`,
         }}
       >
+        <svg viewBox="0 0 100 100">
+          <polygon
+            points="0,41.2215 19.0983,100 80.9017,100 100,41.2215 50,77.5486"
+            fill="transparent"
+            stroke="black"
+            strokeWidth="1px"
+            vectorEffect="non-scaling-stroke"
+          />
+          {hasBorder && (
+            <polygon
+              points="0,41.2215 19.0983,100"
+              fill="transparent"
+              stroke="black"
+              strokeWidth="6px"
+              vectorEffect="non-scaling-stroke"
+            />
+          )}
+        </svg>
         {cell.piece && (
           <Image
             src={cell.piece.image}

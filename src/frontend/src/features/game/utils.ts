@@ -1,26 +1,28 @@
-import type { Cell } from "../board/types"
-import { initializeBoard } from "../board/utils"
+import type { Board, Cell } from "../board/types"
+import {
+  checkForCheckOrMate,
+  checkForStalemate,
+  checkThreeMoveRep,
+  checkFiftyMoveNoCap,
+  checkInsufficientMatrial,
+  initializeBoard,
+} from "../board/utils"
 import type { Piece, PieceColor } from "../piece/types"
-import type { GameStatus, LocalGameState, Move } from "./types"
+import type { GameStatus, GameState, Move } from "./types"
 
-export const createNewGameState = (): LocalGameState => ({
-  player: "w",
-  opponent: "b",
+export const createGameState = (): GameState => ({
+  player: { id: "1", color: "w", userId: "1", username: "Player 1" },
+  opponent: { id: "2", color: "b", userId: "2", username: "Player 2" },
   turn: "w",
   check: null,
   status: "waiting",
-  boardState: {
-    disabled: false,
-    board: initializeBoard(),
-    selectedCell: null,
-    overCell: null,
-  },
-  timer: { w: 0, b: 0 },
+  disabled: false,
+  boardState: { board: initializeBoard(), selectedCell: null, overCell: null },
   previousMoves: [],
   capturedPieces: { w: [], b: [] },
 })
 
-export const getMove = (
+export const createMove = (
   player: PieceColor,
   from: Cell,
   to: Cell,
@@ -29,12 +31,10 @@ export const getMove = (
   check: PieceColor | null,
   status: GameStatus
 ): Move => {
-  const fromId = from.id.toLowerCase()
-  const toId = to.id.toLowerCase()
   const moveType = to.piece ? "x" : "-"
   const promotion = piecePromoted ? `=${piecePromoted.abbr}` : ""
   const postfix = status === "checkmate" ? "#" : check ? "+" : ""
-  const notation = `${piece.abbr}:${fromId}${moveType}${toId}${promotion}${postfix}`
+  const notation = `${piece.abbr}:${from.id}${moveType}${to.id}${promotion}${postfix}`
 
   return {
     player,
@@ -65,4 +65,61 @@ export const isGameOver = (status: GameStatus) =>
   status === "checkmate" ||
   status.startsWith("draw") ||
   status === "resignation" ||
-  status === "time-expired"
+  status === "time-expired" ||
+  status === "opponent-left"
+
+export const getNewStatus = (
+  isCheckmate: boolean,
+  board: Board,
+  turn: PieceColor,
+  moves: Move[],
+  nextMove: Pick<Move, "from" | "to" | "piece" | "piecePromoted">
+): GameStatus => {
+  if (isCheckmate) return "checkmate"
+  if (checkForStalemate(board, turn)) return "draw-stalemate"
+  if (
+    checkThreeMoveRep([
+      ...moves,
+      { from: nextMove.from, to: nextMove.to, piece: nextMove.piece },
+    ])
+  )
+    return "draw-threefold"
+  if (
+    checkFiftyMoveNoCap([...moves, { to: nextMove.to, piece: nextMove.piece }])
+  )
+    return "draw-fifty-move"
+  if (checkInsufficientMatrial(board)) return "draw-insufficient"
+  return "playing"
+}
+
+export const moveHelper = (
+  oldTurn: PieceColor,
+  board: Board,
+  previousMoves: Move[],
+  promotionCoordinates: { from: Cell; to: Cell; piece: Piece },
+  piecePromoted: Piece | null
+) => {
+  const { to, from, piece } = promotionCoordinates
+  const turn: PieceColor = oldTurn === "w" ? "b" : "w"
+
+  const [checkedColor, isCheckmate] = checkForCheckOrMate(board, turn)
+
+  const status = getNewStatus(isCheckmate, board, turn, previousMoves, {
+    from,
+    to,
+    piece,
+    piecePromoted,
+  })
+
+  const move = createMove(
+    oldTurn,
+    from,
+    to,
+    piece,
+    piecePromoted,
+    checkedColor,
+    status
+  )
+
+  return { turn, status, checkedColor, move }
+}

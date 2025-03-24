@@ -38,7 +38,9 @@ export const GameEndModal = ({
         ? "Resignation"
         : status === "time-expired"
           ? "Time Expired"
-          : `Draw: ${status.replace("draw-", "")}`
+          : status === "opponent-left"
+            ? "Opponent Left"
+            : `Draw: ${status.replace("draw-", "")}`
 
   const message =
     winner === "draw"
@@ -59,7 +61,6 @@ export const GameEndModal = ({
           <X size={20} />
         </button>
         <h2 className="mb-4 text-xl font-bold">{title}</h2>
-        {status === "time-expired" || (status === "resignation" && "You")}
         <p className="mb-4 text-muted-foreground">{message}!</p>
         <Button variant="secondary" asChild className="mr-2">
           <Link href="/">Leave Game</Link>
