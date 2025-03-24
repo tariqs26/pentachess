@@ -83,7 +83,7 @@ export const OnlineGame = ({ id: userId, username }: GameProps) => {
           </div>
           <div className="flex flex-col gap-2 [&>aside]:flex-1">
             <PreviousMoves
-              startingPlayer={state.player.color}
+              player={state.player.color}
               moves={state.previousMoves}
             />
             {isGameOver(state.status) ? (
