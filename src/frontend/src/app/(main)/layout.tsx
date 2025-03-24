@@ -1,27 +1,21 @@
 "use client"
 
-import { Sidebar, SidebarContext } from "@/components/Sidebar"
-import { useState } from "react"
+import { AppSidebar } from "@/components/AppSidebar"
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 
 export default function MainLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const [sidebarExpanded, setSidebarExpanded] = useState(true)
-
   return (
-    <SidebarContext.Provider
-      value={{ expanded: sidebarExpanded, setExpanded: setSidebarExpanded }}
-    >
-      <article className="relative flex">
-        <Sidebar />
-        <main
-          className={`flex-grow transition-all duration-300 ${sidebarExpanded ? "ml-[180px]" : ""}`}
-        >
-          {children}
-        </main>
-      </article>
-    </SidebarContext.Provider>
+    <SidebarProvider>
+      <div className="relative flex min-h-screen">
+        <AppSidebar />
+        <SidebarInset>
+          <main className="flex-grow">{children}</main>
+        </SidebarInset>
+      </div>
+    </SidebarProvider>
   )
 }

@@ -4,16 +4,16 @@ import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/Button"
 import pentachess from "/public/board/pentachess.png"
-import { useSidebar } from "@/components/Sidebar"
+import { useSidebar } from "@/components/ui/sidebar"
 
 export default function HomePage() {
   // Use the shared sidebar state from context
-  const { expanded: sidebarExpanded } = useSidebar()
+  const { expanded } = useSidebar()
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-background">
       <div
-        className={`pointer-events-none fixed inset-0 transition-all duration-300 ${sidebarExpanded ? "ml-[180px]" : ""}`}
+        className={`pointer-events-none fixed inset-0 transition-all duration-300 ${expanded ? "ml-[180px]" : ""}`}
       >
         <Image
           src={pentachess}
