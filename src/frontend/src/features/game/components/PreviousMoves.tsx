@@ -34,21 +34,20 @@ type PreviousMovesProps = Readonly<{
 
 export const PreviousMoves = ({ player, moves }: PreviousMovesProps) => {
   const endRef = useRef<HTMLDivElement>(null)
+  const movesCount = Math.ceil(moves.length / 2)
 
   useEffect(() => {
     endRef.current?.scrollIntoView()
-  }, [moves.length])
-
-  const turns = Math.ceil(moves.length / 2)
+  }, [movesCount])
 
   return (
     <aside className="rounded-md border bg-accent pl-1 pt-3 text-xs font-medium shadow-sm">
       <div
         className={cn(
           "grid h-[626px] w-[266px] grid-cols-[1fr_1fr_1fr] grid-rows-[24px_auto_0px] gap-2 overflow-auto scrollbar-thin",
-          turns < 10000 && "w-[260px]",
-          turns < 1000 && "w-[254px]",
-          turns < 100 && "w-[246px]"
+          movesCount < 10000 && "w-[260px]",
+          movesCount < 1000 && "w-[254px]",
+          movesCount < 100 && "w-[246px]"
         )}
       >
         <div className="sticky top-0 bg-accent" />
@@ -56,8 +55,8 @@ export const PreviousMoves = ({ player, moves }: PreviousMovesProps) => {
         <p className="sticky top-0 bg-accent pb-1 text-sm font-bold">
           Opponent
         </p>
-        <ol className={cn("space-y-0.5 pl-1", turns < 1000 && "pl-2")}>
-          {Array.from({ length: turns }).map((_, i) => (
+        <ol className={cn("space-y-0.5 pl-1", movesCount < 1000 && "pl-2")}>
+          {Array.from({ length: movesCount }, (_, i) => (
             <li key={i}>{i + 1}.</li>
           ))}
         </ol>
