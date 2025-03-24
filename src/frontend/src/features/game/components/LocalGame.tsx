@@ -85,7 +85,10 @@ export const LocalGame = () => {
                 className="bottom-0"
               />
               <MoveConfirmation
-                className={state.turn === "b" ? "top-12" : "bottom-12"}
+                className={
+                  (state.turn === "b" ? "top-" : "bottom-") +
+                  (state.timer ? "12" : "0")
+                }
                 disabled={
                   !state.boardState.pendingMove || state.status !== "playing"
                 }
