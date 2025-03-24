@@ -45,7 +45,7 @@ export const PreviousMoves = ({ player, moves }: PreviousMovesProps) => {
     <aside className="rounded-md border bg-accent pl-1 pt-3 text-xs font-medium shadow-sm">
       <div
         className={cn(
-          "scrollbar-thin grid h-[626px] w-[266px] grid-cols-[1fr_1fr_1fr] grid-rows-[24px_auto_0px] gap-2 overflow-auto",
+          "grid h-[626px] w-[266px] grid-cols-[1fr_1fr_1fr] grid-rows-[24px_auto_0px] gap-2 overflow-auto scrollbar-thin",
           turns < 10000 && "w-[260px]",
           turns < 1000 && "w-[254px]",
           turns < 100 && "w-[246px]"
