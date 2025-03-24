@@ -20,5 +20,5 @@ export type ClientToServerEvents = {
 }
 
 export const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
-  process.env.SERVER_URL ?? "http://localhost:8080"
+  process.env.NEXT_PUBLIC_SOCKET_URL ?? "http://localhost:8080"
 )
