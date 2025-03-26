@@ -4,17 +4,17 @@ import { useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
 import { Board } from "@/features/board/components/Board"
 import { PawnPromotionModal } from "@/features/piece/components/PawnPromotionModal"
-import { CapturedPieces } from "../components/CapturedPieces"
-import { CreateGameForm } from "../components/CreateGameForm"
-import { GameEndModal } from "../components/GameEndModal"
-import { PlayerCard } from "../components/PlayerCard"
-import { PreviousMoves } from "../components/PreviousMoves"
-import { RequestDrawModal } from "../components/RequestDrawModal"
-import { ResignModal } from "../components/ResignModal"
-import { Timer } from "../components/Timer"
 import { useGame } from "../hooks/useGame"
 import { isGameOver } from "../utils"
+import { CapturedPieces } from "./CapturedPieces"
+import { CreateGameForm } from "./CreateGameForm"
+import { GameEndModal } from "./GameEndModal"
 import { MoveConfirmation } from "./MoveConfirmation"
+import { PlayerCard } from "./PlayerCard"
+import { PreviousMoves } from "./PreviousMoves"
+import { RequestDrawModal } from "./RequestDrawModal"
+import { ResignModal } from "./ResignModal"
+import { Timer } from "./Timer"
 
 export const LocalGame = () => {
   const { state, dispatch } = useGame()
@@ -94,7 +94,7 @@ export const LocalGame = () => {
                       ? "bottom-12"
                       : "bottom-0"
                 }
-                disabled={
+                hidden={
                   !state.boardState.pendingMove || state.status !== "playing"
                 }
               />
