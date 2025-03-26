@@ -7,12 +7,12 @@ import { useOnlineGame } from "../hooks/useOnlineGame"
 import { isGameOver } from "../utils"
 import { CapturedPieces } from "./CapturedPieces"
 import { GameEndModal } from "./GameEndModal"
+import { MoveConfirmation } from "./MoveConfirmation"
 import { PlayerCard } from "./PlayerCard"
 import { PreviousMoves } from "./PreviousMoves"
 import { RequestDrawModal } from "./RequestDrawModal"
 import { ResignModal } from "./ResignModal"
 import { Timer } from "./Timer"
-import { MoveConfirmation } from "./MoveConfirmation"
 
 type GameProps = Readonly<{ id: string; username: string }>
 
@@ -65,7 +65,7 @@ export const OnlineGame = ({ id: userId, username }: GameProps) => {
               />
               <MoveConfirmation
                 className="bottom-12"
-                disabled={
+                hidden={
                   !state.boardState.pendingMove ||
                   state.turn !== state.player.color ||
                   state.status !== "playing"
