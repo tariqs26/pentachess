@@ -21,7 +21,7 @@ export default function RulesAndRegulationsPage() {
       </h1>
       <p className="mb-4 text-center text-lg">
         Welcome to <strong>Pentachess</strong>! We hope you enjoy your stay!
-        Below are the general rules of the game.
+        Below are the rules of the game.
       </p>
       <section>
         <h2 className="mb-2 text-2xl font-semibold tracking-tight">
@@ -30,29 +30,30 @@ export default function RulesAndRegulationsPage() {
         <p>
           The goal of Pentachess is to checkmate the opponent&apos;s king. This
           means that you have put the king in check (danger), such that there is
-          no legal move for the opponent to play that gets them out of check.
+          no legal move for the opponent to play that gets their king out of
+          check.
         </p>
       </section>
       <section>
         <h2 className="mb-2 text-2xl font-semibold tracking-tight">Setup</h2>
         <p>
           The game is played on a 90-tile board consisting of 3 decagon rings,
-          with 10, 30, and 50 tiles within the inner, center, and outer
-          decagons, respectively. Each player has 18 pieces, each of which is
-          one of 7 piece types.
+          with 10, 30, and 50 cells in the inner, centre, and outer decagons,
+          respectively. Each player has 18 pieces, each of which is one of 7
+          piece types.
         </p>
       </section>
       <section>
         <h2 className="mb-2 text-2xl font-semibold tracking-tight">Turns</h2>
-        <p>Both players will alternate turns moving one piece per turn.</p>
+        <p>Both players alternate turns moving one piece per turn.</p>
       </section>
       <section>
         <h2 className="mb-2 text-2xl font-semibold tracking-tight">
           Time Control
         </h2>
         <p>
-          Each game can be set up with an optional timer that decreases while it
-          is a player&apos;s turn. The timer pauses once it is no longer that
+          Each game may be set up with an optional timer that decrements while
+          it is a player&apos;s turn. The timer pauses once it is no longer that
           player&apos;s turn. If the timer runs out, that player loses.
         </p>
       </section>
@@ -79,43 +80,46 @@ export default function RulesAndRegulationsPage() {
         <ul className="ml-8 list-disc">
           <li>
             <strong>Stalemate:</strong> A player&apos;s king is not in check but
-            has no legal moves.
+            the player has no legal move.
           </li>
           <li>
             <strong>Insufficient material:</strong> Neither player has the
             necessary pieces to checkmate.
           </li>
           <li>
-            <strong>Threefold repetition:</strong> The same moves occur three
-            times in a row.
+            <strong>Threefold repetition:</strong> The same position occurs
+            three times in a game.
           </li>
           <li>
             <strong>Agreed upon draw:</strong> One player offers a draw, and the
             other accepts.
           </li>
           <li>
-            <strong>Passive 50 moves:</strong> There are no captures and no pawn
-            moves on either team within 50 consecutive moves.
+            <strong>The 50-move rule:</strong> There are no captures and no pawn
+            moves within 50 consecutive moves by each side.
           </li>
         </ul>
       </section>
       <section>
         <h2 className="mb-2 text-2xl font-semibold tracking-tight">Movement</h2>
         <p>
-          The rules of movement can be seen for each piece in the next section.
-          Just a few notes to properly understand all the notation:
+          The rules of movement may be seen for each piece in the next section.
+          For each piece except the pawn, a move includes possible capture. For
+          the pawn and Berolina pawn, the two are different. Just a few notes to
+          properly understand all the notation:
         </p>
         <ul className="ml-8 list-disc">
           <li>
             <strong>Orange Cell Highlight:</strong> The currently selected cell.
           </li>
           <li>
-            <strong>Green/Red Cell Highlight:</strong> Available cell to move
-            to. Green is passively moving. Red is capturing an enemy piece.
+            <strong>Green/Red Cell Highlight:</strong> Available cell to go to.
+            Green is for a move without capture. Red is for capture of an
+            opponent&apos;s piece.
           </li>
           <li>
             <strong>Red/Yellow Cell Outlines:</strong> Indicates the cell which
-            the corresponding rule is talking about.
+            the corresponding rule refers to.
           </li>
         </ul>
         <div className="mt-4 space-y-4">
