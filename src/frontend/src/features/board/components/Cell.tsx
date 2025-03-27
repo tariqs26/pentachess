@@ -134,14 +134,15 @@ export const CellComponent = (cell: CellProps) => {
           "flex size-[100px] items-center justify-center bg-[#739552]",
           cell.color === "w" && "bg-[#ebecd0]",
           isInvalidMove && "bg-gray-400",
-          isAvailableMove && "bg-green-500 hover:cursor-pointer",
+          isAvailableMove &&
+            `${cell.color === "b" ? "bg-blue-500" : "bg-blue-300"} hover:cursor-pointer`,
           isAvailableMove && cell.piece && "bg-red-500",
           isCellSelected && "bg-orange-500",
           state.promotionCoordinates?.to.id === cell.id && "bg-yellow-500",
           isAvailableMove &&
             isPendingMove &&
             !isPendingMoveCapturing &&
-            "bg-green-500",
+            (cell.color === "b" ? "bg-blue-500" : "bg-blue-300"),
           isAvailableMove &&
             isPendingMove &&
             (isPendingMoveCapturing || canAvailableMoveBeCaptured) &&
