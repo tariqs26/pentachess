@@ -113,8 +113,8 @@ export default function RulesAndRegulationsPage() {
             <strong>Orange Cell Highlight:</strong> The currently selected cell.
           </li>
           <li>
-            <strong>Green/Red Cell Highlight:</strong> Available cell to go to.
-            Green is for a move without capture. Red is for capture of an
+            <strong>Blue/Red Cell Highlight:</strong> Available cell to go to.
+            Blue is for a move without capture. Red is for capture of an
             opponent&apos;s piece.
           </li>
           <li>
