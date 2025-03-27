@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "verbatimModuleSyntax": false,
+    "strict": true,
+    "noImplicitAny": false,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "NodeNext",
+    "module": "NodeNext"
+  },
+  "include": ["src/**/*.ts"]
+} 
