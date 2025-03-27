@@ -142,7 +142,7 @@ export const CellComponent = (cell: CellProps) => {
           isAvailableMove &&
             isPendingMove &&
             !isPendingMoveCapturing &&
-            "bg-green-500",
+            (cell.color === "b" ? "bg-blue-500" : "bg-blue-300"),
           isAvailableMove &&
             isPendingMove &&
             (isPendingMoveCapturing || canAvailableMoveBeCaptured) &&
