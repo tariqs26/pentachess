@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation"
 import { BookText, Gamepad2, Trophy } from "lucide-react"
 
 import { authClient } from "@/lib/auth-client"
+import { cn } from "@/lib/utils"
 import { ThemeToggle } from "./ThemeToggle"
 import { Button } from "./ui/Button"
 import { UserDropdown } from "./UserDropdown"
@@ -18,8 +19,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
-} from "@/components/ui/sidebar"
-import { cn } from "@/lib/utils"
+} from "./ui/Sidebar"
 
 // Navigation items
 const navItems = [

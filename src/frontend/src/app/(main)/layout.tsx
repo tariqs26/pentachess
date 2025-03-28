@@ -1,7 +1,7 @@
 "use client"
 
 import { AppSidebar } from "@/components/AppSidebar"
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
+import { SidebarInset, SidebarProvider } from "@/components/ui/Sidebar"
 
 export default function MainLayout({
   children,
@@ -9,13 +9,13 @@ export default function MainLayout({
   children: React.ReactNode
 }>) {
   return (
-    <SidebarProvider>
-      <div className="relative flex min-h-screen">
+    <div className="relative flex min-h-screen">
+      <SidebarProvider>
         <AppSidebar />
         <SidebarInset>
           <main className="flex-grow">{children}</main>
         </SidebarInset>
-      </div>
-    </SidebarProvider>
+      </SidebarProvider>
+    </div>
   )
 }
