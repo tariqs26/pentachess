@@ -17,7 +17,7 @@ export const pieceMovementRules = [
   {
     title: "Pawn (CW/CCW)",
     description:
-      "The pawn has three types of actions: move, capture, and promotion. Each pawn is marked for direction, either clockwise or counterclockwise.",
+      "The pawn has three types of action: move, capture, and promotion. Each pawn is marked for direction, either clockwise or counterclockwise.",
     details: [
       "Move: The pawn can move within its decagon one cell across an edge in its given direction. If it is the pawn's first move, it can move two cells forward.",
       "Move: The pawn can also move one cell across an edge into an adjacent decagon.",
@@ -30,7 +30,7 @@ export const pieceMovementRules = [
   {
     title: "Berolina pawn (CW/CCW)",
     description:
-      "Similar to the pawn but with reversed move and capture. It is also marked for clockwise or counterclockwise direction. It cannot, however, move two cell forward on its first move.",
+      "Similar to the pawn but with reversed move and capture. It is also marked for clockwise or counterclockwise direction. It cannot, however, move two cells forward on its first move.",
     details: [
       "The Berolina pawn moves as the pawn captures.",
       "Capturures as the pawn moves and can also be promoted.",

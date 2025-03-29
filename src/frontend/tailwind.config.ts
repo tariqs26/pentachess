@@ -58,7 +58,39 @@ const config: Config = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      backgroundImage: {
+        "radial-gradient":
+          "radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.4) 100%)",
+      },
+      boxShadow: {
+        "glow-primary": "0 0 15px rgba(74, 222, 128, 0.4)",
+      },
+      dropShadow: {
+        glow: "0 0 10px rgba(74, 222, 128, 0.3)",
+      },
+      animation: {
+        "accordion-down": "accordion-down 0.2s ease-out",
+        "accordion-up": "accordion-up 0.2s ease-out",
+        "reveal-up":
+          "revealUp 1s cubic-bezier(0.215, 0.61, 0.355, 1) 0.25s forwards",
+        "reveal-down":
+          "revealDown 1s cubic-bezier(0.215, 0.61, 0.355, 1) 0.75s forwards",
+        "reveal-scale":
+          "revealScale 1s cubic-bezier(0.215, 0.61, 0.355, 1) 1s forwards",
+      },
       keyframes: {
+        revealUp: {
+          "0%": { opacity: "0", transform: "translateY(20px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        revealDown: {
+          "0%": { opacity: "0", transform: "translateY(-20px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        revealScale: {
+          "0%": { opacity: "0", transform: "scale(0.95)" },
+          "100%": { opacity: "1", transform: "scale(1)" },
+        },
         "accordion-down": {
           from: { height: "0" },
           to: { height: "var(--radix-accordion-content-height)" },
@@ -67,10 +99,6 @@ const config: Config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
-      },
-      animation: {
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out",
       },
     },
   },

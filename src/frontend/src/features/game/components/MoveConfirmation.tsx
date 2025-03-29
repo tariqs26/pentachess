@@ -1,7 +1,8 @@
-import { Button } from "@/components/ui/Button"
+import { useEffect } from "react"
 import { Check, Undo2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useGame } from "../hooks/useGame"
+import { Button } from "@/components/ui/Button"
 
 type MoveConfirmationProps = Readonly<{
   className?: string
@@ -13,6 +14,21 @@ export const MoveConfirmation = ({
   hidden,
 }: MoveConfirmationProps) => {
   const { dispatch } = useGame()
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (hidden) return
+      if (event.key === "Escape") dispatch({ type: "CANCEL_MOVE" })
+      if (event.key === "Enter") dispatch({ type: "CONFIRM_MOVE" })
+    }
+
+    window.addEventListener("keydown", handleKeyDown)
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hidden])
 
   if (hidden) return null
 

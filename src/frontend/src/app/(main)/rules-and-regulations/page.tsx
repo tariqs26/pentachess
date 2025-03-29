@@ -37,7 +37,7 @@ export default function RulesAndRegulationsPage() {
       <section>
         <h2 className="mb-2 text-2xl font-semibold tracking-tight">Setup</h2>
         <p>
-          The game is played on a 90-tile board consisting of 3 decagon rings,
+          The game is played on a 90-cell board consisting of 3 decagon rings,
           with 10, 30, and 50 cells in the inner, centre, and outer decagons,
           respectively. Each player has 18 pieces, each of which is one of 7
           piece types.
