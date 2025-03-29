@@ -4,7 +4,7 @@ import { createGameState, moveHelper } from "./utils"
 
 export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
-    case "SELECT_CELL": {
+    case "SET_SELECTED_CELL": {
       if (action.cell) {
         const possibleMoves = getPossibleMoves(
           action.cell,
@@ -32,13 +32,18 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 
       return {
         ...state,
-        boardState: { ...state.boardState, selectedCell: null },
+        boardState: { ...state.boardState, selectedCell: undefined },
       }
     }
-    case "SET_OVER_CELL": {
+    case "SET_PENDING_MOVE": {
+      const { to, from, piece } = action.pendingMove
+      state.boardState.board[to.x][to.y].piece = piece
+      state.boardState.board[from.x][from.y].piece = null
+
       return {
         ...state,
-        boardState: { ...state.boardState, overCell: action.cell },
+        disabled: true,
+        boardState: { ...state.boardState, pendingMove: action.pendingMove },
       }
     }
     case "CANCEL_MOVE": {
@@ -49,25 +54,15 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       const { to, from, piece, capturedPiece } = state.boardState.pendingMove
       state.boardState.board[to.x][to.y].piece = capturedPiece
       state.boardState.board[from.x][from.y].piece = piece
+
       return {
         ...state,
         disabled: false,
         boardState: {
           ...state.boardState,
-          selectedCell: null,
-          overCell: null,
+          selectedCell: undefined,
           pendingMove: undefined,
         },
-      }
-    }
-    case "SET_PENDING_MOVE": {
-      const { to, from, piece } = action.pendingMove
-      state.boardState.board[to.x][to.y].piece = piece
-      state.boardState.board[from.x][from.y].piece = null
-      return {
-        ...state,
-        disabled: true,
-        boardState: { ...state.boardState, pendingMove: action.pendingMove },
       }
     }
     case "CONFIRM_MOVE": {
@@ -97,8 +92,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         disabled: false,
         boardState: {
           ...state.boardState,
-          selectedCell: null,
-          overCell: null,
+          selectedCell: undefined,
           pendingMove: undefined,
         },
         capturedPieces: capturedPiece
@@ -115,7 +109,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         ...(canPromote(piece, to) && {
           check: state.check,
           promotionCoordinates: { from, to, piece },
-          previousMoves: state.previousMoves, // remove the new move, as it will be added after promotion
+          previousMoves: state.previousMoves,
           turn: state.turn,
         }),
       }
