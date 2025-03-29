@@ -4,7 +4,7 @@ import {
   checkForStalemate,
   checkThreeMoveRep,
   checkFiftyMoveNoCap,
-  checkInsufficientMatrial,
+  checkInsufficientMaterial,
   initializeBoard,
 } from "../board/utils"
 import type { Piece, PieceColor } from "../piece/types"
@@ -88,7 +88,7 @@ export const getNewStatus = (
     checkFiftyMoveNoCap([...moves, { to: nextMove.to, piece: nextMove.piece }])
   )
     return "draw-fifty-move"
-  if (checkInsufficientMatrial(board)) return "draw-insufficient"
+  if (checkInsufficientMaterial(board)) return "draw-insufficient"
   return "playing"
 }
 

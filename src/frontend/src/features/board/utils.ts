@@ -153,7 +153,7 @@ export function checkFiftyMoveNoCap(moves: { to: Cell; piece: Piece }[]) {
   return false
 }
 
-export function checkInsufficientMatrial(board: Board) {
+export function checkInsufficientMaterial(board: Board) {
   const whitePieces = new Set<PieceType>()
   const blackPieces = new Set<PieceType>()
   for (const ring of board) {
@@ -164,7 +164,7 @@ export function checkInsufficientMatrial(board: Board) {
       }
     }
   }
-  // 1 possible condition for insuff mat (waiting on others from Dr. Paul)
+  // 1 possible condition for insufficient material (waiting on others from Dr. Paul)
   if (
     whitePieces.size === 1 &&
     whitePieces.has("king") &&
