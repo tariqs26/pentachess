@@ -17,7 +17,7 @@ export const createGameState = (): GameState => ({
   check: null,
   status: "waiting",
   disabled: false,
-  boardState: { board: initializeBoard(), selectedCell: null, overCell: null },
+  boardState: { board: initializeBoard() },
   previousMoves: [],
   capturedPieces: { w: [], b: [] },
 })
