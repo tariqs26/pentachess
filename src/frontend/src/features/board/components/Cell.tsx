@@ -53,27 +53,24 @@ const pieceRotation = (cell: Cell & { flipped?: boolean }) =>
 type CellProps = Readonly<Cell & { disabled: boolean; flipped?: boolean }>
 
 export const CellComponent = (cell: CellProps) => {
-  const {
-    state: { boardState, promotionCoordinates, turn },
-    dispatch,
-  } = useGame()
+  const { state, dispatch } = useGame()
+  const { selectedCell, pendingMove } = state.boardState
 
-  const isCellSelected = boardState.selectedCell?.cell.id === cell.id
+  const isCellSelected = selectedCell?.cell.id === cell.id
 
-  const isAvailableMove = boardState.selectedCell?.availableMoves
+  const isAvailableMove = selectedCell?.availableMoves
     .values()
     .some((move) => move.id === cell.id)
 
-  const isInvalidMove = boardState.selectedCell?.invalidMoves
+  const isInvalidMove = selectedCell?.invalidMoves
     .values()
     .some((move) => move.id === cell.id)
 
   const isPendingMoveCapturing =
-    boardState.pendingMove?.capturedPiece !== null &&
-    boardState.pendingMove?.to.id === cell.id
+    pendingMove?.capturedPiece !== null && pendingMove?.to.id === cell.id
 
   const canAvailableMoveBeCaptured =
-    cell.piece && cell.id !== boardState.pendingMove?.to.id
+    cell.piece && cell.id !== pendingMove?.to.id
 
   const hasBorder =
     cell.x === 0 ||
@@ -88,15 +85,15 @@ export const CellComponent = (cell: CellProps) => {
       return
     }
 
-    if (cell.piece?.color === turn) {
+    if (cell.piece?.color === state.turn) {
       dispatch({ type: "SET_SELECTED_CELL", cell })
       return
     }
 
-    if (!isAvailableMove || !boardState.selectedCell?.cell.piece) return
+    if (!isAvailableMove || !selectedCell?.cell.piece) return
 
-    const from = boardState.selectedCell.cell
-    const piece = boardState.selectedCell.cell.piece
+    const from = selectedCell.cell
+    const piece = selectedCell.cell.piece
 
     dispatch({
       type: "SET_PENDING_MOVE",
@@ -120,13 +117,13 @@ export const CellComponent = (cell: CellProps) => {
             `${cell.color === "b" ? "bg-blue-500" : "bg-blue-300"} hover:cursor-pointer`,
           isAvailableMove && cell.piece && "bg-red-500",
           isCellSelected && "bg-orange-500",
-          promotionCoordinates?.to.id === cell.id && "bg-yellow-500",
+          state.promotionCoordinates?.to.id === cell.id && "bg-yellow-500",
           isAvailableMove &&
-            boardState.pendingMove &&
+            pendingMove &&
             !isPendingMoveCapturing &&
             (cell.color === "b" ? "bg-blue-500" : "bg-blue-300"),
           isAvailableMove &&
-            boardState.pendingMove &&
+            pendingMove &&
             (isPendingMoveCapturing || canAvailableMoveBeCaptured) &&
             "bg-red-500"
         )}
