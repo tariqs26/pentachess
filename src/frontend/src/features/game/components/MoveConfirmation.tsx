@@ -27,7 +27,8 @@ export const MoveConfirmation = ({
     return () => {
       window.removeEventListener("keydown", handleKeyDown)
     }
-  })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hidden])
 
   if (hidden) return null
 
