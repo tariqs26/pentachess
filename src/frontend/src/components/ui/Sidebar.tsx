@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { createContext, useContext } from "react"
+import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
 import { ChevronLeft, Menu } from "lucide-react"
 
@@ -118,7 +119,7 @@ export const SidebarMenuButton = React.forwardRef<
   HTMLButtonElement,
   SidebarMenuButtonProps
 >(({ className, asChild = false, size = "default", ...props }, ref) => {
-  const Comp = asChild ? React.Fragment : "button"
+  const Comp = asChild ? Slot : "button"
 
   return (
     <Comp
@@ -155,7 +156,7 @@ export const SidebarMenuSubButton = React.forwardRef<
   HTMLButtonElement,
   SidebarMenuSubButtonProps
 >(({ className, asChild = false, isActive = false, ...props }, ref) => {
-  const Comp = asChild ? React.Fragment : "button"
+  const Comp = asChild ? Slot : "button"
 
   return (
     <Comp
