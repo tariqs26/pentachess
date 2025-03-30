@@ -22,4 +22,5 @@ export type Piece = {
   value: number
   image: StaticImageData
   hasMoved: boolean
+  canPromote: boolean
 }

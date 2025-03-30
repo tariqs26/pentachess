@@ -34,7 +34,15 @@ export const PawnPromotionModal = ({
                 )}
                 onClick={() => handlePromotion(piece)}
               >
-                <Image src={piece.image} alt={piece.type} className="size-10" />
+                {piece.type !== "pawn-cw" ? (
+                  <Image
+                    src={piece.image}
+                    alt={piece.type}
+                    className="size-10"
+                  />
+                ) : (
+                  <div>N/A</div>
+                )}
               </button>
             )
           )}

@@ -12,6 +12,7 @@ export function makePiece(type: PieceType, color: PieceColor): Piece {
     value: PIECE_DATA[type].value,
     image: PIECE_DATA[type].image[color],
     hasMoved: false,
+    canPromote: true,
   }
 }
 
@@ -23,7 +24,8 @@ export function canPromote(piece: Piece, to: { x: number; y: number }) {
       piece.type === "berolina-pawn-ccw") &&
     to.x === 2 &&
     ((piece.color === "w" && to.y >= 25 && to.y <= 32) ||
-      (piece.color === "b" && to.y >= 0 && to.y <= 7))
+      (piece.color === "b" && to.y >= 0 && to.y <= 7)) &&
+    piece.canPromote
   )
 }
 
