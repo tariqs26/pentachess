@@ -74,6 +74,10 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       const capturedPiece = to.piece
       piece.hasMoved = true
 
+      if (to.x !== 2) {
+        piece.canPromote = true
+      }
+
       state.boardState.board[to.x][to.y].piece = piece
       state.boardState.board[from.x][from.y].piece = null
 
@@ -120,7 +124,14 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       }
 
       const { to, from, piece } = state.promotionCoordinates
-      state.boardState.board[to.x][to.y].piece = action.piece
+      if (action.piece.type !== "pawn-cw") {
+        state.boardState.board[to.x][to.y].piece = action.piece
+      }
+
+      const target = state.boardState.board[to.x][to.y].piece
+      if (target) {
+        target.canPromote = false
+      }
 
       const { turn, checkedColor, status, move } = moveHelper(
         state.turn,
