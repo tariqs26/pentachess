@@ -59,15 +59,14 @@ export const LocalGame = () => {
       ) : (
         <div className="flex w-full justify-center gap-x-2">
           <div className="relative w-full max-w-[600px]">
-            {state.promotionCoordinates &&
-              state.promotionCoordinates.piece.canPromote && (
-                <PawnPromotionModal
-                  turn={state.turn}
-                  handlePromotion={(piece) =>
-                    dispatch({ type: "PROMOTE_PAWN", piece })
-                  }
-                />
-              )}
+            {state.promotionCoordinates?.piece.canPromote && (
+              <PawnPromotionModal
+                turn={state.turn}
+                handlePromotion={(piece) =>
+                  dispatch({ type: "PROMOTE_PAWN", piece })
+                }
+              />
+            )}
             <CapturedPieces pieces={state.capturedPieces.w} />
             <div className="relative">
               <Timer duration={state.timer?.b} disabled={state.turn === "w"} />

@@ -34,13 +34,12 @@ export const OnlineGame = ({ id: userId, username }: GameProps) => {
       ) : (
         <div className="flex w-full justify-center gap-x-2">
           <div className="relative w-full max-w-[600px]">
-            {state.promotionCoordinates &&
-              state.promotionCoordinates.piece.canPromote && (
-                <PawnPromotionModal
-                  turn={state.turn}
-                  handlePromotion={handlePromotion}
-                />
-              )}
+            {state.promotionCoordinates?.piece.canPromote && (
+              <PawnPromotionModal
+                turn={state.turn}
+                handlePromotion={handlePromotion}
+              />
+            )}
             <CapturedPieces pieces={state.capturedPieces[state.player.color]} />
             <div className="relative">
               <Timer
