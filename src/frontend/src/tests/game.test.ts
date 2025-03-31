@@ -1,5 +1,9 @@
 import { describe, expect, it, beforeEach, vi } from "vitest"
-import { displayTimeRemaining, isGameOver, createMove } from "../features/game/utils"
+import {
+  displayTimeRemaining,
+  isGameOver,
+  createMove,
+} from "../features/game/utils"
 import { gameReducer } from "../features/game/reducer"
 import type { Cell, Board } from "../features/board/types"
 import type { GameState, Move, GameAction } from "../features/game/types"

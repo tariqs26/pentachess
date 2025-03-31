@@ -106,7 +106,7 @@ describe("canPromote", () => {
     for (let y = 0; y <= 7; y++) {
       pieces.forEach((type) => {
         const piece = makePiece(type, "b")
-        expect(canPromote(piece, { x:  2, y })).toBe(false)
+        expect(canPromote(piece, { x: 2, y })).toBe(false)
       })
     }
   })
@@ -117,7 +117,7 @@ describe("canPromote", () => {
     for (let y = 25; y <= 32; y++) {
       pieces.forEach((type) => {
         const piece = makePiece(type, "w")
-        expect(canPromote(piece, { x:  2, y })).toBe(false)
+        expect(canPromote(piece, { x: 2, y })).toBe(false)
       })
     }
   })
@@ -126,20 +126,30 @@ describe("canPromote", () => {
 describe("getPossibleMoves", () => {
   it("should return set of moves for a pawn", () => {
     const board = initializeBoard()
-    
-    expect(getPossibleMoves(board[1][0], board)).toEqual(new Set([board[0][9]]))
-    expect(getPossibleMoves(board[2][48], board)).toEqual(new Set([board[2][46], board[2][47]]))
 
-    expect(getPossibleMoves(board[1][19], board)).toEqual(new Set([board[1][20], board[1][21]]))
-    expect(getPossibleMoves(board[2][24], board)).toEqual(new Set([board[2][22]]))
+    expect(getPossibleMoves(board[1][0], board)).toEqual(new Set([board[0][9]]))
+    expect(getPossibleMoves(board[2][48], board)).toEqual(
+      new Set([board[2][46], board[2][47]])
+    )
+
+    expect(getPossibleMoves(board[1][19], board)).toEqual(
+      new Set([board[1][20], board[1][21]])
+    )
+    expect(getPossibleMoves(board[2][24], board)).toEqual(
+      new Set([board[2][22]])
+    )
   })
 
   it("should return set of moves for a bishop", () => {
     const board = initializeBoard()
-    
-    expect(getPossibleMoves(board[2][0], board)).toEqual(new Set([board[1][28]]))
 
-    expect(getPossibleMoves(board[2][25], board)).toEqual(new Set([board[1][13]]))
+    expect(getPossibleMoves(board[2][0], board)).toEqual(
+      new Set([board[1][28]])
+    )
+
+    expect(getPossibleMoves(board[2][25], board)).toEqual(
+      new Set([board[1][13]])
+    )
   })
 
   it("should return empty set for empty cell", () => {
@@ -159,10 +169,16 @@ describe("getPossibleMoves", () => {
 
     for (let ring = 1; ring < 3; ring++) {
       for (let cell = 0; cell < 3; cell++) {
-        if (ring == 2 && ((1 <= cell && cell <= 6) || (26 <= cell && cell <= 31))) {
+        if (
+          ring == 2 &&
+          ((1 <= cell && cell <= 6) || (26 <= cell && cell <= 31))
+        ) {
           expect(getPossibleMoves(board[ring][cell], board)).toEqual(new Set())
         }
-        if (ring == 1 && ((1 <= cell && cell <= 2) || (16 <= cell && cell <= 17))) {
+        if (
+          ring == 1 &&
+          ((1 <= cell && cell <= 2) || (16 <= cell && cell <= 17))
+        ) {
           expect(getPossibleMoves(board[ring][cell], board)).toEqual(new Set())
         }
       }
@@ -177,7 +193,13 @@ describe("getInvalidMoves", () => {
     for (let ring = 0; ring < 3; ring++) {
       for (let cell = 0; cell < 3; cell++) {
         if (board[ring][cell].piece === null) {
-          expect(getInvalidMoves(board[ring][cell], board, getPossibleMoves(board[ring][cell], board))).toEqual(new Set())
+          expect(
+            getInvalidMoves(
+              board[ring][cell],
+              board,
+              getPossibleMoves(board[ring][cell], board)
+            )
+          ).toEqual(new Set())
         }
       }
     }
@@ -188,24 +210,70 @@ describe("getInvalidMoves", () => {
 
     for (let ring = 1; ring < 3; ring++) {
       for (let cell = 0; cell < 3; cell++) {
-        if (ring == 2 && ((1 <= cell && cell <= 6) || (26 <= cell && cell <= 31))) {
-          expect(getInvalidMoves(board[ring][cell], board, getPossibleMoves(board[ring][cell], board))).toEqual(new Set())
+        if (
+          ring == 2 &&
+          ((1 <= cell && cell <= 6) || (26 <= cell && cell <= 31))
+        ) {
+          expect(
+            getInvalidMoves(
+              board[ring][cell],
+              board,
+              getPossibleMoves(board[ring][cell], board)
+            )
+          ).toEqual(new Set())
         }
-        if (ring == 1 && ((1 <= cell && cell <= 2) || (16 <= cell && cell <= 17))) {
-          expect(getInvalidMoves(board[ring][cell], board, getPossibleMoves(board[ring][cell], board))).toEqual(new Set())
+        if (
+          ring == 1 &&
+          ((1 <= cell && cell <= 2) || (16 <= cell && cell <= 17))
+        ) {
+          expect(
+            getInvalidMoves(
+              board[ring][cell],
+              board,
+              getPossibleMoves(board[ring][cell], board)
+            )
+          ).toEqual(new Set())
         }
       }
     }
   })
-  
+
   it("should return empty set for pieces that only have valid moves", () => {
     const board = initializeBoard()
-    
-    expect(getInvalidMoves(board[2][0], board, getPossibleMoves(board[2][0], board))).toEqual(new Set())
-    expect(getInvalidMoves(board[2][25], board, getPossibleMoves(board[2][25], board))).toEqual(new Set())
-    expect(getInvalidMoves(board[1][0], board, getPossibleMoves(board[1][0], board))).toEqual(new Set())
-    expect(getInvalidMoves(board[2][48], board, getPossibleMoves(board[2][48], board))).toEqual(new Set())
-    expect(getInvalidMoves(board[1][19], board, getPossibleMoves(board[1][19], board))).toEqual(new Set())
-    expect(getInvalidMoves(board[2][24], board, getPossibleMoves(board[2][24], board))).toEqual(new Set())
+
+    expect(
+      getInvalidMoves(board[2][0], board, getPossibleMoves(board[2][0], board))
+    ).toEqual(new Set())
+    expect(
+      getInvalidMoves(
+        board[2][25],
+        board,
+        getPossibleMoves(board[2][25], board)
+      )
+    ).toEqual(new Set())
+    expect(
+      getInvalidMoves(board[1][0], board, getPossibleMoves(board[1][0], board))
+    ).toEqual(new Set())
+    expect(
+      getInvalidMoves(
+        board[2][48],
+        board,
+        getPossibleMoves(board[2][48], board)
+      )
+    ).toEqual(new Set())
+    expect(
+      getInvalidMoves(
+        board[1][19],
+        board,
+        getPossibleMoves(board[1][19], board)
+      )
+    ).toEqual(new Set())
+    expect(
+      getInvalidMoves(
+        board[2][24],
+        board,
+        getPossibleMoves(board[2][24], board)
+      )
+    ).toEqual(new Set())
   })
 })
