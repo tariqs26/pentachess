@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { makeCell } from "../features/board/cell"
+import { makeCell } from "@/features/board/cell"
 import {
   getKingCell,
   checkInsufficientMatrial,
@@ -10,9 +10,9 @@ import {
   checkFiftyMoveNoCap,
   checkForCheckOrMate,
   checkForStalemate,
-} from "../features/board/utils"
-import { makePiece } from "../features/piece/utils"
-import type { Board } from "../features/board/types"
+} from "@/features/board/utils"
+import { makePiece } from "@/features/piece/utils"
+import type { Board } from "@/features/board/types"
 import { Move } from "@/features/game/types"
 import { createMove } from "@/features/game/utils"
 
@@ -258,10 +258,11 @@ describe("Board Utility Functions", () => {
       }
     }
 
-    board[2][9].piece = makePiece("queen", "w")
-    board[2][4].piece = makePiece("king", "w")
-    board[1][5].piece = makePiece("rook", "w")
-    board[2][40].piece = makePiece("pawn-cw", "b")
+    board[2][9].piece = makePiece("queen", "b")
+    board[2][4].piece = makePiece("king", "b")
+    board[2][29].piece = makePiece("king", "w")
+    board[1][5].piece = makePiece("rook", "b")
+    board[2][40].piece = makePiece("pawn-cw", "w")
 
     const result = checkForCheckOrMate(board, "w")
     expect(result).toEqual(["w", true])
@@ -283,8 +284,12 @@ describe("Board Utility Functions", () => {
       }
     }
 
-    board[2][40].piece = makePiece("king", "w")
-    board[2][2].piece = makePiece("king", "b")
+    board[2][30].piece = makePiece("king", "w")
+    board[2][31].piece = makePiece("pawn-cw", "w")
+    board[2][29].piece = makePiece("pawn-ccw", "w")
+
+    board[2][4].piece = makePiece("rook", "b")
+    board[1][4].piece = makePiece("rook", "b")
 
     const result = checkForStalemate(board, "w")
     expect(result).toEqual(true)
@@ -341,8 +346,8 @@ describe("Board Utility Functions", () => {
 
     // Add moves to simulate repetition (three times, each time has 4 moves)
     for (let i = 0; i < 2; i++) {
-      const move1 = createMove("w", cell1, cell2, piece, null, null, "waiting")
-      const move2 = createMove("w", cell2, cell1, piece, null, null, "waiting")
+      const move1 = createMove("w", cell1, cell2, piece, null, null, "playing")
+      const move2 = createMove("w", cell2, cell1, piece, null, null, "playing")
       moves.push(move1)
       moves.push(move2)
       moves.push(move1)
@@ -372,7 +377,7 @@ describe("Board Utility Functions", () => {
 
     // Add 50 moves with no captures
     for (let i = 0; i < 50; i++) {
-      const move = createMove("w", cell, cell, piece, null, null, "waiting")
+      const move = createMove("w", cell, cell, piece, null, null, "playing")
       moves.push(move)
     }
 
@@ -386,7 +391,7 @@ describe("Board Utility Functions", () => {
 
     // Add 50 moves with no captures
     for (let i = 0; i < 40; i++) {
-      const move = createMove("w", cell, cell, piece, null, null, "waiting")
+      const move = createMove("w", cell, cell, piece, null, null, "playing")
       moves.push(move)
     }
 

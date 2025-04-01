@@ -4,7 +4,7 @@ import {
   usernameSchema,
   nameSchema,
   passwordSchema,
-} from "../features/user/schemas"
+} from "@/features/user/schemas"
 
 describe("User Schemas", () => {
   describe("emailSchema", () => {

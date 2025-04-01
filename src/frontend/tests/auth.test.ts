@@ -7,9 +7,7 @@ import {
   registerSchema,
   forgotPasswordSchema,
   passwordSchema,
-} from "../features/auth/schemas"
-import { authClient } from "@/lib/auth-client"
-import { db } from "@/lib/db"
+} from "@/features/auth/schemas"
 
 // Mock the auth client and database
 vi.mock("@/lib/auth-client", () => ({

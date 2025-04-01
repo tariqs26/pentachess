@@ -3,10 +3,9 @@ import {
   canPromote,
   getPossibleMoves,
   getInvalidMoves,
-} from "../features/piece/utils"
-import type { PieceType } from "../features/piece/types"
+} from "@/features/piece/utils"
+import type { PieceType } from "@/features/piece/types"
 import { describe, it, expect } from "vitest"
-import { makeCell } from "@/features/board/cell"
 import kingW from "/public/pieces/king-w.png"
 import rookB from "/public/pieces/rook-b.png"
 import queenW from "/public/pieces/queen-w.png"
@@ -236,6 +235,38 @@ describe("getInvalidMoves", () => {
         }
       }
     }
+  })
+
+  it("should return set of invalid moves for checkmate", () => {
+    const board = initializeBoard()
+
+    for (let i = 0; i < board.length; i++) {
+      for (let j = 0; j < board[i].length; j++) {
+        board[i][j].piece = null
+      }
+    }
+
+    board[2][9].piece = makePiece("queen", "b")
+    board[2][4].piece = makePiece("king", "b")
+    board[2][29].piece = makePiece("king", "w")
+    board[1][5].piece = makePiece("rook", "b")
+    board[2][40].piece = makePiece("pawn-cw", "w")
+
+    expect(
+      getInvalidMoves(
+        board[2][29],
+        board,
+        getPossibleMoves(board[2][29], board)
+      )
+    ).toEqual(
+      new Set([
+        board[2][30],
+        board[2][31],
+        board[2][28],
+        board[2][27],
+        board[1][17],
+      ])
+    )
   })
 
   it("should return empty set for pieces that only have valid moves", () => {

@@ -8,10 +8,10 @@ import {
   getSideEdge,
   setCellEdges,
   setCellVertices,
-} from "../features/board/cell"
-import { initializeBoard } from "../features/board/utils"
-import { makePiece } from "../features/piece/utils"
-import { Board } from "../features/board/types"
+} from "@/features/board/cell"
+import { initializeBoard } from "@/features/board/utils"
+import { makePiece } from "@/features/piece/utils"
+import { Board } from "@/features/board/types"
 
 describe("Board Cell Functions", () => {
   it("should create a cell with correct properties for C5", () => {
