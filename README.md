@@ -4,6 +4,8 @@
 
 **Project timeline:** September 2024 - April 2025
 
+**Play here:** [www.pentachess.org](https://www.pentachess.org/)
+
 **Directory structure:**
 
 - `docs`: contains submitted documentation for the project.
@@ -12,7 +14,23 @@
 
 ## Setup Instructions
 
-### Setup Server
+These instructions are for running the game locally. You can play online at [www.pentachess.org](https://www.pentachess.org/).
+
+Begin by cloning the repo into your filesystem:
+
+   ```bash
+   git clone git@github.com:tariqs26/pentachess.git
+   ```
+
+Next, enter into the code directory:
+
+   ```bash
+   cd pentachess/src
+   ```
+
+### Setup Server (Only Necessary for Online Matches)
+
+For a more detailed guide, see [src/server/README.md](https://github.com/tariqs26/pentachess/blob/develop/src/server/README.md).
 
 1. **Prerequisites**
 
@@ -20,13 +38,19 @@
 
 2. **Install dependencies**
 
+   Enter the server directory:
+   ```bash
+   cd server
+   ```
+
+   Install dependencies:
    ```bash
    npm install
    ```
 
 3. **Set up environment variables**
 
-   Create a `.env` file in the root directory of the project and add the following environment variables:
+   Create a `.env` file in the root directory of the server (i.e. `pentachess/src/server`) and add the following environment variables:
 
    ```bash
    CORS_ORIGIN=http://localhost:3000 # Frontend URL
@@ -41,6 +65,8 @@
 
 ### Setup Frontend
 
+For a more detailed guide, see [src/frontend/README.md](https://github.com/tariqs26/pentachess/blob/develop/src/frontend/README.md).
+
 1. **Prerequisites**
 
    - Ensure you have [Node.js](https://nodejs.org/en/download/) (20.18.0 or higher) installed on your machine.
@@ -48,13 +74,19 @@
 
 2. **Install dependencies**
 
+   Enter the frontend directory:
+   ```bash
+   cd frontend
+   ```
+
+   Install dependencies:
    ```bash
    npm install
    ```
 
 3. **Set up environment variables**
 
-   Create a `.env` file in the root directory of the project and add the following environment variables:
+   Create a `.env` file in the root directory of the frontend (i.e. `pentachess/src/server`) and add the following environment variables:
 
    ```bash
    # MongoDB connection string
