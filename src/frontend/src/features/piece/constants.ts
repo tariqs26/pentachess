@@ -129,4 +129,10 @@ export const INITIAL_PIECES: Record<
   },
 } as const
 
-export const PROMOTION_PIECES = ["queen", "rook", "bishop", "knight"] as const
+export const PROMOTION_PIECES = [
+  "queen",
+  "rook",
+  "bishop",
+  "knight",
+  "pawn-cw",
+] as const

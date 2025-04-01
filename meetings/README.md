@@ -1,3 +1,3 @@
 ## Meeting Notes
 
-This folder will hold notes from our team meetings.
+This folder holds notes from our weekly team meetings, as well as notes from our meetings with stakeholders.
