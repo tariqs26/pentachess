@@ -82,19 +82,28 @@ const getEmptyCellTests = (board: Board, testFn: (cell: any) => any) => {
 
 const getBlockedCellIndices = () => {
   return [
-    ...Array(6).fill(0).map((_, i) => ({ ring: 2, cell: i + 1 })),
-    ...Array(6).fill(0).map((_, i) => ({ ring: 2, cell: i + 26 })),
-    ...Array(2).fill(0).map((_, i) => ({ ring: 1, cell: i + 1 })),
-    ...Array(2).fill(0).map((_, i) => ({ ring: 1, cell: i + 16 })),
+    ...Array(6)
+      .fill(0)
+      .map((_, i) => ({ ring: 2, cell: i + 1 })),
+    ...Array(6)
+      .fill(0)
+      .map((_, i) => ({ ring: 2, cell: i + 26 })),
+    ...Array(2)
+      .fill(0)
+      .map((_, i) => ({ ring: 1, cell: i + 1 })),
+    ...Array(2)
+      .fill(0)
+      .map((_, i) => ({ ring: 1, cell: i + 16 })),
   ]
 }
 
 describe("Piece Utility Functions", () => {
   describe("makePiece", () => {
     const testCases = TEST_PIECE_TYPES.map(
-      (type, i) => `should create a ${TEST_PIECE_COLORS[i]} ${type} with correct properties`
+      (type, i) =>
+        `should create a ${TEST_PIECE_COLORS[i]} ${type} with correct properties`
     )
-    
+
     const expectedPieces: Piece[] = TEST_PIECE_TYPES.map((type, i) => ({
       type,
       abbr: type[0].toUpperCase() as PieceAbbr,
@@ -108,7 +117,7 @@ describe("Piece Utility Functions", () => {
     testCases.forEach((description, i) => {
       it(description, () => {
         const piece = makePiece(
-          TEST_PIECE_TYPES[i], 
+          TEST_PIECE_TYPES[i],
           TEST_PIECE_COLORS[i][0] as "w" | "b"
         )
         expect(piece).toEqual(expectedPieces[i])
@@ -129,7 +138,9 @@ describe("Piece Utility Functions", () => {
       it(description, () => {
         squares.forEach((square) => {
           pieceTypes.forEach((type) => {
-            expect(canPromote(makePiece(type, color), square)).toBe(expectedResult)
+            expect(canPromote(makePiece(type, color), square)).toBe(
+              expectedResult
+            )
           })
         })
       })
@@ -211,9 +222,11 @@ describe("Piece Utility Functions", () => {
 
       it("should return empty set for blocked pieces", () => {
         const blockedIndices = getBlockedCellIndices()
-        
+
         blockedIndices.forEach(({ ring, cell }) => {
-          expect(getPossibleMoves(board[ring][cell], board)).toEqual(new Set([]))
+          expect(getPossibleMoves(board[ring][cell], board)).toEqual(
+            new Set([])
+          )
         })
       })
     })
@@ -232,7 +245,9 @@ describe("Piece Utility Functions", () => {
         validMovesTests.forEach(({ ring, cell }) => {
           const piece = board[ring][cell]
           const possibleMoves = getPossibleMoves(piece, board)
-          expect(getInvalidMoves(piece, board, possibleMoves)).toEqual(new Set([]))
+          expect(getInvalidMoves(piece, board, possibleMoves)).toEqual(
+            new Set([])
+          )
         })
       })
 
@@ -243,17 +258,21 @@ describe("Piece Utility Functions", () => {
         }))
 
         emptyCellTests.forEach(({ piece, possibleMoves }) => {
-          expect(getInvalidMoves(piece, board, possibleMoves)).toEqual(new Set([]))
+          expect(getInvalidMoves(piece, board, possibleMoves)).toEqual(
+            new Set([])
+          )
         })
       })
 
       it("should return empty set for blocked pieces", () => {
         const blockedIndices = getBlockedCellIndices()
-        
+
         blockedIndices.forEach(({ ring, cell }) => {
           const piece = board[ring][cell]
           const possibleMoves = getPossibleMoves(piece, board)
-          expect(getInvalidMoves(piece, board, possibleMoves)).toEqual(new Set([]))
+          expect(getInvalidMoves(piece, board, possibleMoves)).toEqual(
+            new Set([])
+          )
         })
       })
 

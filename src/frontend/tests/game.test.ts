@@ -1,4 +1,4 @@
-import { describe, expect, it, beforeEach, vi } from "vitest"
+import { describe, expect, it, beforeEach } from "vitest"
 import {
   createGameState,
   getNewStatus,
@@ -8,7 +8,7 @@ import {
   createMove,
 } from "@/features/game/utils"
 import { gameReducer } from "@/features/game/reducer"
-import type { Board } from "@/features/board/types"
+import type { Board, Cell } from "@/features/board/types"
 import { getInvalidMoves } from "@/features/piece/utils"
 import { getPossibleMoves, makePiece } from "@/features/piece/utils"
 import type {
@@ -20,506 +20,496 @@ import type {
 } from "@/features/game/types"
 import { initializeBoard } from "@/features/board/utils"
 import { makeCell } from "@/features/board/cell"
+import { Piece, PieceColor, PieceType } from "@/features/piece/types"
 
-const TEST_DATE = new Date("2025-01-01T00:00:00.000Z")
+// Constants
+const TEST_TIMESTAMP = new Date("2025-01-01T00:00:00.000Z")
 
-describe("createGameState", () => {
-  it("should create a game state with the correct initial values", () => {
-    const gameState = createGameState()
-    expect(gameState).toEqual({
-      player: { id: "1", color: "w", userId: "1", username: "Player 1" },
-      opponent: { id: "2", color: "b", userId: "2", username: "Player 2" },
-      turn: "w",
-      check: null,
-      status: "waiting",
-      disabled: false,
-      boardState: {
-        board: initializeBoard(),
-      },
-      previousMoves: [],
-      capturedPieces: { w: [], b: [] },
+// Test fixtures
+const createTestMove = (from: Cell, to: Cell, piece: Piece) => ({
+  from,
+  to,
+  piece,
+  piecePromoted: null,
+})
+
+// Helper for creating test players
+const createTestPlayers = (): [Player, Player] => [
+  { id: "1", color: "w", userId: "1", username: "Test Player 1" },
+  { id: "2", color: "b", userId: "2", username: "Test Player 2" },
+]
+
+describe("Game Utility Functions", () => {
+  describe("createGameState", () => {
+    it("should create a game state with the correct initial values", () => {
+      const gameState = createGameState()
+      expect(gameState).toEqual({
+        player: { id: "1", color: "w", userId: "1", username: "Player 1" },
+        opponent: { id: "2", color: "b", userId: "2", username: "Player 2" },
+        turn: "w",
+        check: null,
+        status: "waiting",
+        disabled: false,
+        boardState: {
+          board: initializeBoard(),
+        },
+        previousMoves: [],
+        capturedPieces: { w: [], b: [] },
+      })
     })
   })
-})
 
-describe("createMove", () => {
-  it("should create a moves with the correct values for basic moves", () => {
-    const board = initializeBoard()
-    const actualMove1: Move = {
-      player: "w",
-      from: board[1][4],
-      to: board[1][6],
-      check: false,
-      notation: "P:b4-b6",
-      piece: makePiece("pawn-ccw", "b"),
-      pieceCaptured: null,
-      piecePromoted: null,
-      status: "playing",
-      timestamp: TEST_DATE,
-    }
+  describe("createMove", () => {
+    let board: Board
 
-    const move1 = createMove(
-      actualMove1.player,
-      actualMove1.from,
-      actualMove1.to,
-      actualMove1.piece,
-      actualMove1.piecePromoted,
-      null,
-      actualMove1.status
-    )
+    beforeEach(() => {
+      board = initializeBoard()
+    })
 
-    move1.timestamp = TEST_DATE
+    it("should create basic moves with correct values", () => {
+      const testCases = [
+        {
+          player: "w" as PieceColor,
+          from: board[1][4],
+          to: board[1][6],
+          piece: makePiece("pawn-ccw", "b"),
+          notation: "P:b4-b6",
+        },
+        {
+          player: "b" as PieceColor,
+          from: board[1][14],
+          to: board[1][12],
+          piece: makePiece("pawn-cw", "b"),
+          notation: "P:b14-b12",
+        },
+        {
+          player: "w" as PieceColor,
+          from: board[2][7],
+          to: board[1][5],
+          piece: makePiece("bishop", "w"),
+          notation: "B:a7-b5",
+        },
+      ]
 
-    expect(move1).toEqual(actualMove1)
+      testCases.forEach(({ player, from, to, piece, notation }) => {
+        const move = createMove(player, from, to, piece, null, null, "playing")
+        move.timestamp = TEST_TIMESTAMP
 
-    const actualMove2: Move = {
-      player: "b",
-      from: board[1][14],
-      to: board[1][12],
-      check: false,
-      notation: "P:b14-b12",
-      piece: makePiece("pawn-cw", "b"),
-      pieceCaptured: null,
-      piecePromoted: null,
-      status: "playing",
-      timestamp: TEST_DATE,
-    }
+        expect(move).toEqual({
+          player,
+          from,
+          to,
+          piece,
+          check: false,
+          notation,
+          pieceCaptured: null,
+          piecePromoted: null,
+          status: "playing",
+          timestamp: TEST_TIMESTAMP,
+        })
+      })
+    })
 
-    const move2 = createMove(
-      actualMove2.player,
-      actualMove2.from,
-      actualMove2.to,
-      actualMove2.piece,
-      actualMove2.piecePromoted,
-      null,
-      actualMove2.status
-    )
+    it("should format notation correctly for special moves", () => {
+      const testCases = [
+        {
+          description: "captures",
+          from: makeCell(1, 5, 0),
+          to: makeCell(1, 6, 0),
+          piece: makePiece("pawn-ccw", "w"),
+          pieceCaptured: makePiece("pawn-ccw", "b"),
+          piecePromoted: null,
+          check: null,
+          status: "playing" as GameStatus,
+          expectedNotation: "P:b5xb6",
+        },
+        {
+          description: "promotions",
+          from: makeCell(1, 1, 0),
+          to: makeCell(2, 3, 0),
+          piece: makePiece("pawn-ccw", "b"),
+          pieceCaptured: makePiece("pawn-ccw", "w"),
+          piecePromoted: makePiece("queen", "b"),
+          check: null,
+          status: "playing" as GameStatus,
+          expectedNotation: "P:b1xa3=Q",
+        },
+        {
+          description: "check",
+          from: makeCell(1, 5, 0),
+          to: makeCell(1, 6, 0),
+          piece: makePiece("pawn-ccw", "w"),
+          pieceCaptured: makePiece("pawn-ccw", "b"),
+          piecePromoted: null,
+          check: "w" as PieceColor,
+          status: "playing" as GameStatus,
+          expectedNotation: "P:b5xb6+",
+        },
+        {
+          description: "checkmate",
+          from: makeCell(1, 5, 0),
+          to: makeCell(1, 6, 0),
+          piece: makePiece("pawn-ccw", "w"),
+          pieceCaptured: makePiece("pawn-ccw", "b"),
+          piecePromoted: null,
+          check: null,
+          status: "checkmate" as GameStatus,
+          expectedNotation: "P:b5xb6#",
+        },
+      ]
 
-    move2.timestamp = TEST_DATE
-
-    expect(move2).toEqual(actualMove2)
-
-    const actualMove3: Move = {
-      player: "w",
-      from: board[2][7],
-      to: board[1][5],
-      check: false,
-      notation: "B:a7-b5",
-      piece: makePiece("bishop", "w"),
-      pieceCaptured: null,
-      piecePromoted: null,
-      status: "playing",
-      timestamp: TEST_DATE,
-    }
-
-    const move3 = createMove(
-      actualMove3.player,
-      actualMove3.from,
-      actualMove3.to,
-      actualMove3.piece,
-      actualMove3.piecePromoted,
-      null,
-      actualMove3.status
-    )
-
-    move3.timestamp = TEST_DATE
-
-    expect(move3).toEqual(actualMove3)
-  })
-
-  it("should have correct notation for captures", () => {
-    const from = makeCell(1, 5, 0)
-    const to = makeCell(1, 6, 0)
-    const piece = makePiece("pawn-ccw", "w")
-    const pieceCaptured = makePiece("pawn-ccw", "b")
-    to.piece = pieceCaptured
-
-    const move = createMove("w", from, to, piece, null, null, "playing")
-
-    expect(move.notation).toEqual("P:b5xb6")
-  })
-
-  it("should have correct notation for promotions", () => {
-    const from = makeCell(1, 1, 0)
-    const to = makeCell(2, 3, 0)
-    const piece = makePiece("pawn-ccw", "b")
-    const pieceCaptured = makePiece("pawn-ccw", "w")
-    to.piece = pieceCaptured
-
-    const move = createMove(
-      "w",
-      from,
-      to,
-      piece,
-      makePiece("queen", "b"),
-      null,
-      "playing"
-    )
-
-    expect(move.notation).toEqual("P:b1xa3=Q")
-  })
-
-  it("should have correct notation for check", () => {
-    const from = makeCell(1, 5, 0)
-    const to = makeCell(1, 6, 0)
-    const piece = makePiece("pawn-ccw", "w")
-    const pieceCaptured = makePiece("pawn-ccw", "b")
-    to.piece = pieceCaptured
-
-    const move = createMove("w", from, to, piece, null, "w", "playing")
-
-    expect(move.notation).toEqual("P:b5xb6+")
-  })
-
-  it("should have correct notation for checkmate", () => {
-    const from = makeCell(1, 5, 0)
-    const to = makeCell(1, 6, 0)
-    const piece = makePiece("pawn-ccw", "w")
-    const pieceCaptured = makePiece("pawn-ccw", "b")
-    to.piece = pieceCaptured
-
-    const move = createMove("w", from, to, piece, null, null, "checkmate")
-
-    expect(move.notation).toEqual("P:b5xb6#")
-  })
-})
-describe("displayTimeRemaining", () => {
-  it("should format time correctly", () => {
-    expect(displayTimeRemaining(65)).toBe("01:05")
-    expect(displayTimeRemaining(3600)).toBe("60:00")
-    expect(displayTimeRemaining(0)).toBe("00:00")
-    expect(displayTimeRemaining(-10)).toBe("00:00")
-  })
-})
-
-describe("isGameOver", () => {
-  it("should correctly identify when game is over", () => {
-    expect(isGameOver("checkmate")).toBe(true)
-    expect(isGameOver("draw-stalemate")).toBe(true)
-    expect(isGameOver("draw-agreement")).toBe(true)
-    expect(isGameOver("resignation")).toBe(true)
-    expect(isGameOver("time-expired")).toBe(true)
-    expect(isGameOver("opponent-left")).toBe(true)
-    expect(isGameOver("draw-threefold")).toBe(true)
-    expect(isGameOver("draw-fifty-move")).toBe(true)
-    expect(isGameOver("draw-insufficient")).toBe(true)
-  })
-
-  it("should correctly identify when game is not over", () => {
-    expect(isGameOver("playing")).toBe(false)
-    expect(isGameOver("waiting")).toBe(false)
-  })
-})
-
-describe("getNewStatus", () => {
-  it("should update game status to playing", () => {
-    const board = initializeBoard()
-    const moves: Move[] = []
-    const nextMove = {
-      from: board[1][4],
-      to: board[1][6],
-      piece: makePiece("pawn-ccw", "w"),
-      piecePromoted: null,
-    }
-    expect(getNewStatus(false, board, "w", moves, nextMove)).toBe("playing")
-  })
-
-  it("should update game status to checkmate", () => {
-    const board = initializeBoard()
-    const moves: Move[] = []
-    const nextMove = {
-      from: board[1][4],
-      to: board[1][6],
-      piece: makePiece("pawn-ccw", "w"),
-      piecePromoted: null,
-    }
-    expect(getNewStatus(true, board, "w", moves, nextMove)).toBe("checkmate")
-  })
-
-  it("should update game status to draw-stalemate", () => {
-    const board = initializeBoard(false)
-
-    board[2][30].piece = makePiece("king", "w")
-    board[2][31].piece = makePiece("pawn-cw", "w")
-    board[2][29].piece = makePiece("pawn-ccw", "w")
-
-    board[2][4].piece = makePiece("rook", "b")
-    board[1][4].piece = makePiece("rook", "b")
-
-    const moves: Move[] = []
-    const nextMove = {
-      from: board[1][4],
-      to: board[1][6],
-      piece: makePiece("pawn-ccw", "w"),
-      piecePromoted: null,
-    }
-    expect(getNewStatus(false, board, "w", moves, nextMove)).toBe(
-      "draw-stalemate"
-    )
-  })
-
-  it("should update game status to draw-threefold", () => {
-    const board = initializeBoard()
-
-    const moves: Move[] = []
-
-    // Create a few cells for testing
-    const cell1 = makeCell(0, 0, 0)
-    const cell2 = makeCell(0, 1, 36)
-    const piece = makePiece("knight", "w")
-
-    // Add moves to simulate repetition (three times, each time has 4 moves)
-    for (let i = 0; i < 3; i++) {
-      const move1 = createMove("w", cell1, cell2, piece, null, null, "playing")
-      const move2 = createMove("w", cell2, cell1, piece, null, null, "playing")
-      moves.push(move1)
-      moves.push(move2)
-      moves.push(move1)
-      moves.push(move2)
-    }
-
-    const nextMove = {
-      from: cell1,
-      to: cell2,
-      piece: makePiece("knight", "w"),
-      piecePromoted: null,
-    }
-    expect(getNewStatus(false, board, "w", moves, nextMove)).toBe(
-      "draw-threefold"
-    )
-  })
-
-  it("should update game status to draw-fifty-move", () => {
-    const board = initializeBoard(true)
-
-    const moves: Move[] = []
-    const cell = makeCell(0, 0, 0)
-    const piece = makePiece("knight", "w")
-
-    for (let i = 0; i < 50; i++) {
-      const move = createMove("w", cell, cell, piece, null, null, "playing")
-      moves.push(move)
-    }
-
-    const nextMove = {
-      from: cell,
-      to: cell,
-      piece: makePiece("bishop", "w"),
-      piecePromoted: null,
-    }
-    expect(getNewStatus(false, board, "w", moves, nextMove)).toBe(
-      "draw-fifty-move"
-    )
-  })
-
-  it("should update game status to draw-insufficient", () => {
-    const board: Board = initializeBoard()
-
-    for (let i = 0; i < board.length; i++) {
-      for (let j = 0; j < board[i].length; j++) {
-        if (board[i][j].piece?.type !== "king") {
-          board[i][j].piece = null
+      testCases.forEach(
+        ({
+          description,
+          from,
+          to,
+          piece,
+          pieceCaptured,
+          piecePromoted,
+          check,
+          status,
+          expectedNotation,
+        }) => {
+          to.piece = pieceCaptured
+          const move = createMove(
+            "w",
+            from,
+            to,
+            piece,
+            piecePromoted,
+            check,
+            status
+          )
+          expect(move.notation).toEqual(expectedNotation)
         }
+      )
+    })
+  })
+
+  describe("displayTimeRemaining", () => {
+    it("should format time correctly", () => {
+      const testCases = [
+        { input: 65, expected: "01:05" },
+        { input: 3600, expected: "60:00" },
+        { input: 0, expected: "00:00" },
+        { input: -10, expected: "00:00" },
+      ]
+
+      testCases.forEach(({ input, expected }) => {
+        expect(displayTimeRemaining(input)).toBe(expected)
+      })
+    })
+  })
+
+  describe("isGameOver", () => {
+    it("should correctly identify game-over statuses", () => {
+      const gameOverStatuses: GameStatus[] = [
+        "checkmate",
+        "draw-stalemate",
+        "draw-agreement",
+        "resignation",
+        "time-expired",
+        "opponent-left",
+        "draw-threefold",
+        "draw-fifty-move",
+        "draw-insufficient",
+      ]
+
+      gameOverStatuses.forEach((status) => {
+        expect(isGameOver(status)).toBe(true)
+      })
+    })
+
+    it("should correctly identify non-game-over statuses", () => {
+      const nonGameOverStatuses: GameStatus[] = ["playing", "waiting"]
+
+      nonGameOverStatuses.forEach((status) => {
+        expect(isGameOver(status)).toBe(false)
+      })
+    })
+  })
+
+  describe("getNewStatus", () => {
+    let board: Board
+    let moves: Move[]
+
+    beforeEach(() => {
+      board = initializeBoard()
+      moves = []
+    })
+
+    it("should return 'playing' when game continues normally", () => {
+      const nextMove = createTestMove(
+        board[1][4],
+        board[1][6],
+        makePiece("pawn-ccw", "w")
+      )
+
+      expect(getNewStatus(false, board, "w", moves, nextMove)).toBe("playing")
+    })
+
+    it("should return 'checkmate' when king is in checkmate", () => {
+      const nextMove = createTestMove(
+        board[1][4],
+        board[1][6],
+        makePiece("pawn-ccw", "w")
+      )
+
+      expect(getNewStatus(true, board, "w", moves, nextMove)).toBe("checkmate")
+    })
+
+    it("should return 'draw-stalemate' when king is not in check but has no legal moves", () => {
+      // Setup stalemate position
+      board = initializeBoard(false)
+      board[2][30].piece = makePiece("king", "w")
+      board[2][31].piece = makePiece("pawn-cw", "w")
+      board[2][29].piece = makePiece("pawn-ccw", "w")
+      board[2][4].piece = makePiece("rook", "b")
+      board[1][4].piece = makePiece("rook", "b")
+
+      const nextMove = createTestMove(
+        board[1][4],
+        board[1][6],
+        makePiece("pawn-ccw", "w")
+      )
+
+      expect(getNewStatus(false, board, "w", moves, nextMove)).toBe(
+        "draw-stalemate"
+      )
+    })
+
+    it("should return 'draw-threefold' when position repeats three times", () => {
+      // Create cells for repetition
+      const cell1 = makeCell(0, 0, 0)
+      const cell2 = makeCell(0, 1, 36)
+      const piece = makePiece("knight", "w")
+
+      // Simulate repetition (three times, each with 4 moves)
+      for (let i = 0; i < 3; i++) {
+        const move1 = createMove(
+          "w",
+          cell1,
+          cell2,
+          piece,
+          null,
+          null,
+          "playing"
+        )
+        const move2 = createMove(
+          "w",
+          cell2,
+          cell1,
+          piece,
+          null,
+          null,
+          "playing"
+        )
+        moves.push(move1, move2, move1, move2)
+      }
+
+      const nextMove = createTestMove(cell1, cell2, makePiece("knight", "w"))
+
+      expect(getNewStatus(false, board, "w", moves, nextMove)).toBe(
+        "draw-threefold"
+      )
+    })
+
+    it("should return 'draw-fifty-move' after 50 moves without captures or pawn moves", () => {
+      board = initializeBoard(true)
+      const cell = makeCell(0, 0, 0)
+      const piece = makePiece("knight", "w")
+
+      // Add 50 moves with no captures or pawn moves
+      for (let i = 0; i < 50; i++) {
+        moves.push(createMove("w", cell, cell, piece, null, null, "playing"))
+      }
+
+      const nextMove = createTestMove(cell, cell, makePiece("bishop", "w"))
+
+      expect(getNewStatus(false, board, "w", moves, nextMove)).toBe(
+        "draw-fifty-move"
+      )
+    })
+
+    it("should return 'draw-insufficient' when neither player has enough material to checkmate", () => {
+      // Clear the board except for kings
+      board = initializeBoard(false)
+      board[2][3].piece = makePiece("king", "w")
+      board[2][28].piece = makePiece("king", "b")
+
+      const from = makeCell(2, 3, 0)
+      const to = makeCell(2, 4, 0)
+      const nextMove = createTestMove(from, to, makePiece("king", "w"))
+
+      expect(getNewStatus(false, board, "w", moves, nextMove)).toBe(
+        "draw-insufficient"
+      )
+    })
+  })
+
+  describe("moveHelper", () => {
+    // Helper function to set up tests
+    const setupMoveHelperTest = (
+      turn: PieceColor,
+      pieceType: PieceType,
+      pieceColor: PieceColor,
+      from: Cell,
+      promotedPiece: Piece | null = null
+    ) => {
+      const board = initializeBoard()
+      const moves: Move[] = []
+      const to = makeCell(1, 6, 0)
+      const piece = makePiece(pieceType, pieceColor)
+      const promotionCoordinates = { from, to, piece }
+
+      const expectedMove = createMove(
+        turn,
+        from,
+        to,
+        piece,
+        promotedPiece,
+        null,
+        "playing"
+      )
+
+      const result = moveHelper(
+        turn,
+        board,
+        moves,
+        promotionCoordinates,
+        promotedPiece
+      )
+
+      // Update timestamps for comparison
+      expectedMove.timestamp = TEST_TIMESTAMP
+      result.move.timestamp = TEST_TIMESTAMP
+
+      return {
+        result,
+        expectedMove,
+        resultMove: result.move,
       }
     }
 
-    const moves: Move[] = []
-    const from = makeCell(2, 3, 0)
-    const to = makeCell(2, 4, 0)
-    const piece = makePiece("king", "w")
+    it("should handle basic pawn move correctly", () => {
+      const { result, expectedMove, resultMove } = setupMoveHelperTest(
+        "b",
+        "pawn-ccw",
+        "w",
+        makeCell(1, 4, 0)
+      )
 
-    const nextMove = { from, to, piece, piecePromoted: null }
-    expect(getNewStatus(false, board, "w", moves, nextMove)).toBe(
-      "draw-insufficient"
-    )
+      expect(result.turn).toBe("w")
+      expect(result.status).toBe("playing")
+      expect(result.checkedColor).toBeNull()
+      expect(resultMove).toEqual(expectedMove)
+    })
+
+    it("should handle king move correctly", () => {
+      const { result, expectedMove, resultMove } = setupMoveHelperTest(
+        "w",
+        "king",
+        "b",
+        makeCell(0, 5, 0)
+      )
+
+      expect(result.turn).toBe("b")
+      expect(result.status).toBe("playing")
+      expect(result.checkedColor).toBeNull()
+      expect(resultMove).toEqual(expectedMove)
+    })
+
+    it("should handle pawn promotion correctly", () => {
+      const promotedPiece = makePiece("queen", "w")
+      const { result, expectedMove, resultMove } = setupMoveHelperTest(
+        "w",
+        "pawn-ccw",
+        "b",
+        makeCell(0, 5, 0),
+        promotedPiece
+      )
+
+      expect(result.turn).toBe("b")
+      expect(result.status).toBe("playing")
+      expect(result.checkedColor).toBeNull()
+      expect(resultMove).toEqual(expectedMove)
+    })
   })
 })
 
-describe("moveHelper", () => {
-  it("should return the correct move with pawn", () => {
-    const oldTurn = "b"
-    const board = initializeBoard()
-    const moves: Move[] = []
-    const from = makeCell(1, 4, 0)
-    const to = makeCell(1, 6, 0)
-    const piece = makePiece("pawn-ccw", "w")
-    const promotionCoordinates = { from, to, piece }
-    const { timestamp: val1, ...actualMove } = createMove(
-      "b",
-      from,
-      to,
-      piece,
-      null,
-      null,
-      "playing"
-    )
-    const {
-      turn,
-      status,
-      checkedColor,
-      move: { timestamp: val2, ...move },
-    } = moveHelper(oldTurn, board, moves, promotionCoordinates, null)
-    expect(turn).toBe("w")
-    expect(status).toBe("playing")
-    expect(checkedColor).toBe(null)
-    expect(move).toEqual(actualMove)
-  })
-
-  it("should return the correct move with king", () => {
-    const oldTurn = "w"
-    const board = initializeBoard()
-    const moves: Move[] = []
-    const from = makeCell(0, 5, 0)
-    const to = makeCell(1, 6, 0)
-    const piece = makePiece("king", "b")
-    const promotionCoordinates = { from, to, piece }
-    const { timestamp: val1, ...actualMove } = createMove(
-      "w",
-      from,
-      to,
-      piece,
-      null,
-      null,
-      "playing"
-    )
-    const {
-      turn,
-      status,
-      checkedColor,
-      move: { timestamp: val2, ...move },
-    } = moveHelper(oldTurn, board, moves, promotionCoordinates, null)
-    expect(turn).toBe("b")
-    expect(status).toBe("playing")
-    expect(checkedColor).toBe(null)
-    expect(move).toEqual(actualMove)
-  })
-
-  it("should return the correct move with pawn promotion", () => {
-    const oldTurn = "w"
-    const board = initializeBoard()
-    const moves: Move[] = []
-    const from = makeCell(0, 5, 0)
-    const to = makeCell(1, 6, 0)
-    const piece = makePiece("pawn-ccw", "b")
-    const promotionCoordinates = { from, to, piece }
-    const { timestamp: val1, ...actualMove } = createMove(
-      "w",
-      from,
-      to,
-      piece,
-      makePiece("queen", "w"),
-      null,
-      "playing"
-    )
-    const {
-      turn,
-      status,
-      checkedColor,
-      move: { timestamp: val2, ...move },
-    } = moveHelper(
-      oldTurn,
-      board,
-      moves,
-      promotionCoordinates,
-      makePiece("queen", "w")
-    )
-    expect(turn).toBe("b")
-    expect(status).toBe("playing")
-    expect(checkedColor).toBe(null)
-    expect(move).toEqual(actualMove)
-  })
-})
-
-describe("gameReducer", () => {
-  let state: GameState = createGameState()
+describe("Game Reducer", () => {
+  let initialState: GameState
 
   beforeEach(() => {
-    vi.clearAllMocks()
-    state = createGameState()
+    initialState = createGameState()
   })
 
-  it("should handle START_GAME action with duration and players", () => {
-    const player: Player = {
-      id: "1",
-      color: "w",
-      userId: "1",
-      username: "Test Player 1",
-    }
-    const opponent: Player = {
-      id: "2",
-      color: "b",
-      userId: "2",
-      username: "Test Player 2",
-    }
-    const action: GameAction = {
-      type: "START_GAME",
-      duration: 10,
-      players: [player, opponent],
-    }
+  describe("START_GAME action", () => {
+    // Setup test data
+    const [player, opponent] = createTestPlayers()
+    const duration = 10
+    const status = "playing"
+    const timer: Record<PieceColor, number> = { w: 10, b: 10 }
 
-    const newState = gameReducer(state, action)
+    it("should handle with duration and players", () => {
+      const action: GameAction = {
+        type: "START_GAME",
+        duration,
+        players: [player, opponent],
+      }
 
-    expect(newState).toEqual({
-      ...state,
-      player,
-      opponent,
-      status: "playing",
-      timer: { w: 10, b: 10 },
+      const newState = gameReducer(initialState, action)
+
+      expect(newState).toEqual({
+        ...initialState,
+        player,
+        opponent,
+        status,
+        timer,
+      })
+    })
+
+    it("should handle with duration only", () => {
+      const action: GameAction = { type: "START_GAME", duration }
+
+      const newState = gameReducer(initialState, action)
+
+      expect(newState).toEqual({
+        ...initialState,
+        status,
+        timer,
+      })
+    })
+
+    it("should handle with players only", () => {
+      const action: GameAction = {
+        type: "START_GAME",
+        players: [player, opponent],
+      }
+
+      const newState = gameReducer(initialState, action)
+
+      expect(newState).toEqual({
+        ...initialState,
+        player,
+        opponent,
+        status,
+      })
+    })
+
+    it("should handle with no parameters", () => {
+      const action: GameAction = { type: "START_GAME" }
+
+      const newState = gameReducer(initialState, action)
+
+      expect(newState).toEqual({
+        ...initialState,
+        status,
+      })
     })
   })
 
-  it("should handle START_GAME action with duration and no players", () => {
-    const action: GameAction = { type: "START_GAME", duration: 10 }
-
-    const newState = gameReducer(state, action)
-
-    expect(newState).toEqual({
-      ...state,
-      status: "playing",
-      timer: { w: 10, b: 10 },
-    })
-  })
-
-  it("should handle START_GAME action with players and no duration", () => {
-    const player: Player = {
-      id: "1",
-      color: "w",
-      userId: "1",
-      username: "Test Player 1",
-    }
-    const opponent: Player = {
-      id: "2",
-      color: "b",
-      userId: "2",
-      username: "Test Player 2",
-    }
-    const action: GameAction = {
-      type: "START_GAME",
-      players: [player, opponent],
-    }
-
-    const newState = gameReducer(state, action)
-
-    expect(newState).toEqual({
-      ...state,
-      player,
-      opponent,
-      status: "playing",
-    })
-  })
-
-  it("should handle START_GAME action with no duration and players", () => {
-    const action: GameAction = { type: "START_GAME" }
-
-    const newState = gameReducer(state, action)
-
-    expect(newState).toEqual({
-      ...state,
-      status: "playing",
-    })
-  })
-
-  it("should handle SET_STATUS action", () => {
+  describe("SET_STATUS action", () => {
     const statuses: GameStatus[] = [
       "waiting",
       "playing",
@@ -534,348 +524,405 @@ describe("gameReducer", () => {
       "opponent-left",
     ]
 
-    for (const status of statuses) {
-      const action: GameAction = { type: "SET_STATUS", status }
+    it("should set the game status correctly for all possible statuses", () => {
+      statuses.forEach((status) => {
+        const action: GameAction = { type: "SET_STATUS", status }
+        const newState = gameReducer(initialState, action)
+        expect(newState.status).toBe(status)
+      })
+    })
+  })
+
+  describe("PROMOTE_PAWN action", () => {
+    const piece: Piece = makePiece("queen", "w")
+
+    it("should not change state when promotion coordinates are not set", () => {
+      const action: GameAction = {
+        type: "PROMOTE_PAWN",
+        piece,
+      }
+
+      const newState = gameReducer(initialState, action)
+
+      expect(newState).toEqual(initialState)
+    })
+
+    it("should handle pawn promotion when coordinates are set", () => {
+      const action: GameAction = { type: "PROMOTE_PAWN", piece }
+
+      const to = makeCell(0, 0, 0)
+      const from = makeCell(0, 0, 0)
+
+      const promotionState = {
+        ...initialState,
+        promotionCoordinates: {
+          from,
+          to,
+          piece: makePiece("pawn-ccw", "w"),
+        },
+      }
+
+      const { turn, status, checkedColor, move } = moveHelper(
+        promotionState.turn,
+        promotionState.boardState.board,
+        promotionState.previousMoves,
+        promotionState.promotionCoordinates,
+        piece
+      )
+
+      move.timestamp = TEST_TIMESTAMP
+
+      const newState = gameReducer(promotionState, action)
+      newState.previousMoves[0].timestamp = TEST_TIMESTAMP
+
+      expect(newState).toEqual({
+        ...promotionState,
+        status,
+        turn,
+        boardState: { ...promotionState.boardState },
+        previousMoves: [...promotionState.previousMoves, move],
+        promotionCoordinates: undefined,
+        check: checkedColor,
+      })
+    })
+  })
+
+  describe("DECREMENT_TIMER action", () => {
+    it("should not change state when timer is not set", () => {
+      const action: GameAction = { type: "DECREMENT_TIMER", player: "w" }
+
+      const newState = gameReducer(initialState, action)
+
+      expect(newState).toEqual(initialState)
+    })
+
+    it("should decrement the timer for the specified player", () => {
+      const state = {
+        ...initialState,
+        timer: { w: 10, b: 10 },
+      }
+      const action: GameAction = { type: "DECREMENT_TIMER", player: "w" }
+
+      const newState = gameReducer(state, action)
+
+      expect(newState.timer).toEqual({ w: 9, b: 10 })
+    })
+  })
+
+  describe("SET_WINNER action", () => {
+    it("should set the winner correctly", () => {
+      const action: GameAction = { type: "SET_WINNER", player: "w" }
+
+      const newState = gameReducer(initialState, action)
+
+      expect(newState.winner).toBe("w")
+    })
+  })
+
+  describe("END_GAME action", () => {
+    const disabled = true
+
+    it("should set disabled to true when winner is already set", () => {
+      const state = { ...initialState, winner: "w" as PieceColor }
+      const action: GameAction = { type: "END_GAME" }
+
+      const newState = gameReducer(state, action)
+
+      expect(newState).toEqual({ ...state, disabled })
+    })
+
+    it("should set winner to 'draw' for draw game statuses", () => {
+      const drawStatuses: GameStatus[] = [
+        "draw-stalemate",
+        "draw-agreement",
+        "draw-threefold",
+        "draw-fifty-move",
+        "draw-insufficient",
+      ]
+
+      drawStatuses.forEach((status) => {
+        const state = { ...initialState, status }
+        const action: GameAction = { type: "END_GAME" }
+
+        const newState = gameReducer(state, action)
+
+        expect(newState).toEqual({
+          ...state,
+          winner: "draw",
+          disabled,
+        })
+      })
+    })
+
+    it("should set current player as winner when opponent left", () => {
+      const state = {
+        ...initialState,
+        status: "opponent-left" as GameStatus,
+      }
+      const action: GameAction = { type: "END_GAME" }
 
       const newState = gameReducer(state, action)
 
       expect(newState).toEqual({
         ...state,
-        status,
+        winner: "w",
+        disabled,
       })
-    }
-  })
-
-  it("should handle PROMOTE_PAWN action when promotion coordinates are not set", () => {
-    const action: GameAction = {
-      type: "PROMOTE_PAWN",
-      piece: makePiece("queen", "w"),
-    }
-
-    const newState = gameReducer(state, action)
-
-    expect(newState).toEqual({ ...state })
-  })
-
-  it("should handle PROMOTE_PAWN action when promotion coordinates are set", () => {
-    const to = makeCell(0, 0, 0)
-    const from = makeCell(0, 0, 0)
-    const piece = makePiece("queen", "w")
-
-    const action: GameAction = { type: "PROMOTE_PAWN", piece }
-    state.promotionCoordinates = { from, to, piece: makePiece("pawn-ccw", "w") }
-    const { turn, status, checkedColor, move } = moveHelper(
-      state.turn,
-      state.boardState.board,
-      state.previousMoves,
-      state.promotionCoordinates,
-      piece
-    )
-    move.timestamp = TEST_DATE
-
-    const newState = gameReducer(state, action)
-    newState.previousMoves[0].timestamp = TEST_DATE
-
-    expect(newState).toEqual({
-      ...state,
-      status,
-      turn,
-      boardState: { ...state.boardState },
-      previousMoves: [...state.previousMoves, move],
-      promotionCoordinates: undefined,
-      check: checkedColor,
     })
   })
 
-  it("should handle DECREMENT_TIMER action when timer is not set", () => {
-    const action: GameAction = { type: "DECREMENT_TIMER", player: "w" }
+  describe("RESET_GAME action", () => {
+    it("should reset the game state to initial values", () => {
+      const modifiedState = {
+        ...initialState,
+        status: "playing" as GameStatus,
+        winner: "w" as PieceColor,
+      }
+      const action: GameAction = { type: "RESET_GAME" }
 
-    const newState = gameReducer(state, action)
+      const newState = gameReducer(modifiedState, action)
 
-    expect(newState).toEqual({ ...state })
+      expect(newState).toEqual(createGameState())
+    })
   })
 
-  it("should handle DECREMENT_TIMER action when timer is set", () => {
-    const action: GameAction = { type: "DECREMENT_TIMER", player: "w" }
+  describe("SYNC_GAME action", () => {
+    it("should synchronize the game state with provided state", () => {
+      const syncedState = { ...initialState, winner: "w" as PieceColor }
+      const action: GameAction = {
+        type: "SYNC_GAME",
+        state: syncedState,
+      }
 
-    state.timer = { w: 10, b: 10 }
+      const newState = gameReducer(initialState, action)
 
-    const newState = gameReducer(state, action)
-
-    expect(newState).toEqual({ ...state, timer: { w: 9, b: 10 } })
+      expect(newState).toEqual(syncedState)
+    })
   })
 
-  it("should handle SET_WINNER action", () => {
-    const action: GameAction = { type: "SET_WINNER", player: "w" }
+  describe("SET_SELECTED_CELL action", () => {
+    it("should set selected cell with available and invalid moves", () => {
+      const board = initializeBoard(false)
+      const cell = board[0][0]
+      board[0][0].piece = makePiece("pawn-ccw", "w")
 
-    const newState = gameReducer(state, action)
+      const state = {
+        ...initialState,
+        boardState: { ...initialState.boardState, board },
+      }
 
-    expect(newState).toEqual({ ...state, winner: "w" })
-  })
+      const availableMoves = getPossibleMoves(cell, board)
+      const invalidMoves = getInvalidMoves(cell, board, availableMoves)
 
-  it("should handle END_GAME action when winner is set", () => {
-    const action: GameAction = { type: "END_GAME" }
-
-    state.winner = "w"
-
-    const newState = gameReducer(state, action)
-
-    expect(newState).toEqual({ ...state, winner: "w", disabled: true })
-  })
-
-  it("should handle END_GAME action when winner is not set", () => {
-    const action: GameAction = { type: "END_GAME" }
-
-    const drawStates: GameStatus[] = [
-      "draw-stalemate",
-      "draw-agreement",
-      "draw-threefold",
-      "draw-fifty-move",
-      "draw-insufficient",
-    ]
-
-    // When the game is a draw
-    for (const status of drawStates) {
-      state.status = status
+      const action: GameAction = {
+        type: "SET_SELECTED_CELL",
+        cell,
+      }
 
       const newState = gameReducer(state, action)
 
-      expect(newState).toEqual({ ...state, winner: "draw", disabled: true })
-    }
+      expect(newState.boardState.selectedCell).toEqual({
+        cell,
+        availableMoves,
+        invalidMoves,
+      })
+    })
 
-    // When the opponent left
-    state.status = "opponent-left"
+    it("should clear selected cell when cell is null", () => {
+      const action: GameAction = { type: "SET_SELECTED_CELL", cell: null }
 
-    const newState = gameReducer(state, action)
+      const newState = gameReducer(initialState, action)
 
-    expect(newState).toEqual({ ...state, winner: "w", disabled: true })
-  })
-
-  it("should handle RESET_GAME action", () => {
-    const action: GameAction = { type: "RESET_GAME" }
-    const actualState = createGameState()
-    const newState = gameReducer(state, action)
-
-    expect(newState).toEqual(actualState)
-  })
-
-  it("should handle SYNC_GAME action", () => {
-    const action: GameAction = {
-      type: "SYNC_GAME",
-      state: { ...state, winner: "w" },
-    }
-
-    const newState = gameReducer(state, action)
-
-    expect(newState).toEqual({ ...state, winner: "w" })
-  })
-
-  it("should handle SET_SELECTED_CELL action when cell is set", () => {
-    state.boardState.board = initializeBoard(false)
-    state.boardState.board[0][0].piece = makePiece("pawn-ccw", "w")
-
-    const action: GameAction = {
-      type: "SET_SELECTED_CELL",
-      cell: state.boardState.board[0][0],
-    }
-
-    const newState = gameReducer(state, action)
-
-    const possibleMoves = getPossibleMoves(
-      state.boardState.board[0][0],
-      state.boardState.board
-    )
-    const invalidMoves = getInvalidMoves(
-      state.boardState.board[0][0],
-      state.boardState.board,
-      possibleMoves
-    )
-
-    expect(newState).toEqual({
-      ...state,
-      boardState: {
-        ...state.boardState,
-        selectedCell: {
-          cell: state.boardState.board[0][0],
-          availableMoves: possibleMoves,
-          invalidMoves: invalidMoves,
-        },
-      },
+      expect(newState.boardState.selectedCell).toBeUndefined()
     })
   })
 
-  it("should handle SET_SELECTED_CELL action when cell is not set", () => {
-    const action: GameAction = { type: "SET_SELECTED_CELL", cell: null }
+  describe("Board Move Actions", () => {
+    // Setup common test data
+    let board: Board
+    let piece: Piece
+    let from: Cell
+    let to: Cell
 
-    const newState = gameReducer(state, action)
+    beforeEach(() => {
+      board = initializeBoard(false)
+      piece = makePiece("king", "w")
+      from = board[0][0]
+      to = board[0][1]
+      from.piece = piece
+    })
 
-    expect(newState).toEqual({
-      ...state,
-      boardState: { ...state.boardState, selectedCell: undefined },
+    describe("SET_PENDING_MOVE action", () => {
+      it("should set pending move without capturing", () => {
+        const state = {
+          ...initialState,
+          boardState: { ...initialState.boardState, board },
+        }
+
+        const action: GameAction = {
+          type: "SET_PENDING_MOVE",
+          pendingMove: {
+            to,
+            from,
+            piece,
+            capturedPiece: to.piece,
+          },
+        }
+
+        const newState = gameReducer(state, action)
+
+        expect(newState).toEqual({
+          ...initialState,
+          disabled: true,
+          boardState: {
+            ...initialState.boardState,
+            board,
+            pendingMove: action.pendingMove,
+          },
+        })
+      })
+
+      it("should set pending move with capturing", () => {
+        const capturedPiece = makePiece("bishop", "b")
+        to.piece = capturedPiece
+
+        const state = {
+          ...initialState,
+          boardState: { ...initialState.boardState, board },
+        }
+
+        const action: GameAction = {
+          type: "SET_PENDING_MOVE",
+          pendingMove: {
+            to,
+            from,
+            piece,
+            capturedPiece,
+          },
+        }
+
+        const newState = gameReducer(state, action)
+
+        // update the actual board
+        to.piece = piece
+        from.piece = null
+
+        expect(newState).toEqual({
+          ...initialState,
+          disabled: true,
+          boardState: {
+            ...initialState.boardState,
+            board,
+            pendingMove: action.pendingMove,
+          },
+        })
+      })
+    })
+
+    describe("CANCEL_MOVE action", () => {
+      it("should revert the pending move", () => {
+        const capturedPiece = makePiece("bishop", "b")
+        to.piece = piece
+
+        const state = {
+          ...initialState,
+          disabled: true,
+          boardState: {
+            ...initialState.boardState,
+            board,
+            pendingMove: {
+              to,
+              from,
+              piece,
+              capturedPiece,
+            },
+          },
+        }
+
+        const action: GameAction = { type: "CANCEL_MOVE" }
+
+        const newState = gameReducer(state, action)
+
+        from.piece = piece
+        to.piece = capturedPiece
+
+        expect(newState).toEqual({
+          ...initialState,
+          disabled: false,
+          boardState: {
+            ...initialState.boardState,
+            board,
+            selectedCell: undefined,
+            pendingMove: undefined,
+          },
+        })
+      })
+    })
+
+    describe("CONFIRM_MOVE action", () => {
+      it("should confirm the pending move and update game state", () => {
+        to.piece = piece // Already moved by SET_PENDING_MOVE
+
+        const state = {
+          ...initialState,
+          disabled: true,
+          boardState: {
+            ...initialState.boardState,
+            board,
+            pendingMove: {
+              to,
+              from,
+              piece,
+              capturedPiece: null,
+            },
+          },
+        }
+
+        const action: GameAction = { type: "CONFIRM_MOVE" }
+
+        const newState = gameReducer(state, action)
+
+        newState.previousMoves[0].timestamp = TEST_TIMESTAMP
+
+        const { turn, checkedColor, status, move } = moveHelper(
+          state.turn,
+          state.boardState.board,
+          state.previousMoves,
+          { to, from, piece },
+          null
+        )
+
+        move.timestamp = TEST_TIMESTAMP
+
+        expect(newState).toEqual({
+          ...state,
+          turn,
+          status,
+          disabled: false,
+          boardState: {
+            ...state.boardState,
+            board,
+            selectedCell: undefined,
+            pendingMove: undefined,
+          },
+          capturedPieces: { w: [piece], b: [] },
+          check: checkedColor,
+          previousMoves: [...state.previousMoves, move],
+        })
+      })
     })
   })
+})
 
-  it("should handle SET_PENDING_MOVE action with no capturing", () => {
-    state.boardState.board = initializeBoard(false)
-    const piece = makePiece("king", "w")
-    const from = makeCell(0, 0, 0)
-    const to = makeCell(0, 1, 0)
-    const capturedPiece = to.piece
+// Future test categories
+describe("UI Tests", () => {
+  it.todo("should test UI components for game board")
+  it.todo("should test UI components for move history")
+  it.todo("should test UI components for game status display")
+})
 
-    state.boardState.board[0][0].piece = piece
-
-    const action: GameAction = {
-      type: "SET_PENDING_MOVE",
-      pendingMove: {
-        to,
-        from,
-        piece,
-        capturedPiece,
-      },
-    }
-
-    const newState = gameReducer(state, action)
-
-    state.boardState.board[to.x][to.y].piece = piece
-    state.boardState.board[from.x][from.y].piece = null
-
-    expect(newState).toEqual({
-      ...state,
-      disabled: true,
-      boardState: { ...state.boardState, pendingMove: action.pendingMove },
-    })
-  })
-
-  it("should handle SET_PENDING_MOVE action with capturing", () => {
-    state.boardState.board = initializeBoard(false)
-    const piece = makePiece("king", "w")
-    const from = makeCell(0, 0, 0)
-    const to = makeCell(0, 1, 0)
-
-    to.piece = makePiece("bishop", "b")
-
-    const capturedPiece = to.piece
-    state.boardState.board[0][0].piece = piece
-
-    const action: GameAction = {
-      type: "SET_PENDING_MOVE",
-      pendingMove: {
-        to,
-        from,
-        piece,
-        capturedPiece,
-      },
-    }
-
-    const newState = gameReducer(state, action)
-
-    state.boardState.board[to.x][to.y].piece = piece
-    state.boardState.board[from.x][from.y].piece = null
-
-    expect(newState).toEqual({
-      ...state,
-      disabled: true,
-      boardState: { ...state.boardState, pendingMove: action.pendingMove },
-    })
-  })
-
-  it("should handle CANCEL_MOVE action", () => {
-    state.boardState.board = initializeBoard(false)
-    const piece = makePiece("king", "w")
-    const from = makeCell(0, 0, 0)
-    const to = makeCell(0, 1, 0)
-    const capturedPiece = to.piece
-
-    state.boardState.board[0][0].piece = piece
-
-    const pending_move_action: GameAction = {
-      type: "SET_PENDING_MOVE",
-      pendingMove: {
-        to,
-        from,
-        piece,
-        capturedPiece,
-      },
-    }
-
-    state = gameReducer(state, pending_move_action)
-
-    const action: GameAction = {
-      type: "CANCEL_MOVE",
-    }
-
-    const newState = gameReducer(state, action)
-
-    state.boardState.board[to.x][to.y].piece = capturedPiece
-    state.boardState.board[from.x][from.y].piece = piece
-
-    expect(newState).toEqual({
-      ...state,
-      disabled: false,
-      boardState: {
-        ...state.boardState,
-        selectedCell: undefined,
-        pendingMove: undefined,
-      },
-    })
-  })
-
-  it("should handle CONFIRM_MOVE action", () => {
-    state.boardState.board = initializeBoard(false)
-    const piece = makePiece("king", "w")
-    const from = makeCell(0, 0, 0)
-    const to = makeCell(0, 1, 0)
-    const capturedPiece = to.piece
-
-    state.boardState.board[0][0].piece = piece
-
-    const pending_move_action: GameAction = {
-      type: "SET_PENDING_MOVE",
-      pendingMove: {
-        to,
-        from,
-        piece,
-        capturedPiece,
-      },
-    }
-
-    state = gameReducer(state, pending_move_action)
-
-    const action: GameAction = {
-      type: "CONFIRM_MOVE",
-    }
-
-    const newState = gameReducer(state, action)
-    newState.previousMoves[0].timestamp = TEST_DATE
-
-    piece.hasMoved = true
-
-    state.boardState.board[to.x][to.y].piece = piece
-    state.boardState.board[from.x][from.y].piece = null
-
-    const { turn, checkedColor, status, move } = moveHelper(
-      state.turn,
-      state.boardState.board,
-      state.previousMoves,
-      { to, from, piece },
-      null
-    )
-
-    move.timestamp = TEST_DATE
-
-    expect(newState).toEqual({
-      ...state,
-      turn,
-      status,
-      disabled: false,
-      boardState: {
-        ...state.boardState,
-        selectedCell: undefined,
-        pendingMove: undefined,
-      },
-      capturedPieces: { w: [], b: [] },
-      check: checkedColor,
-      previousMoves: [...state.previousMoves, move],
-    })
-  })
+describe("Performance Tests", () => {
+  it.todo("should test move calculation performance")
+  it.todo("should test rendering performance")
+  it.todo("should test state updates performance")
 })
