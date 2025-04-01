@@ -709,7 +709,7 @@ describe("gameReducer", () => {
 
     const newState = gameReducer(state, action)
 
-    expect(newState).toEqual({ 
+    expect(newState).toEqual({
       ...state,
       boardState: { ...state.boardState, selectedCell: undefined },
     })
@@ -816,7 +816,7 @@ describe("gameReducer", () => {
         ...state.boardState,
         selectedCell: undefined,
         pendingMove: undefined,
-      }
+      },
     })
   })
 
@@ -848,7 +848,6 @@ describe("gameReducer", () => {
     const newState = gameReducer(state, action)
     newState.previousMoves[0].timestamp = TEST_DATE
 
-
     piece.hasMoved = true
 
     state.boardState.board[to.x][to.y].piece = piece
@@ -874,9 +873,9 @@ describe("gameReducer", () => {
         selectedCell: undefined,
         pendingMove: undefined,
       },
-      capturedPieces: {"w": [], "b": []},
+      capturedPieces: { w: [], b: [] },
       check: checkedColor,
-      previousMoves: [...state.previousMoves, move]
+      previousMoves: [...state.previousMoves, move],
     })
   })
 })
