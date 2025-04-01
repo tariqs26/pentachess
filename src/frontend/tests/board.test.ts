@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest"
 import { makeCell } from "@/features/board/cell"
 import {
   getKingCell,
-  checkInsufficientMatrial,
+  checkInsufficientMaterial,
   cloneBoard,
   initializeBoard,
   getSides,
@@ -190,40 +190,40 @@ describe("Board Utility Functions", () => {
       }
     }
 
-    const result = checkInsufficientMatrial(board)
+    const result = checkInsufficientMaterial(board)
     expect(result).toBe(true)
 
     // remove one king
     board[2][4].piece = null
-    const resultWithoutOneKing = checkInsufficientMatrial(board)
+    const resultWithoutOneKing = checkInsufficientMaterial(board)
     expect(resultWithoutOneKing).toBe(false)
 
     // remove one king
     board[2][29].piece = null
-    const resultWithoutTwoKings = checkInsufficientMatrial(board)
+    const resultWithoutTwoKings = checkInsufficientMaterial(board)
     expect(resultWithoutTwoKings).toBe(false)
 
     // Add a piece so it's no longer insufficient material
     board[0][0].piece = makePiece("pawn-cw", "w")
-    const resultWithPawn = checkInsufficientMatrial(board)
+    const resultWithPawn = checkInsufficientMaterial(board)
     expect(resultWithPawn).toBe(false)
 
     board[0][1].piece = makePiece("rook", "w")
-    const resultWithRook = checkInsufficientMatrial(board)
+    const resultWithRook = checkInsufficientMaterial(board)
     expect(resultWithRook).toBe(false)
 
     board[0][2].piece = makePiece("bishop", "w")
-    const resultWithBishop = checkInsufficientMatrial(board)
+    const resultWithBishop = checkInsufficientMaterial(board)
     expect(resultWithBishop).toBe(false)
 
     board[0][3].piece = makePiece("knight", "w")
-    const resultWithKnight = checkInsufficientMatrial(board)
+    const resultWithKnight = checkInsufficientMaterial(board)
     expect(resultWithKnight).toBe(false)
   })
 
   it("should not be able to detect insufficient material", () => {
     const completeBoard: Board = initializeBoard()
-    const result = checkInsufficientMatrial(completeBoard)
+    const result = checkInsufficientMaterial(completeBoard)
 
     expect(result).toBe(false)
   })

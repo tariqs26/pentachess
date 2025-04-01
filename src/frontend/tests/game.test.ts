@@ -35,8 +35,6 @@ describe("createGameState", () => {
       disabled: false,
       boardState: {
         board: initializeBoard(),
-        selectedCell: null,
-        overCell: null,
       },
       previousMoves: [],
       capturedPieces: { w: [], b: [] },
@@ -672,12 +670,12 @@ describe("gameReducer", () => {
     expect(newState).toEqual({ ...state, winner: "w" })
   })
 
-  it("should handle SELECT_CELL action when cell is set", () => {
+  it("should handle SET_SELECTED_CELL action when cell is set", () => {
     state.boardState.board = initializeBoard(false)
     state.boardState.board[0][0].piece = makePiece("pawn-ccw", "w")
 
     const action: GameAction = {
-      type: "SELECT_CELL",
+      type: "SET_SELECTED_CELL",
       cell: state.boardState.board[0][0],
     }
 
@@ -706,28 +704,14 @@ describe("gameReducer", () => {
     })
   })
 
-  it("should handle SELECT_CELL action when cell is not set", () => {
-    const action: GameAction = { type: "SELECT_CELL", cell: null }
+  it("should handle SET_SELECTED_CELL action when cell is not set", () => {
+    const action: GameAction = { type: "SET_SELECTED_CELL", cell: null }
 
     const newState = gameReducer(state, action)
 
-    expect(newState).toEqual({ ...state })
-  })
-
-  it("should handle SET_OVER_CELL action", () => {
-    const action: GameAction = {
-      type: "SET_OVER_CELL",
-      cell: state.boardState.board[0][0],
-    }
-
-    const newState = gameReducer(state, action)
-
-    expect(newState).toEqual({
+    expect(newState).toEqual({ 
       ...state,
-      boardState: {
-        ...state.boardState,
-        overCell: state.boardState.board[0][0],
-      },
+      boardState: { ...state.boardState, selectedCell: undefined },
     })
   })
 
@@ -830,8 +814,7 @@ describe("gameReducer", () => {
       disabled: false,
       boardState: {
         ...state.boardState,
-        selectedCell: null,
-        overCell: null,
+        selectedCell: undefined,
         pendingMove: undefined,
       }
     })
@@ -888,8 +871,7 @@ describe("gameReducer", () => {
       disabled: false,
       boardState: {
         ...state.boardState,
-        selectedCell: null,
-        overCell: null,
+        selectedCell: undefined,
         pendingMove: undefined,
       },
       capturedPieces: {"w": [], "b": []},

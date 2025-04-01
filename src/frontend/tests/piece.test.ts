@@ -22,6 +22,7 @@ describe("makePiece", () => {
       value: 9999,
       image: kingW,
       hasMoved: false,
+      canPromote: true
     }
     expect(piece).toEqual(actualPiece)
   })
@@ -35,6 +36,7 @@ describe("makePiece", () => {
       value: 5,
       image: rookB,
       hasMoved: false,
+      canPromote: true
     }
     expect(piece).toEqual(actualPiece)
   })
@@ -48,6 +50,7 @@ describe("makePiece", () => {
       value: 9,
       image: queenW,
       hasMoved: false,
+      canPromote: true
     }
     expect(piece).toEqual(actualPiece)
   })
@@ -61,6 +64,7 @@ describe("makePiece", () => {
       value: 1,
       image: pawnBCcw,
       hasMoved: false,
+      canPromote: true
     }
     expect(piece).toEqual(actualPiece)
   })
