@@ -1,5 +1,7 @@
 "use client"
 
+import { useState } from "react"
+
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
@@ -13,6 +15,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/Form"
+import { Checkbox } from "@/components/ui/Checkbox"
 import { Input } from "@/components/ui/Input"
 
 type CreateGameProps = Readonly<
@@ -46,14 +49,16 @@ export const CreateGameForm = ({ isOnline, startHandler }: CreateGameProps) => {
 
   const { isSubmitting } = form.formState
 
+  const [showField, setShowField] = useState(false)
+
   const onSubmit = (values: CreateGameData) => {
     console.log("create game submitted:", values)
-    const duration =
-      values.durationMinutes !== undefined ||
-      values.durationSeconds !== undefined
+    const duration = !showField
+      ? undefined
+      : values.durationMinutes !== undefined ||
+          values.durationSeconds !== undefined
         ? (values.durationMinutes ?? 0) * 60 + (values.durationSeconds ?? 0)
         : undefined
-
     if (!isOnline) {
       startHandler(duration)
     }
@@ -95,10 +100,18 @@ export const CreateGameForm = ({ isOnline, startHandler }: CreateGameProps) => {
           />
         )}
         <fieldset>
-          <p className="mb-3 text-sm font-medium text-primary">
-            Timer Duration (Optional)
-          </p>
-          <div className="flex gap-2">
+          <div className="mb-3 flex space-x-2 text-sm font-medium text-primary">
+            <p className="">Timer Duration (Optional)</p>
+            <Checkbox
+              className="mt-0.5"
+              id="show-fields"
+              checked={showField}
+              onCheckedChange={(checked) => setShowField(!!checked)}
+            />
+          </div>
+          <div
+            className={`flex gap-2 ${showField ? "h-auto scale-y-100 opacity-100" : "h-0 scale-y-0 opacity-0"}`}
+          >
             <FormField
               control={form.control}
               name="durationMinutes"
