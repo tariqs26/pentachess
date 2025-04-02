@@ -58,6 +58,7 @@
 7. **Run tests**
 
    Run the test suite to ensure everything is working correctly:
+
    ```bash
    npm run test
    ```
