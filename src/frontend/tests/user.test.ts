@@ -74,16 +74,3 @@ describe("User Schemas", () => {
     })
   })
 })
-
-// Keeping placeholder tests but with improved structure
-describe("UI Tests", () => {
-  // TODO: Add UI tests when ready
-  it.todo("should implement UI tests for cell rendering")
-  it.todo("should implement UI tests for cell interaction")
-})
-
-describe("Performance Tests", () => {
-  // TODO: Add performance tests when ready
-  it.todo("should measure cell creation performance")
-  it.todo("should measure board initialization performance")
-})

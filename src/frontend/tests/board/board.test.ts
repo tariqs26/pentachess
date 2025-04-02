@@ -24,6 +24,7 @@ import {
   createMovesWithCapture,
   createRepeatingMoves,
 } from "./utils"
+import { measureDispatchTime, mockDispatch } from "../game/utils"
 
 describe("Board Utility Functions", () => {
   describe("initializeBoard", () => {
@@ -304,7 +305,58 @@ describe("UI Tests", () => {
 })
 
 describe("Performance Tests", () => {
-  // TODO: Add performance tests when ready
-  it.todo("should measure cell creation performance")
-  it.todo("should measure board initialization performance")
+  let board: Board
+
+  beforeEach(() => {
+    board = initializeBoard(false)
+  })
+
+  it("should dispatch SET_SELECTED_CELL within 5ms", () => {
+    const averageExecTime = measureDispatchTime(() => {
+      mockDispatch({ type: "SET_SELECTED_CELL", cell: board[1][29] })
+    })
+
+    console.log(
+      `SET_SELECTED_CELL dispatch time: ${averageExecTime.toFixed(2)}ms`
+    )
+    expect(averageExecTime).toBeLessThan(5)
+  })
+
+  it("should dispatch SET_PENDING_MOVE within 5ms", () => {
+    const from = board[1][29]
+    const to = board[1][28]
+    const piece = makePiece("berolina-pawn-cw", "w")
+
+    const pendingMove = {
+      from,
+      to,
+      piece,
+      capturedPiece: to.piece,
+    }
+
+    const averageExecTime = measureDispatchTime(() => {
+      mockDispatch({ type: "SET_PENDING_MOVE", pendingMove })
+    })
+
+    console.log(
+      `SET_PENDING_MOVE dispatch time: ${averageExecTime.toFixed(2)}ms`
+    )
+    expect(averageExecTime).toBeLessThan(5)
+  })
+
+  it("should dispatch CANCEL_MOVE within 5ms", () => {
+    const averageExecTime = measureDispatchTime(() => {
+      mockDispatch({ type: "CANCEL_MOVE" })
+    })
+    console.log(`CANCEL_MOVE dispatch time: ${averageExecTime.toFixed(2)}ms`)
+    expect(averageExecTime).toBeLessThan(5)
+  })
+
+  it("should dispatch CONFIRM_MOVE within 5ms", () => {
+    const averageExecTime = measureDispatchTime(() => {
+      mockDispatch({ type: "CONFIRM_MOVE" })
+    })
+    console.log(`CONFIRM_MOVE dispatch time: ${averageExecTime.toFixed(2)}ms`)
+    expect(averageExecTime).toBeLessThan(5)
+  })
 })

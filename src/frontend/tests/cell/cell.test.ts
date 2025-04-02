@@ -206,9 +206,3 @@ describe("UI Tests", () => {
   it.todo("should implement UI tests for cell rendering")
   it.todo("should implement UI tests for cell interaction")
 })
-
-describe("Performance Tests", () => {
-  // Add performance tests when ready
-  it.todo("should measure cell creation performance")
-  it.todo("should measure board initialization performance")
-})
