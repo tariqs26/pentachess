@@ -9,28 +9,6 @@ import {
   passwordSchema,
 } from "@/features/auth/schemas"
 
-// Mock the auth client and database
-vi.mock("@/lib/auth-client", () => ({
-  authClient: {
-    signIn: {
-      email: vi.fn(),
-    },
-    signUp: {
-      email: vi.fn(),
-    },
-  },
-}))
-
-vi.mock("@/lib/db", () => ({
-  db: {
-    user: {
-      findUnique: vi.fn(),
-      create: vi.fn(),
-      update: vi.fn(),
-    },
-  },
-}))
-
 describe("Auth Schemas", () => {
   describe("email validation", () => {
     it("should accept valid email addresses", () => {

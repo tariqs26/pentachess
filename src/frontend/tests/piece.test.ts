@@ -49,9 +49,9 @@ const PROMOTION_SQUARES = {
 }
 
 // Helper functions
-const createCheckmateBoard = (board: Board): Board => {
+export const createCheckmateBoard = (): Board => {
   // Clear the board
-  board = initializeBoard(false)
+  const board = initializeBoard(false)
 
   // Setup checkmate scenario
   const pieces = [
@@ -277,7 +277,7 @@ describe("Piece Utility Functions", () => {
       })
 
       it("should return set of invalid moves in checkmate scenario", () => {
-        board = createCheckmateBoard(board)
+        board = createCheckmateBoard()
         const kingPiece = board[2][29]
         const possibleMoves = getPossibleMoves(kingPiece, board)
         const expectedInvalidMoves = [
