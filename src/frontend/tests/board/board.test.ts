@@ -311,10 +311,6 @@ describe("Performance Tests", () => {
     board = initializeBoard(false)
   })
 
-  it.todo("should update the entire board within 40ms", () => {
-    // TODO
-  })
-
   it("should dispatch SET_SELECTED_CELL within 5ms", () => {
     const averageExecTime = measureDispatchTime(() => {
       mockDispatch({ type: "SET_SELECTED_CELL", cell: board[1][29] })
