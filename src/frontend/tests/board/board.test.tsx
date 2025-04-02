@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest"
 
 import { makeCell } from "@/features/board/cell"
+import { Board as BoardComponent } from "@/features/board/components/Board"
 import type { Board } from "@/features/board/types"
 import {
   checkFiftyMoveNoCap,
@@ -25,6 +26,7 @@ import {
   createRepeatingMoves,
 } from "./utils"
 import { measureDispatchTime, mockDispatch } from "../game/utils"
+import { render } from "./test"
 
 describe("Board Utility Functions", () => {
   describe("initializeBoard", () => {
@@ -302,6 +304,10 @@ describe("UI Tests", () => {
   // TODO: Add UI tests when ready
   it.todo("should implement UI tests for cell rendering")
   it.todo("should implement UI tests for cell interaction")
+
+  it("test", () => {
+    render(<BoardComponent disabled={false}/>)
+  })
 })
 
 describe("Performance Tests", () => {
