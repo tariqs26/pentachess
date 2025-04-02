@@ -39,6 +39,12 @@
    npm run dev
    ```
 
+7. **Run tests**
+
+   ```bash
+   npm run test
+   ```
+
 ### Setup Frontend
 
 1. **Prerequisites**
@@ -86,6 +92,12 @@
 
    ```bash
    npm run dev
+   ```
+
+7. **Run tests**
+
+   ```bash
+   npm run test
    ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
