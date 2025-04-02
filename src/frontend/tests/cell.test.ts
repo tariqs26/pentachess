@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest"
+import { describe, expect, it, beforeEach } from "vitest"
 import {
   makeCell,
   cloneCell,
@@ -12,339 +12,203 @@ import {
 import { initializeBoard } from "@/features/board/utils"
 import { makePiece } from "@/features/piece/utils"
 import { Board } from "@/features/board/types"
-
-describe("Board Cell Functions", () => {
-  it("should create a cell with correct properties for C5", () => {
-    const cell = makeCell(0, 5, 180)
-
-    expect(cell.id).toBe("c5")
-    expect(cell.color).toBe("w")
-    expect(cell.x).toBe(0)
-    expect(cell.y).toBe(5)
-    expect(cell.angle).toBe(180)
-    expect(cell.piece).toBeNull()
-    expect(cell.edges).toEqual([])
-    expect(cell.vertices).toEqual([])
-  })
-
-  it("should create a cell with correct properties for C1", () => {
-    const cell = makeCell(0, 1, 36)
-
-    expect(cell.id).toBe("c1")
-    expect(cell.color).toBe("w")
-    expect(cell.x).toBe(0)
-    expect(cell.y).toBe(1)
-    expect(cell.angle).toBe(36)
-    expect(cell.piece).toBeNull()
-    expect(cell.edges).toEqual([])
-    expect(cell.vertices).toEqual([])
-  })
-
-  it("should create a cell with correct properties for B13", () => {
-    const cell = makeCell(1, 13, 108)
-
-    expect(cell.id).toBe("b13")
-    expect(cell.color).toBe("w")
-    expect(cell.x).toBe(1)
-    expect(cell.y).toBe(13)
-    expect(cell.angle).toBe(108)
-    expect(cell.piece).toBeNull()
-    expect(cell.edges).toEqual([])
-    expect(cell.vertices).toEqual([])
-  })
-
-  it("should create a cell with correct properties for B14", () => {
-    const cell = makeCell(1, 14, 144)
-
-    expect(cell.id).toBe("b14")
-    expect(cell.color).toBe("b")
-    expect(cell.x).toBe(1)
-    expect(cell.y).toBe(14)
-    expect(cell.angle).toBe(144)
-    expect(cell.piece).toBeNull()
-    expect(cell.edges).toEqual([])
-    expect(cell.vertices).toEqual([])
-  })
-
-  it("should create a cell with correct properties for A40", () => {
-    const cell = makeCell(2, 40, 288)
-
-    expect(cell.id).toBe("a40")
-    expect(cell.color).toBe("b")
-    expect(cell.x).toBe(2)
-    expect(cell.y).toBe(40)
-    expect(cell.angle).toBe(288)
-    expect(cell.piece).toBeNull()
-    expect(cell.edges).toEqual([])
-    expect(cell.vertices).toEqual([])
-  })
-
-  it("should create a cell with correct properties for A20", () => {
-    const cell = makeCell(2, 20, 144)
-
-    expect(cell.id).toBe("a20")
-    expect(cell.color).toBe("b")
-    expect(cell.x).toBe(2)
-    expect(cell.y).toBe(20)
-    expect(cell.angle).toBe(144)
-    expect(cell.piece).toBeNull()
-    expect(cell.edges).toEqual([])
-    expect(cell.vertices).toEqual([])
-  })
-
-  it("should clone a cell A5 correctly", () => {
-    const original = makeCell(0, 5, 180)
-    original.piece = makePiece("pawn-cw", "w")
-    original.edges = [
-      [0, 6],
-      [0, 4],
-      [1, 18],
-    ]
-    original.vertices = [
-      [0, 7],
-      [0, 8],
-      [0, 9],
-      [0, 0],
-      [0, 1],
-      [0, 2],
-      [1, 15],
-      [1, 16],
-      [1, 17],
-      [1, 19],
-      [1, 20],
-      [1, 21],
-    ]
-
-    const cloned = cloneCell(original)
-
-    expect(cloned).not.toBe(original) // Different reference
-    expect(cloned.id).toBe(original.id)
-    expect(cloned.color).toBe(original.color)
-    expect(cloned.piece).toEqual(original.piece)
-    expect(cloned.edges).toEqual(original.edges)
-    expect(cloned.vertices).toEqual(original.vertices)
-
-    for (let i = 0; i < original.edges.length; i++) {
-      expect(cloned.edges[i]).toEqual(original.edges[i])
-    }
-    for (let i = 0; i < original.vertices.length; i++) {
-      expect(cloned.vertices[i]).toEqual(original.vertices[i])
-    }
-  })
-
-  it("should clone a cell B10 correctly", () => {
-    const original = makeCell(1, 10, 36)
-    original.piece = makePiece("pawn-cw", "w")
-    original.edges = [
-      [1, 11],
-      [1, 9],
-    ]
-    original.vertices = [
-      [0, 3],
-      [0, 4],
-    ]
-
-    const cloned = cloneCell(original)
-
-    expect(cloned).not.toBe(original) // Different reference
-    expect(cloned.id).toBe(original.id)
-    expect(cloned.color).toBe(original.color)
-    expect(cloned.piece).toEqual(original.piece)
-    expect(cloned.edges).toEqual(original.edges)
-    expect(cloned.vertices).toEqual(original.vertices)
-
-    for (let i = 0; i < original.edges.length; i++) {
-      expect(cloned.edges[i]).toEqual(original.edges[i])
-    }
-    for (let i = 0; i < original.vertices.length; i++) {
-      expect(cloned.vertices[i]).toEqual(original.vertices[i])
-    }
-  })
-
-  it("should clone a cell C20 correctly", () => {
-    const original = makeCell(2, 20, 144)
-    original.piece = makePiece("pawn-cw", "w")
-    original.edges = [
-      [1, 11],
-      [1, 9],
-    ]
-    original.vertices = [
-      [0, 3],
-      [0, 4],
-    ]
-
-    const cloned = cloneCell(original)
-
-    expect(cloned).not.toBe(original) // Different reference
-    expect(cloned.id).toBe(original.id)
-    expect(cloned.color).toBe(original.color)
-    expect(cloned.piece).toEqual(original.piece)
-    expect(cloned.edges).toEqual(original.edges)
-    expect(cloned.vertices).toEqual(original.vertices)
-
-    for (let i = 0; i < original.edges.length; i++) {
-      expect(cloned.edges[i]).toEqual(original.edges[i])
-    }
-    for (let i = 0; i < original.vertices.length; i++) {
-      expect(cloned.vertices[i]).toEqual(original.vertices[i])
-    }
-  })
-
-  it("should generate correct cell IDs", () => {
-    expect(cellId(0, 5)).toBe("c5")
-    expect(cellId(1, 15)).toBe("b15")
-    expect(cellId(2, 30)).toBe("a30")
-    expect(cellId(0, 9)).toBe("c9")
-    expect(cellId(1, 1)).toBe("b1")
-    expect(cellId(2, 3)).toBe("a3")
-    expect(cellId(2, 20)).toBe("a20")
-  })
-
-  it("should get clockwise edges for cell A20", () => {
-    const board = initializeBoard()
-    const cell = board[0][0]
-
-    const cwEdge = getCWEdge(cell, board)
-
-    expect(cwEdge).not.toBeNull()
-
-    expect(cwEdge.id).not.toBe(cell.id)
-  })
-
-  it("should get clockwise edges for cell B10", () => {
-    const board = initializeBoard()
-    const cell = board[1][10]
-
-    const cwEdge = getCWEdge(cell, board)
-
-    expect(cwEdge).not.toBeNull()
-
-    expect(cwEdge.id).not.toBe(cell.id)
-  })
-
-  it("should get clockwise edges for cell C30", () => {
-    const board = initializeBoard()
-    const cell = board[2][30]
-
-    const cwEdge = getCWEdge(cell, board)
-
-    expect(cwEdge).not.toBeNull()
-
-    expect(cwEdge.id).not.toBe(cell.id)
-  })
-
-  it("should get counter-clockwise edges for cell A20", () => {
-    const board = initializeBoard()
-    const cell = board[0][0]
-
-    const ccwEdge = getCCWEdge(cell, board)
-
-    expect(ccwEdge).not.toBeNull()
-
-    expect(ccwEdge.id).not.toBe(cell.id)
-  })
-
-  it("should get counter-clockwise edges for cell B10", () => {
-    const board = initializeBoard()
-    const cell = board[1][10]
-
-    const ccwEdge = getCCWEdge(cell, board)
-
-    expect(ccwEdge).not.toBeNull()
-
-    expect(ccwEdge.id).not.toBe(cell.id)
-  })
-
-  it("should get counter-clockwise edges for cell C30", () => {
-    const board = initializeBoard()
-    const cell = board[2][30]
-
-    const ccwEdge = getCCWEdge(cell, board)
-
-    expect(ccwEdge).not.toBeNull()
-
-    expect(ccwEdge.id).not.toBe(cell.id)
-  })
-
-  it("should get side edges for cell A2", () => {
-    const board = initializeBoard()
-    const cell = board[2][2]
-    const correctSideEdge = board[1][1]
-
-    const sideEdge = getSideEdge(cell, board)
-
-    expect(sideEdge).not.toBeNull()
-
-    expect(sideEdge.id).toBe(correctSideEdge.id)
-  })
-
-  it("should get side edges for cell B1", () => {
-    const board = initializeBoard()
-    const cell = board[1][1]
-    const correctSideEdge = board[2][2]
-
-    const sideEdge = getSideEdge(cell, board)
-
-    expect(sideEdge).not.toBeNull()
-
-    expect(sideEdge.id).toBe(correctSideEdge.id)
-  })
-
-  it("should get side edges for cell C4", () => {
-    const board = initializeBoard()
-    const cell = board[0][4]
-    const correctSideEdge = board[1][15]
-
-    const sideEdge = getSideEdge(cell, board)
-
-    expect(sideEdge).not.toBeNull()
-
-    expect(sideEdge.id).toBe(correctSideEdge.id)
-  })
-
-  it("should set cell edges correctly", () => {
-    const correctBoard = initializeBoard()
-    const board: Board = [[], [], []]
-
-    for (let ring = 0; ring < correctBoard.length; ring++) {
-      for (let cell = 0; cell < correctBoard[ring].length; cell++) {
-        const newCell = makeCell(ring, cell, 0)
-        setCellEdges(newCell)
-        board[ring].push(newCell)
-      }
-    }
-
-    for (let ring = 0; ring < correctBoard.length; ring++) {
-      for (let cell = 0; cell < correctBoard[ring].length; cell++) {
-        expect(board[ring][cell].edges).toEqual(correctBoard[ring][cell].edges)
-      }
-    }
-  })
-
-  it("should set cell vertices correctly", () => {
-    const correctBoard = initializeBoard()
-    const board: Board = [[], [], []]
-
-    for (let ring = 0; ring < correctBoard.length; ring++) {
-      for (let cell = 0; cell < correctBoard[ring].length; cell++) {
-        const newCell = makeCell(ring, cell, 0)
-        setCellEdges(newCell)
-        board[ring].push(newCell)
-      }
-    }
-
-    for (let ring = 0; ring < correctBoard.length; ring++) {
-      for (let cell = 0; cell < correctBoard[ring].length; cell++) {
-        setCellVertices(board[ring][cell], board)
-      }
-    }
-
-    for (let ring = 0; ring < correctBoard.length; ring++) {
-      for (let cell = 0; cell < correctBoard[ring].length; cell++) {
-        expect(board[ring][cell].vertices).toEqual(
-          correctBoard[ring][cell].vertices
-        )
-      }
-    }
-  })
-})
+import { PieceColor } from "@/features/piece/types"
+
+// Shared test fixtures
+const cellTestCases = [
+  { ring: 0, cell: 5, angle: 180, id: "c5", color: "w" },
+  { ring: 0, cell: 1, angle: 36, id: "c1", color: "w" },
+  { ring: 1, cell: 13, angle: 108, id: "b13", color: "w" },
+  { ring: 1, cell: 14, angle: 144, id: "b14", color: "b" },
+  { ring: 2, cell: 40, angle: 288, id: "a40", color: "b" },
+  { ring: 2, cell: 20, angle: 144, id: "a20", color: "b" }
+];
+
+describe("Cell Utility Functions", () => {
+  // Cell creation and manipulation tests
+  describe("makeCell", () => {
+    cellTestCases.forEach(({ ring, cell, angle, id, color }) => {
+      it(`should create a cell with correct properties for ${id}`, () => {
+        const result = makeCell(ring, cell, angle);
+
+        expect(result.id).toBe(id);
+        expect(result.color).toBe(color);
+        expect(result.x).toBe(ring);
+        expect(result.y).toBe(cell);
+        expect(result.angle).toBe(angle);
+        expect(result.piece).toBeNull();
+        expect(result.edges).toEqual([]);
+        expect(result.vertices).toEqual([]);
+      });
+    });
+  });
+
+  describe("cloneCell", () => {
+    cellTestCases.forEach(({id, ring, cell, angle, color}) => {
+      it(`should clone cell ${id} correctly`, () => {
+        const original = makeCell(ring, cell, angle);
+        original.piece = makePiece("pawn-cw", color as PieceColor);
+        original.edges = [[0, 1], [0, 2]];
+        original.vertices = [[0, 1], [0, 2]];
+        
+        const cloned = cloneCell(original);
+
+        expect(cloned).not.toBe(original); // Different reference
+        expect(cloned.id).toBe(original.id);
+        expect(cloned.color).toBe(original.color);
+        expect(cloned.piece).toEqual(original.piece);
+        expect(cloned.edges).toEqual(original.edges);
+        expect(cloned.vertices).toEqual(original.vertices);
+      });
+    });
+  });
+
+  describe("cellId", () => {
+    it("should generate correct cell IDs", () => {
+      const testCases = [
+        { ring: 0, cell: 5, expected: "c5" },
+        { ring: 1, cell: 15, expected: "b15" },
+        { ring: 2, cell: 30, expected: "a30" },
+        { ring: 0, cell: 9, expected: "c9" },
+        { ring: 1, cell: 1, expected: "b1" },
+        { ring: 2, cell: 3, expected: "a3" },
+        { ring: 2, cell: 20, expected: "a20" }
+      ];
+
+      testCases.forEach(({ ring, cell, expected }) => {
+        expect(cellId(ring, cell)).toBe(expected);
+      });
+    });
+  });
+
+  // Edge and vertex-related tests
+  describe("Edge and Vertex Operations", () => {
+    let board: Board;
+    
+    beforeEach(() => {
+      board = initializeBoard();
+    });
+
+    describe("getCWEdge", () => {
+      const testCases = [
+        { id: "a20", x: 0, y: 0 },
+        { id: "b10", x: 1, y: 10 },
+        { id: "c30", x: 2, y: 30 }
+      ];
+
+      testCases.forEach(({ id, x, y }) => {
+        it(`should get clockwise edge for cell ${id}`, () => {
+          const cell = board[x][y];
+          
+          const cwEdge = getCWEdge(cell, board);
+          
+          expect(cwEdge).not.toBeNull();
+          expect(cwEdge.id).not.toBe(cell.id);
+        });
+      });
+    });
+
+    describe("getCCWEdge", () => {
+      const testCases = [
+        { id: "a20", x: 0, y: 0 },
+        { id: "b10", x: 1, y: 10 },
+        { id: "c30", x: 2, y: 30 }
+      ];
+
+      testCases.forEach(({ id, x, y }) => {
+        it(`should get counter-clockwise edge for cell ${id}`, () => {
+          const cell = board[x][y];
+          const ccwEdge = getCCWEdge(cell, board);
+          
+          expect(ccwEdge).not.toBeNull();
+          expect(ccwEdge.id).not.toBe(cell.id);
+        });
+      });
+    });
+
+    describe("getSideEdge", () => {
+      const testCases = [
+        { id: "a2", cellCoords: [2, 2], edgeCoords: [1, 1] },
+        { id: "b1", cellCoords: [1, 1], edgeCoords: [2, 2] },
+        { id: "c4", cellCoords: [0, 4], edgeCoords: [1, 15] }
+      ];
+
+      testCases.forEach(({ id, cellCoords, edgeCoords }) => {
+        it(`should get correct side edge for cell ${id}`, () => {
+          const cell = board[cellCoords[0]][cellCoords[1]];
+          const expectedEdge = board[edgeCoords[0]][edgeCoords[1]];
+          const sideEdge = getSideEdge(cell, board);
+
+          expect(sideEdge).not.toBeNull();
+          expect(sideEdge.id).toBe(expectedEdge.id);
+        });
+      });
+    });
+
+    describe("setCellEdges and setCellVertices", () => {
+      it("should set cell edges correctly", () => {
+        const correctBoard = initializeBoard();
+        const testBoard: Board = [[], [], []];
+
+        // Create cells with edges
+        for (let ring = 0; ring < correctBoard.length; ring++) {
+          for (let cell = 0; cell < correctBoard[ring].length; cell++) {
+            const newCell = makeCell(ring, cell, 0);
+            setCellEdges(newCell);
+            testBoard[ring].push(newCell);
+          }
+        }
+
+        // Verify edges
+        for (let ring = 0; ring < correctBoard.length; ring++) {
+          for (let cell = 0; cell < correctBoard[ring].length; cell++) {
+            expect(testBoard[ring][cell].edges).toEqual(correctBoard[ring][cell].edges);
+          }
+        }
+      });
+
+      it("should set cell vertices correctly", () => {
+        const correctBoard = initializeBoard();
+        const testBoard: Board = [[], [], []];
+
+        // Create cells with edges
+        for (let ring = 0; ring < correctBoard.length; ring++) {
+          for (let cell = 0; cell < correctBoard[ring].length; cell++) {
+            const newCell = makeCell(ring, cell, 0);
+            setCellEdges(newCell);
+            testBoard[ring].push(newCell);
+          }
+        }
+
+        // Set vertices
+        for (let ring = 0; ring < correctBoard.length; ring++) {
+          for (let cell = 0; cell < correctBoard[ring].length; cell++) {
+            setCellVertices(testBoard[ring][cell], testBoard);
+          }
+        }
+
+        // Verify vertices
+        for (let ring = 0; ring < correctBoard.length; ring++) {
+          for (let cell = 0; cell < correctBoard[ring].length; cell++) {
+            expect(testBoard[ring][cell].vertices).toEqual(
+              correctBoard[ring][cell].vertices
+            );
+          }
+        }
+      });
+    });
+  });
+});
+
+// Keeping placeholder tests but with improved structure
+describe("UI Tests", () => {
+  // Add UI tests when ready
+  it.todo("should implement UI tests for cell rendering");
+  it.todo("should implement UI tests for cell interaction");
+});
+
+describe("Performance Tests", () => {
+  // Add performance tests when ready
+  it.todo("should measure cell creation performance");
+  it.todo("should measure board initialization performance");
+});
