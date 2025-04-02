@@ -50,10 +50,10 @@ export const CreateGameForm = ({ isOnline, startHandler }: CreateGameProps) => {
 
   const { isSubmitting } = form.formState
 
-  const [hideTimerField, setHideTimerField] = useState(true)
+  const [showTimerField, setShowTimerField] = useState(false)
 
   const onSubmit = (values: CreateGameData) => {
-    const duration = hideTimerField
+    const duration = !showTimerField
       ? undefined
       : values.durationMinutes !== undefined ||
           values.durationSeconds !== undefined
@@ -104,10 +104,10 @@ export const CreateGameForm = ({ isOnline, startHandler }: CreateGameProps) => {
             <p className="">Timer Duration (Optional)</p>
             <Checkbox
               id="toggle-timer-field"
-              onCheckedChange={(checked) => setHideTimerField(!checked)}
+              onCheckedChange={(checked) => setShowTimerField(!!checked)}
             />
           </div>
-          <div className={cn("flex gap-2", hideTimerField && "h-0 scale-y-0")}>
+          <div className={cn("flex gap-2", !showTimerField && "h-0 scale-y-0")}>
             <FormField
               control={form.control}
               name="durationMinutes"
