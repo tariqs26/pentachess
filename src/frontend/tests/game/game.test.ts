@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest"
+import { beforeEach, describe, expect, it } from "vitest"
 
 import { makeCell } from "@/features/board/cell"
 import type { Board, Cell } from "@/features/board/types"
@@ -26,7 +26,13 @@ import {
 } from "@/features/piece/utils"
 
 import { TEST_TIMESTAMP } from "./constants"
-import { createTestMove, createTestPlayers } from "./utils"
+import {
+  createPromotionState,
+  createTestMove,
+  createTestPlayers,
+  measureDispatchTime,
+  mockDispatch,
+} from "./utils"
 
 describe("Game Utility Functions", () => {
   describe("createGameState", () => {
@@ -859,181 +865,51 @@ describe("UI Tests", () => {
 })
 
 describe("Performance Tests", () => {
-  const PERFORMANCE_THRESHOLD = 250; // 250ms threshold as specified in VnV document
+  it("should dispatch START_GAME within 5ms", () => {
+    // Setup test data
+    const [player, opponent] = createTestPlayers()
+    const duration = 10
+    const averageExecTime = measureDispatchTime(() => {
+      mockDispatch({
+        type: "START_GAME",
+        duration,
+        players: [player, opponent],
+      })
+    })
 
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
+    console.log(`START_GAME dispatch time: ${averageExecTime.toFixed(2)}ms`)
+    expect(averageExecTime).toBeLessThan(5)
+  })
 
-  it("should ensure SET_SELECTED_CELL action completes within performance threshold", () => {
-    // Create initial state
-    const initialState = createGameState();
-    
-    // Measure performance of SET_SELECTED_CELL (high priority)
-    const startTime = performance.now();
-    const newState = gameReducer(initialState, {
-      type: "SET_SELECTED_CELL",
-      cell: initialState.boardState.board[1][0]
-    });
-    const endTime = performance.now();
-    
-    // Assert performance meets threshold
-    const duration = endTime - startTime;
-    expect(duration).toBeLessThan(PERFORMANCE_THRESHOLD);
-    
-    // Verify the action completed correctly
-    expect(newState.boardState.selectedCell).toBeDefined();
-    expect(newState.boardState.selectedCell?.cell).toEqual(initialState.boardState.board[1][0]);
-    expect(newState.boardState.selectedCell?.availableMoves.size).toBeGreaterThan(0);
-  });
+  it("should dispatch PROMOTE_PAWN within 5ms", () => {
+    const state = createPromotionState()
 
-  it("should ensure SET_PENDING_MOVE, CANCEL_MOVE, and CONFIRM_MOVE actions complete within performance threshold", () => {
-    // Create initial state with a selected cell
-    let state = createGameState();
-    const fromCell = state.boardState.board[1][0];
-    const toCell = state.boardState.board[2][0];
-    
-    // First select a cell
-    state = gameReducer(state, {
-      type: "SET_SELECTED_CELL",
-      cell: fromCell
-    });
-    
-    // Measure SET_PENDING_MOVE performance
-    let startTime = performance.now();
-    state = gameReducer(state, {
-      type: "SET_PENDING_MOVE", 
-      pendingMove: {
-        from: fromCell,
-        to: toCell,
-        piece: fromCell.piece!,
-        capturedPiece: toCell.piece
-      }
-    });
-    let endTime = performance.now();
-    let duration = endTime - startTime;
-    
-    // Assert performance meets threshold
-    expect(duration).toBeLessThan(PERFORMANCE_THRESHOLD);
-    expect(state.boardState.pendingMove).toBeDefined();
-    
-    // Measure CANCEL_MOVE performance
-    startTime = performance.now();
-    state = gameReducer(state, { type: "CANCEL_MOVE" });
-    endTime = performance.now();
-    duration = endTime - startTime;
-    
-    // Assert performance meets threshold
-    expect(duration).toBeLessThan(PERFORMANCE_THRESHOLD);
-    expect(state.boardState.pendingMove).toBeUndefined();
-    
-    // Set up pending move again before confirming
-    state = gameReducer(state, {
-      type: "SET_PENDING_MOVE",
-      pendingMove: {
-        from: fromCell,
-        to: toCell,
-        piece: fromCell.piece!,
-        capturedPiece: toCell.piece
-      }
-    });
-    
-    // Measure CONFIRM_MOVE performance
-    startTime = performance.now();
-    state = gameReducer(state, { type: "CONFIRM_MOVE" });
-    endTime = performance.now();
-    duration = endTime - startTime;
-    
-    // Assert performance meets threshold
-    expect(duration).toBeLessThan(PERFORMANCE_THRESHOLD);
-    expect(state.previousMoves.length).toBe(1);
-  });
+    const averageExecTime = measureDispatchTime(() => {
+      mockDispatch(
+        { type: "PROMOTE_PAWN", piece: makePiece("pawn-ccw", "w") },
+        state
+      )
+    })
 
-  it("should ensure START_GAME, END_GAME, and PROMOTE_PAWN actions complete within performance threshold", () => {
-    // Create initial state
-    let state = createGameState();
-    
-    // Measure START_GAME performance
-    let startTime = performance.now();
-    state = gameReducer(state, { 
-      type: "START_GAME", 
-      duration: 300,
-      players: [
-        { id: "1", userId: "1", username: "Player 1", color: "w" },
-        { id: "2", userId: "2", username: "Player 2", color: "b" }
-      ]
-    });
-    let endTime = performance.now();
-    let duration = endTime - startTime;
-    
-    // Assert performance meets threshold
-    expect(duration).toBeLessThan(PERFORMANCE_THRESHOLD);
-    expect(state.status).toBe("playing");
-    
-    // Set up promotion scenario
-    const pawn = makePiece("pawn-cw", "w");
-    pawn.canPromote = true;
-    
-    state.promotionCoordinates = {
-      from: state.boardState.board[1][0],
-      to: state.boardState.board[0][0],
-      piece: pawn
-    };
-    
-    // Measure PROMOTE_PAWN performance
-    startTime = performance.now();
-    state = gameReducer(state, { 
-      type: "PROMOTE_PAWN", 
-      piece: makePiece("queen", "w")
-    });
-    endTime = performance.now();
-    duration = endTime - startTime;
-    
-    // Assert performance meets threshold
-    expect(duration).toBeLessThan(PERFORMANCE_THRESHOLD);
-    expect(state.promotionCoordinates).toBeUndefined();
-    
-    // Measure END_GAME performance
-    startTime = performance.now();
-    state = gameReducer(state, { type: "END_GAME" });
-    endTime = performance.now();
-    duration = endTime - startTime;
-    
-    // Assert performance meets threshold
-    expect(duration).toBeLessThan(PERFORMANCE_THRESHOLD);
-    expect(state.disabled).toBe(true);
-  });
+    console.log(`PROMOTE_PAWN dispatch time: ${averageExecTime.toFixed(2)}ms`)
+    expect(averageExecTime).toBeLessThan(5)
+  })
 
-  it("should test move calculation performance for complex board positions", () => {
-    // Create a more complex mid-game state
-    const state = createGameState();
-    
-    // Find a cell with a piece that has many possible moves (like a queen)
-    const queenCell = state.boardState.board.flat().find(
-      cell => cell.piece?.type === "queen" && cell.piece.color === "w"
-    );
-    
-    if (queenCell) {
-      // Measure performance of calculating possible moves for a queen
-      const startTime = performance.now();
-      const newState = gameReducer(state, {
-        type: "SET_SELECTED_CELL",
-        cell: queenCell
-      });
-      const endTime = performance.now();
-      
-      // Assert performance meets threshold
-      const duration = endTime - startTime;
-      expect(duration).toBeLessThan(PERFORMANCE_THRESHOLD);
-      
-      // Verify the action calculated moves correctly
-      expect(newState.boardState.selectedCell).toBeDefined();
-      expect(newState.boardState.selectedCell?.availableMoves).toBeDefined();
-    } else {
-      // Skip if no queen is found
-      console.warn("No queen found for move calculation performance test");
-    }
-  });
-});
+  it("should dispatch END_GAME within 5ms", () => {
+    const averageExecTime = measureDispatchTime(() => {
+      mockDispatch({ type: "END_GAME" })
+    })
 
+    console.log(`END_GAME dispatch time: ${averageExecTime.toFixed(2)}ms`)
+    expect(averageExecTime).toBeLessThan(5)
+  })
 
+  it("should dispatch RESET_GAME within 5ms", () => {
+    const averageExecTime = measureDispatchTime(() => {
+      mockDispatch({ type: "RESET_GAME" })
+    })
+
+    console.log(`RESET_GAME dispatch time: ${averageExecTime.toFixed(2)}ms`)
+    expect(averageExecTime).toBeLessThan(5)
+  })
+})

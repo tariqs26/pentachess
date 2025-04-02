@@ -251,8 +251,10 @@ describe("Performance Tests", () => {
     const averageExecTime = measureExecutionTime(() => {
       getPossibleMoves(board[2][1], board)
     })
-    
-    console.log(`Average time to calculate king moves: ${averageExecTime.toFixed(3)}ms`)
+
+    console.log(
+      `Average time to calculate king moves: ${averageExecTime.toFixed(3)}ms`
+    )
     expect(averageExecTime).toBeLessThan(20)
   })
 
@@ -260,7 +262,7 @@ describe("Performance Tests", () => {
     const averageExecTime = measureExecutionTime(() => {
       checkForCheckOrMate(createCheckmateBoard(), "w", true)
     })
-    
+
     console.log(`Average time to detect check: ${averageExecTime.toFixed(3)}ms`)
     expect(averageExecTime).toBeLessThan(20)
   })
@@ -271,8 +273,10 @@ describe("Performance Tests", () => {
     const averageExecTime = measureExecutionTime(() => {
       getInvalidMoves(kingCell, board, possibleMoves)
     })
-    
-    console.log(`Average time to filter invalid moves: ${averageExecTime.toFixed(3)}ms`)
+
+    console.log(
+      `Average time to filter invalid moves: ${averageExecTime.toFixed(3)}ms`
+    )
     expect(averageExecTime).toBeLessThan(20)
   })
 })

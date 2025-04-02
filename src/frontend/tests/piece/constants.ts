@@ -4,6 +4,8 @@ import pawnBCcw from "/public/pieces/pawn-b-ccw.png"
 import queenW from "/public/pieces/queen-w.png"
 import rookB from "/public/pieces/rook-b.png"
 
+export const ITERATIONS = 10
+
 export const TEST_PIECE_TYPES: PieceType[] = [
   "king",
   "rook",

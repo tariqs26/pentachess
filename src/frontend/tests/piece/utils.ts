@@ -2,6 +2,7 @@ import type { Board } from "@/features/board/types"
 import { initializeBoard } from "@/features/board/utils"
 import type { PieceType } from "@/features/piece/types"
 import { makePiece } from "@/features/piece/utils"
+import { ITERATIONS } from "./constants"
 
 export const createCheckmateBoard = (): Board => {
   // Clear the board
@@ -50,11 +51,10 @@ export const getBlockedCellIndices = () => [
 
 // Measure execution time for functions
 export const measureExecutionTime = (fn: () => void): number => {
-  const iterations = 10;
-  const start = performance.now();
-  for (let i = 0; i < iterations; i++) {
-    fn();
+  const start = performance.now()
+  for (let i = 0; i < ITERATIONS; i++) {
+    fn()
   }
-  const end = performance.now();
-  return (end - start) / iterations;
-};
+  const end = performance.now()
+  return (end - start) / ITERATIONS
+}
