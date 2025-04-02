@@ -33,6 +33,7 @@ jobs:
         working-directory: ./src/frontend
         run: npm run build -- --no-lint
       - name: Test
+        working-directory: ./src/frontend
         run: npm run test
 
   server:
@@ -56,4 +57,5 @@ jobs:
         working-directory: ./src/server
         run: npm run build
       - name: Test
+        working-directory: ./src/server
         run: npm run test
