@@ -1,5 +1,5 @@
 import { beforeEach, expect, describe, test, vi } from "vitest"
-import type { Player } from "../types.js"
+import type { Player } from "../src/types"
 
 // Mock implementation of the server functionality
 describe("Game Server Tests", () => {
