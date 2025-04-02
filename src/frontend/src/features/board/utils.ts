@@ -4,7 +4,7 @@ import { getPossibleMoves, makePiece } from "../piece/utils"
 import { cloneCell, makeCell, setCellEdges, setCellVertices } from "./cell"
 import type { Board, Cell } from "./types"
 
-export function initializeBoard() {
+export function initializeBoard(initialPieces: boolean = true) {
   const rings = [new Array(10), new Array(30), new Array(50)]
   const board: Board = [[], [], []]
 
@@ -45,7 +45,7 @@ export function initializeBoard() {
     for (const cell of ring) setCellVertices(cell, board)
   }
 
-  initializePieces(board)
+  if (initialPieces) initializePieces(board)
 
   return board
 }
