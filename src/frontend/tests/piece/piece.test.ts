@@ -1,101 +1,34 @@
-import {
-  makePiece,
-  canPromote,
-  getPossibleMoves,
-  getInvalidMoves,
-} from "@/features/piece/utils"
+import { beforeEach, describe, expect, it } from "vitest"
+
+import type { Board } from "@/features/board/types"
+import { initializeBoard } from "@/features/board/utils"
 import type {
   Piece,
   PieceAbbr,
   PieceColor,
   PieceType,
 } from "@/features/piece/types"
-import { describe, it, expect, beforeEach } from "vitest"
-import kingW from "/public/pieces/king-w.png"
-import rookB from "/public/pieces/rook-b.png"
-import queenW from "/public/pieces/queen-w.png"
-import pawnBCcw from "/public/pieces/pawn-b-ccw.png"
-import { initializeBoard } from "@/features/board/utils"
-import { Board } from "@/features/board/types"
+import {
+  canPromote,
+  getInvalidMoves,
+  getPossibleMoves,
+  makePiece,
+} from "@/features/piece/utils"
 
-// Test fixtures
-const TEST_PIECE_TYPES: PieceType[] = ["king", "rook", "queen", "pawn-ccw"]
-const TEST_PIECE_COLORS = ["white", "black", "white", "black"]
-const TEST_PIECE_VALUES = [9999, 5, 9, 1]
-const TEST_PIECE_IMAGES = [kingW, rookB, queenW, pawnBCcw]
-
-const PAWN_TYPES: PieceType[] = [
-  "pawn-cw",
-  "pawn-ccw",
-  "berolina-pawn-cw",
-  "berolina-pawn-ccw",
-]
-
-const NON_PAWN_TYPES: PieceType[] = [
-  "king",
-  "queen",
-  "rook",
-  "bishop",
-  "knight",
-]
-
-const PROMOTION_SQUARES = {
-  w: Array(8)
-    .fill(0)
-    .map((_, i) => ({ x: 2, y: i + 25 })),
-  b: Array(8)
-    .fill(0)
-    .map((_, i) => ({ x: 2, y: i })),
-}
-
-// Helper functions
-export const createCheckmateBoard = (): Board => {
-  // Clear the board
-  const board = initializeBoard(false)
-
-  // Setup checkmate scenario
-  const pieces = [
-    { ring: 2, cell: 9, type: "queen", color: "b" },
-    { ring: 2, cell: 4, type: "king", color: "b" },
-    { ring: 2, cell: 29, type: "king", color: "w" },
-    { ring: 1, cell: 5, type: "rook", color: "b" },
-    { ring: 2, cell: 40, type: "pawn-cw", color: "w" },
-  ]
-
-  pieces.forEach(({ ring, cell, type, color }) => {
-    board[ring][cell].piece = makePiece(type as PieceType, color as "w" | "b")
-  })
-
-  return board
-}
-
-const getEmptyCellTests = (board: Board, testFn: (cell: any) => any) => {
-  return board.reduce((tests, ring, ringIndex) => {
-    ring.forEach((cell, cellIndex) => {
-      if (cell.piece === null) {
-        tests.push(testFn(board[ringIndex][cellIndex]))
-      }
-    })
-    return tests
-  }, [] as any[])
-}
-
-const getBlockedCellIndices = () => {
-  return [
-    ...Array(6)
-      .fill(0)
-      .map((_, i) => ({ ring: 2, cell: i + 1 })),
-    ...Array(6)
-      .fill(0)
-      .map((_, i) => ({ ring: 2, cell: i + 26 })),
-    ...Array(2)
-      .fill(0)
-      .map((_, i) => ({ ring: 1, cell: i + 1 })),
-    ...Array(2)
-      .fill(0)
-      .map((_, i) => ({ ring: 1, cell: i + 16 })),
-  ]
-}
+import {
+  NON_PAWN_TYPES,
+  PAWN_TYPES,
+  PROMOTION_SQUARES,
+  TEST_PIECE_COLORS,
+  TEST_PIECE_IMAGES,
+  TEST_PIECE_TYPES,
+  TEST_PIECE_VALUES,
+} from "./constants"
+import {
+  createCheckmateBoard,
+  getBlockedCellIndices,
+  getEmptyCellTests,
+} from "./utils"
 
 describe("Piece Utility Functions", () => {
   describe("makePiece", () => {
@@ -118,7 +51,7 @@ describe("Piece Utility Functions", () => {
       it(description, () => {
         const piece = makePiece(
           TEST_PIECE_TYPES[i],
-          TEST_PIECE_COLORS[i][0] as "w" | "b"
+          TEST_PIECE_COLORS[i][0] as PieceColor
         )
         expect(piece).toEqual(expectedPieces[i])
       })
@@ -130,15 +63,15 @@ describe("Piece Utility Functions", () => {
 
     const runPromotionTest = (
       description: string,
-      squares: any[],
+      squares: { x: number; y: number }[],
       pieceTypes: PieceType[],
       color: PieceColor,
       expectedResult: boolean
     ) => {
       it(description, () => {
         squares.forEach((square) => {
-          pieceTypes.forEach((type) => {
-            expect(canPromote(makePiece(type, color), square)).toBe(
+          pieceTypes.forEach((pieceType) => {
+            expect(canPromote(makePiece(pieceType, color), square)).toBe(
               expectedResult
             )
           })
@@ -298,11 +231,11 @@ describe("Piece Utility Functions", () => {
 
 // Keeping placeholder tests but with improved structure
 describe("UI Tests", () => {
-  // Add UI tests when ready
+  // TODO: Add UI tests when ready
   it.todo("should implement UI tests")
 })
 
 describe("Performance Tests", () => {
-  // Add performance tests when ready
+  // TODO: Add performance tests when ready
   it.todo("should implement performance tests")
 })

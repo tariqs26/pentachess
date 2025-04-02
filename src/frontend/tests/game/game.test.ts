@@ -1,43 +1,32 @@
-import { describe, expect, it, beforeEach } from "vitest"
+import { beforeEach, describe, expect, it } from "vitest"
+
+import { makeCell } from "@/features/board/cell"
+import type { Board, Cell } from "@/features/board/types"
+import { initializeBoard } from "@/features/board/utils"
+import { gameReducer } from "@/features/game/reducer"
+import type {
+  GameAction,
+  GameState,
+  GameStatus,
+  Move,
+} from "@/features/game/types"
 import {
   createGameState,
-  getNewStatus,
-  moveHelper,
-  displayTimeRemaining,
-  isGameOver,
   createMove,
+  displayTimeRemaining,
+  getNewStatus,
+  isGameOver,
+  moveHelper,
 } from "@/features/game/utils"
-import { gameReducer } from "@/features/game/reducer"
-import type { Board, Cell } from "@/features/board/types"
-import { getInvalidMoves } from "@/features/piece/utils"
-import { getPossibleMoves, makePiece } from "@/features/piece/utils"
-import type {
-  GameState,
-  Move,
-  GameAction,
-  Player,
-  GameStatus,
-} from "@/features/game/types"
-import { initializeBoard } from "@/features/board/utils"
-import { makeCell } from "@/features/board/cell"
-import { Piece, PieceColor, PieceType } from "@/features/piece/types"
+import type { Piece, PieceColor, PieceType } from "@/features/piece/types"
+import {
+  getInvalidMoves,
+  getPossibleMoves,
+  makePiece,
+} from "@/features/piece/utils"
 
-// Constants
-const TEST_TIMESTAMP = new Date("2025-01-01T00:00:00.000Z")
-
-// Test fixtures
-const createTestMove = (from: Cell, to: Cell, piece: Piece) => ({
-  from,
-  to,
-  piece,
-  piecePromoted: null,
-})
-
-// Helper for creating test players
-const createTestPlayers = (): [Player, Player] => [
-  { id: "1", color: "w", userId: "1", username: "Test Player 1" },
-  { id: "2", color: "b", userId: "2", username: "Test Player 2" },
-]
+import { TEST_TIMESTAMP } from "./constants"
+import { createTestMove, createTestPlayers } from "./utils"
 
 describe("Game Utility Functions", () => {
   describe("createGameState", () => {
@@ -69,27 +58,27 @@ describe("Game Utility Functions", () => {
     it("should create basic moves with correct values", () => {
       const testCases = [
         {
-          player: "w" as PieceColor,
+          player: "w",
           from: board[1][4],
           to: board[1][6],
           piece: makePiece("pawn-ccw", "b"),
           notation: "P:b4-b6",
         },
         {
-          player: "b" as PieceColor,
+          player: "b",
           from: board[1][14],
           to: board[1][12],
           piece: makePiece("pawn-cw", "b"),
           notation: "P:b14-b12",
         },
         {
-          player: "w" as PieceColor,
+          player: "w",
           from: board[2][7],
           to: board[1][5],
           piece: makePiece("bishop", "w"),
           notation: "B:a7-b5",
         },
-      ]
+      ] as const
 
       testCases.forEach(({ player, from, to, piece, notation }) => {
         const move = createMove(player, from, to, piece, null, null, "playing")
@@ -120,7 +109,7 @@ describe("Game Utility Functions", () => {
           pieceCaptured: makePiece("pawn-ccw", "b"),
           piecePromoted: null,
           check: null,
-          status: "playing" as GameStatus,
+          status: "playing",
           expectedNotation: "P:b5xb6",
         },
         {
@@ -131,7 +120,7 @@ describe("Game Utility Functions", () => {
           pieceCaptured: makePiece("pawn-ccw", "w"),
           piecePromoted: makePiece("queen", "b"),
           check: null,
-          status: "playing" as GameStatus,
+          status: "playing",
           expectedNotation: "P:b1xa3=Q",
         },
         {
@@ -141,8 +130,8 @@ describe("Game Utility Functions", () => {
           piece: makePiece("pawn-ccw", "w"),
           pieceCaptured: makePiece("pawn-ccw", "b"),
           piecePromoted: null,
-          check: "w" as PieceColor,
-          status: "playing" as GameStatus,
+          check: "w",
+          status: "playing",
           expectedNotation: "P:b5xb6+",
         },
         {
@@ -153,14 +142,13 @@ describe("Game Utility Functions", () => {
           pieceCaptured: makePiece("pawn-ccw", "b"),
           piecePromoted: null,
           check: null,
-          status: "checkmate" as GameStatus,
+          status: "checkmate",
           expectedNotation: "P:b5xb6#",
         },
-      ]
+      ] as const
 
       testCases.forEach(
         ({
-          description,
           from,
           to,
           piece,
@@ -471,14 +459,8 @@ describe("Game Reducer", () => {
 
     it("should handle with duration only", () => {
       const action: GameAction = { type: "START_GAME", duration }
-
       const newState = gameReducer(initialState, action)
-
-      expect(newState).toEqual({
-        ...initialState,
-        status,
-        timer,
-      })
+      expect(newState).toEqual({ ...initialState, status, timer })
     })
 
     it("should handle with players only", () => {
@@ -499,13 +481,8 @@ describe("Game Reducer", () => {
 
     it("should handle with no parameters", () => {
       const action: GameAction = { type: "START_GAME" }
-
       const newState = gameReducer(initialState, action)
-
-      expect(newState).toEqual({
-        ...initialState,
-        status,
-      })
+      expect(newState).toEqual({ ...initialState, status })
     })
   })
 
@@ -537,13 +514,8 @@ describe("Game Reducer", () => {
     const piece: Piece = makePiece("queen", "w")
 
     it("should not change state when promotion coordinates are not set", () => {
-      const action: GameAction = {
-        type: "PROMOTE_PAWN",
-        piece,
-      }
-
+      const action: GameAction = { type: "PROMOTE_PAWN", piece }
       const newState = gameReducer(initialState, action)
-
       expect(newState).toEqual(initialState)
     })
 
@@ -590,21 +562,14 @@ describe("Game Reducer", () => {
   describe("DECREMENT_TIMER action", () => {
     it("should not change state when timer is not set", () => {
       const action: GameAction = { type: "DECREMENT_TIMER", player: "w" }
-
       const newState = gameReducer(initialState, action)
-
       expect(newState).toEqual(initialState)
     })
 
     it("should decrement the timer for the specified player", () => {
-      const state = {
-        ...initialState,
-        timer: { w: 10, b: 10 },
-      }
+      const state = { ...initialState, timer: { w: 10, b: 10 } }
       const action: GameAction = { type: "DECREMENT_TIMER", player: "w" }
-
       const newState = gameReducer(state, action)
-
       expect(newState.timer).toEqual({ w: 9, b: 10 })
     })
   })
@@ -612,9 +577,7 @@ describe("Game Reducer", () => {
   describe("SET_WINNER action", () => {
     it("should set the winner correctly", () => {
       const action: GameAction = { type: "SET_WINNER", player: "w" }
-
       const newState = gameReducer(initialState, action)
-
       expect(newState.winner).toBe("w")
     })
   })
@@ -623,11 +586,9 @@ describe("Game Reducer", () => {
     const disabled = true
 
     it("should set disabled to true when winner is already set", () => {
-      const state = { ...initialState, winner: "w" as PieceColor }
+      const state = { ...initialState, winner: "w" as const }
       const action: GameAction = { type: "END_GAME" }
-
       const newState = gameReducer(state, action)
-
       expect(newState).toEqual({ ...state, disabled })
     })
 
@@ -643,31 +604,16 @@ describe("Game Reducer", () => {
       drawStatuses.forEach((status) => {
         const state = { ...initialState, status }
         const action: GameAction = { type: "END_GAME" }
-
         const newState = gameReducer(state, action)
-
-        expect(newState).toEqual({
-          ...state,
-          winner: "draw",
-          disabled,
-        })
+        expect(newState).toEqual({ ...state, winner: "draw", disabled })
       })
     })
 
     it("should set current player as winner when opponent left", () => {
-      const state = {
-        ...initialState,
-        status: "opponent-left" as GameStatus,
-      }
+      const state = { ...initialState, status: "opponent-left" as const }
       const action: GameAction = { type: "END_GAME" }
-
       const newState = gameReducer(state, action)
-
-      expect(newState).toEqual({
-        ...state,
-        winner: "w",
-        disabled,
-      })
+      expect(newState).toEqual({ ...state, winner: "w", disabled })
     })
   })
 
@@ -675,27 +621,20 @@ describe("Game Reducer", () => {
     it("should reset the game state to initial values", () => {
       const modifiedState = {
         ...initialState,
-        status: "playing" as GameStatus,
-        winner: "w" as PieceColor,
+        status: "playing" as const,
+        winner: "w" as const,
       }
       const action: GameAction = { type: "RESET_GAME" }
-
       const newState = gameReducer(modifiedState, action)
-
       expect(newState).toEqual(createGameState())
     })
   })
 
   describe("SYNC_GAME action", () => {
     it("should synchronize the game state with provided state", () => {
-      const syncedState = { ...initialState, winner: "w" as PieceColor }
-      const action: GameAction = {
-        type: "SYNC_GAME",
-        state: syncedState,
-      }
-
+      const syncedState = { ...initialState, winner: "w" as const }
+      const action: GameAction = { type: "SYNC_GAME", state: syncedState }
       const newState = gameReducer(initialState, action)
-
       expect(newState).toEqual(syncedState)
     })
   })
@@ -730,9 +669,7 @@ describe("Game Reducer", () => {
 
     it("should clear selected cell when cell is null", () => {
       const action: GameAction = { type: "SET_SELECTED_CELL", cell: null }
-
       const newState = gameReducer(initialState, action)
-
       expect(newState.boardState.selectedCell).toBeUndefined()
     })
   })

@@ -1,33 +1,25 @@
-import { describe, expect, it, beforeEach } from "vitest"
+import { beforeEach, describe, expect, it } from "vitest"
+
 import {
-  makeCell,
-  cloneCell,
   cellId,
-  getCWEdge,
+  cloneCell,
   getCCWEdge,
+  getCWEdge,
   getSideEdge,
+  makeCell,
   setCellEdges,
   setCellVertices,
 } from "@/features/board/cell"
+import type { Board } from "@/features/board/types"
 import { initializeBoard } from "@/features/board/utils"
 import { makePiece } from "@/features/piece/utils"
-import { Board } from "@/features/board/types"
-import { PieceColor } from "@/features/piece/types"
 
-// Shared test fixtures
-const cellTestCases = [
-  { ring: 0, cell: 5, angle: 180, id: "c5", color: "w" },
-  { ring: 0, cell: 1, angle: 36, id: "c1", color: "w" },
-  { ring: 1, cell: 13, angle: 108, id: "b13", color: "w" },
-  { ring: 1, cell: 14, angle: 144, id: "b14", color: "b" },
-  { ring: 2, cell: 40, angle: 288, id: "a40", color: "b" },
-  { ring: 2, cell: 20, angle: 144, id: "a20", color: "b" },
-]
+import { CELL_TEST_CASES } from "./constants"
 
 describe("Cell Utility Functions", () => {
   // Cell creation and manipulation tests
   describe("makeCell", () => {
-    cellTestCases.forEach(({ ring, cell, angle, id, color }) => {
+    CELL_TEST_CASES.forEach(({ ring, cell, angle, id, color }) => {
       it(`should create a cell with correct properties for ${id}`, () => {
         const result = makeCell(ring, cell, angle)
 
@@ -44,10 +36,10 @@ describe("Cell Utility Functions", () => {
   })
 
   describe("cloneCell", () => {
-    cellTestCases.forEach(({ id, ring, cell, angle, color }) => {
+    CELL_TEST_CASES.forEach(({ id, ring, cell, angle, color }) => {
       it(`should clone cell ${id} correctly`, () => {
         const original = makeCell(ring, cell, angle)
-        original.piece = makePiece("pawn-cw", color as PieceColor)
+        original.piece = makePiece("pawn-cw", color)
         original.edges = [
           [0, 1],
           [0, 2],
