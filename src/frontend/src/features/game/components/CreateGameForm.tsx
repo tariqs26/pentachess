@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 
+import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/Button"
 import {
   Form,
@@ -49,11 +50,10 @@ export const CreateGameForm = ({ isOnline, startHandler }: CreateGameProps) => {
 
   const { isSubmitting } = form.formState
 
-  const [showField, setShowField] = useState(false)
+  const [hideTimerField, setHideTimerField] = useState(true)
 
   const onSubmit = (values: CreateGameData) => {
-    console.log("create game submitted:", values)
-    const duration = !showField
+    const duration = hideTimerField
       ? undefined
       : values.durationMinutes !== undefined ||
           values.durationSeconds !== undefined
@@ -100,18 +100,14 @@ export const CreateGameForm = ({ isOnline, startHandler }: CreateGameProps) => {
           />
         )}
         <fieldset>
-          <div className="mb-3 flex space-x-2 text-sm font-medium text-primary">
+          <div className="mb-3 flex items-center space-x-2 text-sm font-medium text-primary">
             <p className="">Timer Duration (Optional)</p>
             <Checkbox
-              className="mt-0.5"
-              id="show-fields"
-              checked={showField}
-              onCheckedChange={(checked) => setShowField(!!checked)}
+              id="toggle-timer-field"
+              onCheckedChange={(checked) => setHideTimerField(!checked)}
             />
           </div>
-          <div
-            className={`flex gap-2 ${showField ? "h-auto scale-y-100 opacity-100" : "h-0 scale-y-0 opacity-0"}`}
-          >
+          <div className={cn("flex gap-2", hideTimerField && "h-0 scale-y-0")}>
             <FormField
               control={form.control}
               name="durationMinutes"
