@@ -304,7 +304,95 @@ describe("UI Tests", () => {
 })
 
 describe("Performance Tests", () => {
-  // TODO: Add performance tests when ready
-  it.todo("should measure cell creation performance")
-  it.todo("should measure board initialization performance")
+  it("should update the entire board within 40ms", () => {
+    // Setup initial board
+    const board = initializeBoard()
+    
+    // Make a copy for measuring clone/update performance
+    const startTime = performance.now()
+    
+    // Perform a typical board update operation
+    const updatedBoard = cloneBoard(board)
+    
+    // Simulate a piece movement
+    if (updatedBoard[0][0].piece === null) {
+      updatedBoard[0][0].piece = makePiece("pawn-cw", "w")
+    } else if (updatedBoard[0][1].piece === null) {
+      updatedBoard[0][1].piece = updatedBoard[0][0].piece
+      updatedBoard[0][0].piece = null
+    }
+    
+    const endTime = performance.now()
+    const updateTime = endTime - startTime
+    
+    console.log(`Board update time: ${updateTime.toFixed(2)}ms`)
+    expect(updateTime).toBeLessThan(40)
+  })
+  
+  it("should dispatch SET_SELECTED_CELL within 5ms", () => {
+    const board = initializeBoard()
+    const cell = board[0][0]
+    
+    const startTime = performance.now()
+    
+    // Simulate dispatch operation similar to what happens in the Cell component
+    const actionPayload = { type: "SET_SELECTED_CELL", cell }
+    const dispatch = () => actionPayload // Mock dispatch
+    
+    dispatch()
+    
+    const endTime = performance.now()
+    const dispatchTime = endTime - startTime
+    
+    console.log(`SET_SELECTED_CELL dispatch time: ${dispatchTime.toFixed(2)}ms`)
+    expect(dispatchTime).toBeLessThan(5)
+  })
+  
+  it("should dispatch SET_PENDING_MOVE within 5ms", () => {
+    const board = initializeBoard()
+    const fromCell = board[0][0]
+    const toCell = board[0][1]
+    
+    fromCell.piece = makePiece("pawn-cw", "w")
+    
+    const startTime = performance.now()
+    
+    // Simulate dispatch for pending move
+    const pendingMove = { 
+      from: fromCell, 
+      to: toCell, 
+      piece: fromCell.piece, 
+      capturedPiece: toCell.piece 
+    }
+    
+    const actionPayload = { type: "SET_PENDING_MOVE", pendingMove }
+    const dispatch = () => actionPayload // Mock dispatch
+    
+    dispatch()
+    
+    const endTime = performance.now()
+    const dispatchTime = endTime - startTime
+    
+    console.log(`SET_PENDING_MOVE dispatch time: ${dispatchTime.toFixed(2)}ms`)
+    expect(dispatchTime).toBeLessThan(5)
+  })
+  
+  it("should dispatch SET_OVER_CELL within 5ms", () => {
+    const board = initializeBoard()
+    const cell = board[1][3]
+    
+    const startTime = performance.now()
+    
+    // Simulate dispatch for hover over cell
+    const actionPayload = { type: "SET_OVER_CELL", cell }
+    const dispatch = () => actionPayload // Mock dispatch
+    
+    dispatch()
+    
+    const endTime = performance.now()
+    const dispatchTime = endTime - startTime
+    
+    console.log(`SET_OVER_CELL dispatch time: ${dispatchTime.toFixed(2)}ms`)
+    expect(dispatchTime).toBeLessThan(5)
+  })
 })

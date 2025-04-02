@@ -47,3 +47,14 @@ export const getBlockedCellIndices = () => [
     .fill(0)
     .map((_, i) => ({ ring: 1, cell: i + 16 })),
 ]
+
+// Measure execution time for functions
+export const measureExecutionTime = (fn: () => void): number => {
+  const iterations = 10;
+  const start = performance.now();
+  for (let i = 0; i < iterations; i++) {
+    fn();
+  }
+  const end = performance.now();
+  return (end - start) / iterations;
+};
