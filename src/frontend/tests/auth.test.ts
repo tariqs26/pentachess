@@ -1,12 +1,12 @@
-import { describe, expect, it, vi } from "vitest"
+import { describe, expect, it } from "vitest"
 import {
   email,
-  username,
-  password,
-  loginSchema,
-  registerSchema,
   forgotPasswordSchema,
+  loginSchema,
+  password,
   passwordSchema,
+  registerSchema,
+  username,
 } from "@/features/auth/schemas"
 
 describe("Auth Schemas", () => {
@@ -109,17 +109,13 @@ describe("Auth Schemas", () => {
   describe("forgot password schema validation", () => {
     it("should accept valid email", () => {
       expect(
-        forgotPasswordSchema.safeParse({
-          email: "test@example.com",
-        }).success
+        forgotPasswordSchema.safeParse({ email: "test@example.com" }).success
       ).toBe(true)
     })
 
     it("should reject invalid email", () => {
       expect(
-        forgotPasswordSchema.safeParse({
-          email: "invalid-email",
-        }).success
+        forgotPasswordSchema.safeParse({ email: "invalid-email" }).success
       ).toBe(false)
     })
   })
@@ -127,18 +123,14 @@ describe("Auth Schemas", () => {
   describe("password reset schema validation", () => {
     it("should accept valid new password", () => {
       expect(
-        passwordSchema.safeParse({
-          newPassword: "newpassword123",
-        }).success
+        passwordSchema.safeParse({ newPassword: "newpassword123" }).success
       ).toBe(true)
     })
 
     it("should reject invalid new password", () => {
-      expect(
-        passwordSchema.safeParse({
-          newPassword: "12345",
-        }).success
-      ).toBe(false)
+      expect(passwordSchema.safeParse({ newPassword: "12345" }).success).toBe(
+        false
+      )
     })
   })
 })
