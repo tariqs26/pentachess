@@ -26,7 +26,8 @@ import {
   createRepeatingMoves,
 } from "./utils"
 import { measureDispatchTime, mockDispatch } from "../game/utils"
-import { render } from "./test"
+import { customRender } from "./setup"
+import { fireEvent } from "@testing-library/react"
 
 describe("Board Utility Functions", () => {
   describe("initializeBoard", () => {
@@ -305,8 +306,20 @@ describe("UI Tests", () => {
   it.todo("should implement UI tests for cell rendering")
   it.todo("should implement UI tests for cell interaction")
 
-  it("test", () => {
-    render(<BoardComponent disabled={false}/>)
+  it("selecting cell", async () => {
+    const result = customRender(<BoardComponent disabled={false} />)
+
+    const cellContainer = result.container.querySelector(
+      "#cell-container-a0"
+    ) as HTMLDivElement | null
+
+    fireEvent.click(cellContainer!)
+
+    const cellFrom = result.container.querySelector(
+      "#cell-a0"
+    ) as HTMLDivElement | null
+
+    expect(cellFrom?.className.includes("bg-orange-500")).toBe(true)
   })
 })
 
