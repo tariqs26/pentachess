@@ -2,7 +2,7 @@ import { beforeEach, expect, describe, test, vi } from "vitest"
 import type { Player } from "../src/types"
 
 // Mock implementation of the server functionality
-describe("Game Server Tests", () => {
+describe("Game Server", () => {
   // Mock data for game state
   const games: Map<string, [Player, Player | null]> = new Map()
   const gamesQueue: string[] = []
@@ -234,12 +234,5 @@ describe("Game Server Tests", () => {
     expect(games.size).toBe(0)
     expect(gamesQueue.length).toBe(0)
     expect(mockSocket.leave).toHaveBeenCalledWith(gameId)
-  })
-})
-
-// Simple test file
-describe("Basic Server Tests", () => {
-  test("basic test", () => {
-    expect(true).toBe(true)
   })
 })
