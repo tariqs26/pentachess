@@ -32,6 +32,9 @@ jobs:
       - name: Build
         working-directory: ./src/frontend
         run: npm run build -- --no-lint
+      - name: Test
+        working-directory: ./src/frontend
+        run: npm run test
 
   server:
     if: ${{ github.event.action != 'closed' || github.event.pull_request.merged }}
@@ -53,3 +56,6 @@ jobs:
       - name: Build
         working-directory: ./src/server
         run: npm run build
+      - name: Test
+        working-directory: ./src/server
+        run: npm run test
