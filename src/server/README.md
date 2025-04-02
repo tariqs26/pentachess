@@ -27,11 +27,34 @@
    npm run dev
    ```
 
+5. **Run tests**
+
+   Run the test suite to ensure everything is working correctly:
+
+   ```bash
+   npm run test
+   ```
+
+   Run tests and generate a coverage report to see how much of your code is covered by tests:
+
+   ```bash
+   npm run test:coverage
+   ```
+
+   Run tests in watch mode, which automatically reruns tests when files change:
+
+   ```bash
+   npm run test:watch
+   ```
+
 **Available Scripts**
 
-| Command          | Description                                                |
-| ---------------- | ---------------------------------------------------------- |
-| `npm run dev`    | Run the server in development mode (http://localhost:8080) |
-| `npm run build`  | Build the server for production                            |
-| `npm start`      | Run the server in production mode                          |
-| `npm run format` | Format the code using Prettier                             |
+| Command                 | Description                                                |
+| ----------------------- | ---------------------------------------------------------- |
+| `npm run dev`           | Run the server in development mode (http://localhost:8080) |
+| `npm run build`         | Build the server for production                            |
+| `npm start`             | Run the server in production mode                          |
+| `npm run format`        | Format the code using Prettier                             |
+| `npm run test`          | Run tests                                                  |
+| `npm run test:coverage` | Run tests with coverage report                             |
+| `npm run test:watch`    | Run tests in watch mode                                    |

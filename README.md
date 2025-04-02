@@ -63,6 +63,12 @@ For a more detailed guide, see [src/server/README.md](https://github.com/tariqs2
    npm run dev
    ```
 
+7. **Run tests**
+
+   ```bash
+   npm run test
+   ```
+
 ### Setup Frontend
 
 For a more detailed guide, see [src/frontend/README.md](https://github.com/tariqs26/pentachess/blob/develop/src/frontend/README.md).
@@ -118,6 +124,12 @@ For a more detailed guide, see [src/frontend/README.md](https://github.com/tariq
 
    ```bash
    npm run dev
+   ```
+
+7. **Run tests**
+
+   ```bash
+   npm run test
    ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
