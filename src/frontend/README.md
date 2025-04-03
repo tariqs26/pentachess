@@ -55,27 +55,27 @@
    npm run dev
    ```
 
-7. **Run tests**
-
-   Run the test suite to ensure everything is working correctly:
-
-   ```bash
-   npm run test
-   ```
-
-   Run tests and generate a coverage report to see how much of your code is covered by tests:
-
-   ```bash
-   npm run test:coverage
-   ```
-
-   Run tests in watch mode, which automatically reruns tests when files change:
-
-   ```bash
-   npm run test:watch
-   ```
-
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result. You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+
+**Testing**
+
+- Run the test suite to ensure everything is working correctly:
+
+  ```bash
+  npm run test
+  ```
+
+- Run benchmark tests for measuring code performance:
+
+  ```bash
+   npm run test:bench
+  ```
+
+- Run tests and generate a coverage report to see how much of your code is covered by tests:
+
+  ```bash
+  npm run test:coverage
+  ```
 
 **Available Scripts**
 
@@ -92,5 +92,5 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 | `npm run compose:dev:up`   | Startup local MongoDB instance with Docker Compose      |
 | `npm run compose:dev:down` | Shutdown local MongoDB instance with Docker Compose     |
 | `npm run test`             | Run tests                                               |
+| `npm run test:bench`       | Run benchmark tests                                     |
 | `npm run test:coverage`    | Run tests with coverage report                          |
-| `npm run test:watch`       | Run tests in watch mode                                 |
