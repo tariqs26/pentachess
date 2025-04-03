@@ -9,7 +9,7 @@ export const createBenchmarkBoard = () => {
   board[2][1].piece = makePiece("rook", "w")
   board[2][3].piece = makePiece("rook", "w")
   board[1][0].piece = makePiece("rook", "b")
-  
+
   return board
 }
 
