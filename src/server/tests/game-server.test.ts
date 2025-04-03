@@ -11,7 +11,7 @@ import {
 import { GameServer } from "../src/game-server"
 import type { ClientToServerEvents, ServerToClientEvents } from "../src/types"
 
-const TEST_PORT = "8081"
+const TEST_PORT = process.env.TEST_PORT ?? "8081"
 
 describe("GameServer", () => {
   let gameServer: GameServer
@@ -19,7 +19,7 @@ describe("GameServer", () => {
   let client2: Socket<ServerToClientEvents, ClientToServerEvents>
 
   beforeAll(() => {
-    gameServer = new GameServer("http://localhost:8081")
+    gameServer = new GameServer(`http://localhost:${TEST_PORT}`)
     gameServer.start(TEST_PORT)
   })
 
