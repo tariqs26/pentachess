@@ -7,7 +7,6 @@ export type Player = {
   username: string
 }
 
-// TODO: temporary placeholder
 type SyncState = {}
 
 type GameEndData = { status: string; winner: PieceColor | "draw" }
