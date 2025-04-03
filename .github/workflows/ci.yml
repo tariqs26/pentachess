@@ -64,6 +64,4 @@ jobs:
           kill $!
       - name: Test
         working-directory: ./src/server
-        env:
-          TEST_PORT: 8080
         run: npm run test
