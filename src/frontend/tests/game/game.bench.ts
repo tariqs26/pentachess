@@ -33,6 +33,12 @@ describe("Game", () => {
 })
 
 describe("Game", () => {
+  bench("SYNC_GAME", () => {
+    mockDispatch({ type: "SYNC_GAME", state: createPromotionState() })
+  })
+})
+
+describe("Game", () => {
   bench("RESET_GAME", () => {
     mockDispatch({ type: "RESET_GAME" })
   })
