@@ -230,12 +230,6 @@ describe("Piece Utility Functions", () => {
   })
 })
 
-// Keeping placeholder tests but with improved structure
-describe("UI Tests", () => {
-  // TODO: Add UI tests when ready
-  it.todo("should implement UI tests")
-})
-
 describe("Performance Tests", () => {
   let board: Board
 

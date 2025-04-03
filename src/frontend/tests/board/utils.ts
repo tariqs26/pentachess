@@ -3,7 +3,11 @@ import { initializeBoard } from "@/features/board/utils"
 import type { Move } from "@/features/game/types"
 import { createMove } from "@/features/game/utils"
 import { makePiece } from "@/features/piece/utils"
-import { sideRotation, sideTop, sideLeft } from "@/features/board/components/Side"
+import {
+  sideRotation,
+  sideTop,
+  sideLeft,
+} from "@/features/board/components/Side"
 
 export const createEmptyBoard = () => initializeBoard(false)
 
@@ -66,7 +70,7 @@ export const createRepeatingMoves = (count: number): Move[] => {
   return moves
 }
 
-export const getSidePosition = (ring: number, side: number) => {
+export const getSideProps = (ring: number, side: number) => {
   const rotation = sideRotation[ring][side]
   const left = sideLeft[ring][side]
   const top = sideTop[ring][side]
@@ -76,4 +80,12 @@ export const getSidePosition = (ring: number, side: number) => {
     left: `${left}px`,
     top: `${top}px`,
   }
+}
+
+export const normalizeImagePath = (url: string): string => {
+  return decodeURI(url)
+    .replace(/^https?:\/\/[^/]+/, "")
+    .replace(/^\/_next\/image\?url=/, "")
+    .replace(/%2F/g, "/")
+    .replace(/&w=\d+&q=\d+/, "")
 }

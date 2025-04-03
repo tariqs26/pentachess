@@ -857,13 +857,6 @@ describe("Game Reducer", () => {
   })
 })
 
-// Future test categories
-describe("UI Tests", () => {
-  it.todo("should test UI components for game board")
-  it.todo("should test UI components for move history")
-  it.todo("should test UI components for game status display")
-})
-
 describe("Performance Tests", () => {
   it("should dispatch START_GAME within 5ms", () => {
     // Setup test data

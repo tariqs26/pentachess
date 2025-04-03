@@ -199,10 +199,3 @@ describe("Cell Utility Functions", () => {
     })
   })
 })
-
-// Keeping placeholder tests but with improved structure
-describe("UI Tests", () => {
-  // Add UI tests when ready
-  it.todo("should implement UI tests for cell rendering")
-  it.todo("should implement UI tests for cell interaction")
-})
