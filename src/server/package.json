@@ -10,7 +10,6 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "vitest",
-    "test:watch": "vitest --watch",
     "test:coverage": "vitest --coverage"
   },
   "dependencies": {
