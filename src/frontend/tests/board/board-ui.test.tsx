@@ -6,6 +6,7 @@ import { getSidePosition } from "./utils"
 import { RING_SIZES } from "@/features/board/constants"
 import { cellRotation, marginLeftStyle, marginTopStyle } from "@/features/board/utils"
 import { makeCell } from "@/features/board/cell"
+import { INITIAL_PIECES, PIECE_DATA } from "@/features/piece/constants"
 
 describe("UI Tests", () => {
     it("Clicked cell should be highlighted orange", () => {
@@ -87,6 +88,48 @@ describe("UI Tests", () => {
             marginTop: `${marginTopStyle(sampleCell)}px`,
           })
         })
+      })
+    })
+
+    it("Ensure each piece loads correctly and displays the correct image", () => {
+      const board = customRender(<Board disabled={false} />)
+      const pieces = board.container.querySelectorAll(`img`)
+      pieces.forEach((piece) => {
+        const img_src = piece.src.replace(/^https?:\/\/[^/]+/, '') 
+            .replace(/^https?:\/\/[^/]+/, '')
+            .replace(/^\/_next\/image\?url=/, '')
+            .replace(/%2F/g, '/')
+            .replace(/&w=\d+&q=\d+/, '')
+        const [color, piece_type] = piece.alt.split(" ")
+        
+        const pieceData = PIECE_DATA[piece_type as keyof typeof PIECE_DATA]
+        expect(pieceData).toBeDefined()
+
+        const pieceImage = pieceData.image[color[0] as keyof typeof pieceData.image]
+        expect(img_src).toBe(pieceImage.src)
+      })
+    })
+
+    it("Ensure that pieces appear above the cell they occupy", () => {
+      const board = customRender(<Board disabled={false} />)
+      const rings = ["c", "b", "a"]
+
+      const cells = Array.from(board.container.querySelectorAll(`[id^="cell-"]`)).filter(el => el.id.match(new RegExp(`^cell-[a,b,c]\\d+$`)))
+
+      cells.forEach((cell) => {
+        const div_id = cell.id
+        const id = div_id.split("-")[1]
+        const [ring, cell_id] = [id[0], id.slice(1)]
+        const x = rings.indexOf(ring)
+        const y = Number(cell_id)
+        
+        if (x in INITIAL_PIECES && y in INITIAL_PIECES[x]) {
+          const piece = cell.querySelector(`img`)
+          expect(piece).toBeDefined()
+          const [color, piece_type] = piece?.alt.split(" ") || []
+
+          expect(INITIAL_PIECES[x][y]).toEqual([piece_type, color[0]])
+        }
       })
     })
   })
