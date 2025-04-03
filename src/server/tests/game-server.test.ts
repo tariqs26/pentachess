@@ -28,8 +28,8 @@ describe("GameServer", () => {
   })
 
   beforeEach(() => {
-    client1 = io(`http://localhost:${TEST_PORT}`, { transports: ["websocket"] })
-    client2 = io(`http://localhost:${TEST_PORT}`, { transports: ["websocket"] })
+    client1 = io(`http://localhost:${TEST_PORT}`)
+    client2 = io(`http://localhost:${TEST_PORT}`)
   })
 
   afterEach(() => {
