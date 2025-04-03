@@ -118,6 +118,11 @@ export default function RulesAndRegulationsPage() {
             opponent&apos;s piece.
           </li>
           <li>
+            <strong>Grey Outlines:</strong> Cells that would normally be
+            available to go to, but not in the current scenario, as it would put
+            (or keep) the king in danger.
+          </li>
+          <li>
             <strong>Red/Yellow Cell Outlines:</strong> Indicates the cell which
             the corresponding rule refers to.
           </li>

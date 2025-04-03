@@ -23,7 +23,7 @@ export const pieceMovementRules = [
       "Move: The pawn can also move one cell across an edge into an adjacent decagon.",
       "Capture: The pawn can capture within its decagon one cell across a vertex in its given direction.",
       "Capture: The pawn can also capture onto a same-colour cell across a vertex into a different decagon, if the destination cell shares one vertex with the pawn's originating cell and with the next same-colour cell in its given direction in its originating decagon.",
-      "Promotion: The pawn can be promoted to a knight, bishop, rook, or queen upon reaching the opposite side of the board: any cell from a25 to a32 for team White, and any cell from a0 to a7 for team Black.",
+      "Promotion: The pawn can be promoted (optional) to a knight, bishop, rook, or queen upon reaching the opposite side of the board: any cell from a25 to a32 for team White, and any cell from a0 to a7 for team Black. If promotion is declined, the pawn must leave and re-enter the outer decagon in order to be prompted for another promotion in the given cell ranges.",
     ],
     images: [pawn1, pawn2, pawn3, pawn4, pawn5],
   },

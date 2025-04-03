@@ -27,25 +27,19 @@
    npm run dev
    ```
 
-5. **Run tests**
+**Testing**
 
-   Run the test suite to ensure everything is working correctly:
+- Run the test suite to ensure everything is working correctly:
 
-   ```bash
-   npm run test
-   ```
+  ```bash
+  npm run test
+  ```
 
-   Run tests and generate a coverage report to see how much of your code is covered by tests:
+- Run tests and generate a coverage report to see how much of your code is covered by tests:
 
-   ```bash
-   npm run test:coverage
-   ```
-
-   Run tests in watch mode, which automatically reruns tests when files change:
-
-   ```bash
-   npm run test:watch
-   ```
+  ```bash
+  npm run test:coverage
+  ```
 
 **Available Scripts**
 
@@ -57,4 +51,3 @@
 | `npm run format`        | Format the code using Prettier                             |
 | `npm run test`          | Run tests                                                  |
 | `npm run test:coverage` | Run tests with coverage report                             |
-| `npm run test:watch`    | Run tests in watch mode                                    |
