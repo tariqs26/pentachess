@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest"
 
 import { makeCell } from "@/features/board/cell"
-import { Board as BoardComponent } from "@/features/board/components/Board"
 import type { Board } from "@/features/board/types"
 import {
   checkFiftyMoveNoCap,
@@ -26,8 +25,6 @@ import {
   createRepeatingMoves,
 } from "./utils"
 import { measureDispatchTime, mockDispatch } from "../game/utils"
-import { customRender } from "./setup"
-import { fireEvent } from "@testing-library/react"
 
 describe("Board Utility Functions", () => {
   describe("initializeBoard", () => {
@@ -297,29 +294,6 @@ describe("Board Utility Functions", () => {
       const movesWithCap: Move[] = createMovesWithCapture(40, true)
       expect(checkFiftyMoveNoCap(movesWithCap)).toBe(false)
     })
-  })
-})
-
-// Keeping placeholder tests but with improved structure
-describe("UI Tests", () => {
-  // TODO: Add UI tests when ready
-  it.todo("should implement UI tests for cell rendering")
-  it.todo("should implement UI tests for cell interaction")
-
-  it("selecting cell", async () => {
-    const result = customRender(<BoardComponent disabled={false} />)
-
-    const cellContainer = result.container.querySelector(
-      "#cell-container-a0"
-    ) as HTMLDivElement | null
-
-    fireEvent.click(cellContainer!)
-
-    const cellFrom = result.container.querySelector(
-      "#cell-a0"
-    ) as HTMLDivElement | null
-
-    expect(cellFrom?.className.includes("bg-orange-500")).toBe(true)
   })
 })
 

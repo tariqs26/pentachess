@@ -175,3 +175,46 @@ export function checkInsufficientMaterial(board: Board) {
   }
   return false
 }
+
+export const cellRotation = (cell: Cell) => {
+  if (cell.x === 0) return cell.y % 2 === 0 ? -70.5 : -109
+  if (cell.side % 2 !== 0) return cell.y % 2 === 0 ? -73.5 : -109.5
+  return cell.y % 2 === 0 ? -109.5 : -73.5
+}
+
+export const marginLeftStyle = (cell: Cell) => {
+  // key = the ith cell in the side, value = margin value
+  const leftMarginsForRing1 = { 0: -70, 1: -69, 2: -69.5 }
+  const leftMarginsForRing2 = { 0: -70, 1: -69, 2: -69.5, 3: -69, 4: -69.5 }
+
+  if (cell.x === 1) {
+    const ithCell = (cell.y - cell.side * 3) as keyof typeof leftMarginsForRing1
+    return leftMarginsForRing1[ithCell]
+  }
+
+  if (cell.x === 2) {
+    const ithCell = (cell.y - cell.side * 5) as keyof typeof leftMarginsForRing2
+    return leftMarginsForRing2[ithCell]
+  }
+  // default margins for ring 0
+  return cell.side % 2 !== 0 ? -70.1 : -70.5
+}
+
+export const marginTopStyle = (cell: Cell) => {
+  // key = the ith cell in the side, value = margin value
+  const topMarginsForRing1 = { 0: 0, 1: 4.5, 2: -1.5 }
+  const topMarginsForRing2 = { 0: 0, 1: 4.5, 2: -1.6, 3: 2.9, 4: -3.2 }
+
+  if (cell.x === 1) {
+    const ithCell = (cell.y - cell.side * 3) as keyof typeof topMarginsForRing1
+    return topMarginsForRing1[ithCell]
+  }
+
+  if (cell.x === 2) {
+    const ithCell = (cell.y - cell.side * 5) as keyof typeof topMarginsForRing2
+    return topMarginsForRing2[ithCell]
+  }
+
+  // default margins for ring 0
+  return cell.side % 2 !== 0 ? -30 : -10
+}

@@ -3,6 +3,7 @@ import { initializeBoard } from "@/features/board/utils"
 import type { Move } from "@/features/game/types"
 import { createMove } from "@/features/game/utils"
 import { makePiece } from "@/features/piece/utils"
+import { sideRotation, sideTop, sideLeft } from "@/features/board/components/Side"
 
 export const createEmptyBoard = () => initializeBoard(false)
 
@@ -63,4 +64,16 @@ export const createRepeatingMoves = (count: number): Move[] => {
   }
 
   return moves
+}
+
+export const getSidePosition = (ring: number, side: number) => {
+  const rotation = sideRotation[ring][side]
+  const left = sideLeft[ring][side]
+  const top = sideTop[ring][side]
+
+  return {
+    rotate: `${rotation}deg`,
+    left: `${left}px`,
+    top: `${top}px`,
+  }
 }
