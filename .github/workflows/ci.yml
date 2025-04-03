@@ -56,12 +56,8 @@ jobs:
       - name: Build
         working-directory: ./src/server
         run: npm run build
-      - name: Start
-        working-directory: ./src/server
-        run: |
-          npm start &
-          sleep 2
-          kill $!
       - name: Test
         working-directory: ./src/server
+        env:
+          NODE_ENV: test
         run: npm run test
