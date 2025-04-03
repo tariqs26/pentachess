@@ -26,13 +26,7 @@ import {
 } from "@/features/piece/utils"
 
 import { TEST_TIMESTAMP } from "./constants"
-import {
-  createPromotionState,
-  createTestMove,
-  createTestPlayers,
-  measureDispatchTime,
-  mockDispatch,
-} from "./utils"
+import { createTestMove, createTestPlayers } from "./utils"
 
 describe("Game Utility Functions", () => {
   describe("createGameState", () => {
@@ -854,55 +848,5 @@ describe("Game Reducer", () => {
         })
       })
     })
-  })
-})
-
-describe("Performance Tests", () => {
-  it("should dispatch START_GAME within 5ms", () => {
-    // Setup test data
-    const [player, opponent] = createTestPlayers()
-    const duration = 10
-    const averageExecTime = measureDispatchTime(() => {
-      mockDispatch({
-        type: "START_GAME",
-        duration,
-        players: [player, opponent],
-      })
-    })
-
-    console.log(`START_GAME dispatch time: ${averageExecTime.toFixed(2)}ms`)
-    expect(averageExecTime).toBeLessThan(5)
-  })
-
-  it("should dispatch PROMOTE_PAWN within 5ms", () => {
-    const state = createPromotionState()
-
-    const averageExecTime = measureDispatchTime(() => {
-      mockDispatch(
-        { type: "PROMOTE_PAWN", piece: makePiece("pawn-ccw", "w") },
-        state
-      )
-    })
-
-    console.log(`PROMOTE_PAWN dispatch time: ${averageExecTime.toFixed(2)}ms`)
-    expect(averageExecTime).toBeLessThan(5)
-  })
-
-  it("should dispatch END_GAME within 5ms", () => {
-    const averageExecTime = measureDispatchTime(() => {
-      mockDispatch({ type: "END_GAME" })
-    })
-
-    console.log(`END_GAME dispatch time: ${averageExecTime.toFixed(2)}ms`)
-    expect(averageExecTime).toBeLessThan(5)
-  })
-
-  it("should dispatch RESET_GAME within 5ms", () => {
-    const averageExecTime = measureDispatchTime(() => {
-      mockDispatch({ type: "RESET_GAME" })
-    })
-
-    console.log(`RESET_GAME dispatch time: ${averageExecTime.toFixed(2)}ms`)
-    expect(averageExecTime).toBeLessThan(5)
   })
 })

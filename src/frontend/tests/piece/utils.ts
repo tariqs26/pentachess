@@ -1,25 +1,26 @@
 import type { Board } from "@/features/board/types"
 import { initializeBoard } from "@/features/board/utils"
-import type { PieceType } from "@/features/piece/types"
 import { makePiece } from "@/features/piece/utils"
-import { ITERATIONS } from "./constants"
 
-export const createCheckmateBoard = (): Board => {
-  // Clear the board
+export const createBenchmarkBoard = () => {
   const board = initializeBoard(false)
 
-  // Setup checkmate scenario
-  const pieces = [
-    { ring: 2, cell: 9, type: "queen", color: "b" },
-    { ring: 2, cell: 4, type: "king", color: "b" },
-    { ring: 2, cell: 29, type: "king", color: "w" },
-    { ring: 1, cell: 5, type: "rook", color: "b" },
-    { ring: 2, cell: 40, type: "pawn-cw", color: "w" },
-  ]
+  board[2][2].piece = makePiece("king", "w")
+  board[2][1].piece = makePiece("rook", "w")
+  board[2][3].piece = makePiece("rook", "w")
+  board[1][0].piece = makePiece("rook", "b")
+  
+  return board
+}
 
-  pieces.forEach(({ ring, cell, type, color }) => {
-    board[ring][cell].piece = makePiece(type as PieceType, color as "w" | "b")
-  })
+export const createCheckmateBoard = (): Board => {
+  const board = initializeBoard(false)
+
+  board[2][9].piece = makePiece("queen", "b")
+  board[2][4].piece = makePiece("king", "b")
+  board[2][29].piece = makePiece("king", "w")
+  board[1][5].piece = makePiece("rook", "b")
+  board[2][40].piece = makePiece("pawn-cw", "w")
 
   return board
 }
@@ -48,13 +49,3 @@ export const getBlockedCellIndices = () => [
     .fill(0)
     .map((_, i) => ({ ring: 1, cell: i + 16 })),
 ]
-
-// Measure execution time for functions
-export const measureExecutionTime = (fn: () => void): number => {
-  const start = performance.now()
-  for (let i = 0; i < ITERATIONS; i++) {
-    fn()
-  }
-  const end = performance.now()
-  return (end - start) / ITERATIONS
-}

@@ -1,13 +1,13 @@
 import { makeCell } from "@/features/board/cell"
+import {
+  sideLeft,
+  sideRotation,
+  sideTop,
+} from "@/features/board/components/Side"
 import { initializeBoard } from "@/features/board/utils"
 import type { Move } from "@/features/game/types"
 import { createMove } from "@/features/game/utils"
 import { makePiece } from "@/features/piece/utils"
-import {
-  sideRotation,
-  sideTop,
-  sideLeft,
-} from "@/features/board/components/Side"
 
 export const createEmptyBoard = () => initializeBoard(false)
 
@@ -82,10 +82,9 @@ export const getSideProps = (ring: number, side: number) => {
   }
 }
 
-export const normalizeImagePath = (url: string): string => {
-  return decodeURI(url)
+export const normalizeImagePath = (url: string) =>
+  decodeURI(url)
     .replace(/^https?:\/\/[^/]+/, "")
     .replace(/^\/_next\/image\?url=/, "")
     .replace(/%2F/g, "/")
     .replace(/&w=\d+&q=\d+/, "")
-}
