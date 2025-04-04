@@ -25,8 +25,9 @@ import {
   makePiece,
 } from "@/features/piece/utils"
 
-import { TEST_TIMESTAMP } from "./constants"
 import { createTestMove, createTestPlayers } from "./utils"
+
+const TEST_TIMESTAMP = new Date("2025-01-01T00:00:00.000Z")
 
 describe("Game Utility Functions", () => {
   describe("createGameState", () => {
