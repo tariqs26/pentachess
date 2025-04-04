@@ -1,16 +1,18 @@
-import { describe, expect, it } from "vitest"
-import { customRender } from "./setup"
-import { Board } from "@/features/board/components/Board"
 import { fireEvent } from "@testing-library/react"
-import { getSideProps, normalizeImagePath } from "./board/utils"
+import { describe, expect, it } from "vitest"
+
+import { makeCell } from "@/features/board/cell"
+import { Board } from "@/features/board/components/Board"
 import { RING_SIZES } from "@/features/board/constants"
 import {
   cellRotation,
   marginLeftStyle,
   marginTopStyle,
 } from "@/features/board/utils"
-import { makeCell } from "@/features/board/cell"
 import { INITIAL_PIECES, PIECE_DATA } from "@/features/piece/constants"
+
+import { customRender } from "../setup"
+import { getSideProps, normalizeImagePath } from "./utils"
 
 describe("Board UI Tests", () => {
   it("should highlight a cell with orange background when clicked", () => {
@@ -158,16 +160,4 @@ describe("Board UI Tests", () => {
       }
     })
   })
-})
-
-describe("Game UI Tests", () => {
-  it("should display all required game components (Captured Pieces, Board, Moves, Timer) when game state is START_GAME", () => {})
-
-  it("should disable the board and display End Game modal when game state transitions to END_GAME", () => {})
-
-  it("should move piece correctly after sequence of SET_PENDING_MOVE followed by CONFIRM_MOVE actions", () => {})
-
-  it("should not move piece when SET_PENDING_MOVE is followed by CANCEL_MOVE action", () => {})
-
-  it("should display pawn promotion modal when game state transitions to PROMOTE_PAWN", () => {})
 })
