@@ -51,3 +51,11 @@
 | `npm run format`        | Format the code using Prettier                             |
 | `npm run test`          | Run tests                                                  |
 | `npm run test:coverage` | Run tests with coverage report                             |
+
+**Project Directory Structure**
+
+```
+.
+├── src    # Source code
+└── tests  # Test files
+```

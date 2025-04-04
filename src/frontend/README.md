@@ -94,3 +94,26 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 | `npm run test`             | Run tests                                               |
 | `npm run test:bench`       | Run benchmark tests                                     |
 | `npm run test:coverage`    | Run tests with coverage report                          |
+
+**Project Directory Structure**
+
+```
+.
+├── prisma         # Prisma DB schema
+├── public         # Static assets (images)
+├── src
+│   ├── app        # App router
+│   ├── components # Reusable UI components
+│   ├── features
+│   │   ├── auth   # Components & logic for 'Forgot Password', 'Login Form', & etc
+│   │   ├── board  # Board & Cell components/logic
+│   │   ├── game   # Game related components and logic including state management
+│   │   ├── piece  # Piece related components and logic
+│   │   └── user   # Components & logic for 'Account Section', 'Delete Account', & etc
+│   └── lib        # Libraries, helper functions & shared code
+└── tests          # Test files for all features
+    ├── board      # UI, benchmark and unit tests for Board component
+    ├── cell       # Unit tests for Cell component
+    ├── game       # UI, benchmark and unit tests for Game component
+    └── piece      # Benchmark and unit tests for Board component
+```
