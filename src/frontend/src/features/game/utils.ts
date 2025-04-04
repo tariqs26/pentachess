@@ -1,14 +1,14 @@
 import type { Board, Cell } from "../board/types"
 import {
+  checkFiftyMoveNoCapture,
   checkForCheckOrMate,
   checkForStalemate,
-  checkThreeMoveRep,
-  checkFiftyMoveNoCap,
   checkInsufficientMaterial,
-  initializeBoard,
+  checkThreeMoveRepetition,
+  createBoard,
 } from "../board/utils"
 import type { Piece, PieceColor } from "../piece/types"
-import type { GameStatus, GameState, Move } from "./types"
+import type { GameState, GameStatus, Move } from "./types"
 
 export const createGameState = (options?: Partial<GameState>): GameState => ({
   player: { id: "1", color: "w", userId: "1", username: "Player 1" },
@@ -17,7 +17,7 @@ export const createGameState = (options?: Partial<GameState>): GameState => ({
   check: null,
   status: "waiting",
   disabled: false,
-  boardState: { board: initializeBoard() },
+  boardState: { board: createBoard() },
   previousMoves: [],
   capturedPieces: { w: [], b: [] },
   ...options,
@@ -79,14 +79,17 @@ export const getNewStatus = (
   if (isCheckmate) return "checkmate"
   if (checkForStalemate(board, turn)) return "draw-stalemate"
   if (
-    checkThreeMoveRep([
+    checkThreeMoveRepetition([
       ...moves,
       { from: nextMove.from, to: nextMove.to, piece: nextMove.piece },
     ])
   )
     return "draw-threefold"
   if (
-    checkFiftyMoveNoCap([...moves, { to: nextMove.to, piece: nextMove.piece }])
+    checkFiftyMoveNoCapture([
+      ...moves,
+      { to: nextMove.to, piece: nextMove.piece },
+    ])
   )
     return "draw-fifty-move"
   if (checkInsufficientMaterial(board)) return "draw-insufficient"

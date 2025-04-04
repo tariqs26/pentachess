@@ -1,22 +1,22 @@
 import { fireEvent } from "@testing-library/react"
 import { describe, expect, it } from "vitest"
 
-import { makeCell } from "@/features/board/cell"
+import {
+  cellMarginLeft,
+  cellMarginTop,
+  cellRotation,
+  createCell,
+} from "@/features/board/cell"
 import { Board } from "@/features/board/components/Board"
 import { RING_SIZES } from "@/features/board/constants"
-import {
-  cellRotation,
-  marginLeftStyle,
-  marginTopStyle,
-} from "@/features/board/utils"
 import { INITIAL_PIECES, PIECE_DATA } from "@/features/piece/constants"
 
 import { customRender } from "../setup"
 import {
-  getSideProps,
-  normalizeImagePath,
   getCell,
   getCellContainer,
+  getSideProps,
+  normalizeImagePath,
 } from "./utils"
 
 describe("Board UI", () => {
@@ -86,7 +86,7 @@ describe("Board UI", () => {
         const cellId = cellElement.id.split("-")[1]
         const cellNumber = Number(cellId.slice(1))
 
-        const referenceCell = makeCell(ringIndex, cellNumber, 0)
+        const referenceCell = createCell(ringIndex, cellNumber, 0)
 
         expect(cellId[0]).toBe(ringLetters[ringIndex])
 
@@ -98,8 +98,8 @@ describe("Board UI", () => {
           marginTop: styles.marginTop,
         }).toEqual({
           rotate: `${cellRotation(referenceCell)}deg`,
-          marginLeft: `${marginLeftStyle(referenceCell)}px`,
-          marginTop: `${marginTopStyle(referenceCell)}px`,
+          marginLeft: `${cellMarginLeft(referenceCell)}px`,
+          marginTop: `${cellMarginTop(referenceCell)}px`,
         })
       })
     })

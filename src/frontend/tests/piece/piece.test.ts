@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest"
 
 import type { Board } from "@/features/board/types"
-import { initializeBoard } from "@/features/board/utils"
+import { createBoard } from "@/features/board/utils"
 import type {
   Piece,
   PieceAbbr,
@@ -10,9 +10,9 @@ import type {
 } from "@/features/piece/types"
 import {
   canPromote,
+  createPiece,
   getInvalidMoves,
   getPossibleMoves,
-  makePiece,
 } from "@/features/piece/utils"
 
 import {
@@ -31,7 +31,7 @@ import {
 } from "./utils"
 
 describe("Piece Utility Functions", () => {
-  describe("makePiece", () => {
+  describe("createPiece", () => {
     const testCases = TEST_PIECE_TYPES.map(
       (type, i) =>
         `should create a ${TEST_PIECE_COLORS[i]} ${type} with correct properties`
@@ -49,7 +49,7 @@ describe("Piece Utility Functions", () => {
 
     testCases.forEach((description, i) => {
       it(description, () => {
-        const piece = makePiece(
+        const piece = createPiece(
           TEST_PIECE_TYPES[i],
           TEST_PIECE_COLORS[i][0] as PieceColor
         )
@@ -71,7 +71,7 @@ describe("Piece Utility Functions", () => {
       it(description, () => {
         squares.forEach((square) => {
           pieceTypes.forEach((pieceType) => {
-            expect(canPromote(makePiece(pieceType, color), square)).toBe(
+            expect(canPromote(createPiece(pieceType, color), square)).toBe(
               expectedResult
             )
           })
@@ -114,7 +114,7 @@ describe("Piece Utility Functions", () => {
     let board: Board
 
     beforeEach(() => {
-      board = initializeBoard()
+      board = createBoard()
     })
 
     describe("getPossibleMoves", () => {

@@ -1,6 +1,5 @@
 "use client"
 
-import * as React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { BookText, Gamepad2, Trophy } from "lucide-react"
@@ -9,7 +8,6 @@ import { authClient } from "@/lib/auth-client"
 import { cn } from "@/lib/utils"
 import { ThemeToggle } from "./ThemeToggle"
 import { Button } from "./ui/Button"
-import { UserDropdown } from "./UserDropdown"
 import {
   Sidebar,
   SidebarContent,
@@ -20,6 +18,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "./ui/Sidebar"
+import { UserDropdown } from "./UserDropdown"
 
 // Navigation items
 const navItems = [
@@ -40,7 +39,9 @@ const navItems = [
   },
 ]
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export const AppSidebar = ({
+  ...props
+}: React.ComponentProps<typeof Sidebar>) => {
   const pathname = usePathname()
   const { data: session, isPending } = authClient.useSession()
 

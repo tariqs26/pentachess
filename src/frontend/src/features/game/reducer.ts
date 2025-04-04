@@ -2,7 +2,10 @@ import { canPromote, getInvalidMoves, getPossibleMoves } from "../piece/utils"
 import type { GameAction, GameState } from "./types"
 import { createGameState, moveHelper } from "./utils"
 
-export function gameReducer(state: GameState, action: GameAction): GameState {
+export const gameReducer = (
+  state: GameState,
+  action: GameAction
+): GameState => {
   switch (action.type) {
     case "SET_SELECTED_CELL": {
       if (action.cell) {

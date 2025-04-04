@@ -8,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/Card"
-import { CreateGameForm } from "@/features/game/components/CreateGameForm"
+// import { CreateGameForm } from "@/features/game/components/CreateGameForm"
 import { JoinGameForm } from "@/features/game/components/JoinGameForm"
 
 export const metadata: Metadata = {
@@ -42,13 +42,10 @@ export default function GamePage() {
         <CardHeader className="py-3">
           <CardTitle className="text-xl">Create Game</CardTitle>
           <CardDescription>
-            This feature is still under development, and is currently
-            unavailable.
+            This feature is under development, and is currently unavailable.
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <CreateGameForm isOnline />
-        </CardContent>
+        <CardContent>{/* <CreateGameForm isOnline /> */}</CardContent>
       </Card>
     </div>
   )

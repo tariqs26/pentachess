@@ -24,6 +24,7 @@ export const ResetPasswordForm = () => {
   const { isSubmitting } = form.formState
 
   const onSubmit = (data: PasswordValues) => {
+    // TODO: implement reset password functionality
     console.info("password submitted:", data)
   }
 
@@ -41,7 +42,7 @@ export const ResetPasswordForm = () => {
                   type="password"
                   autoComplete="new-password"
                   placeholder="••••••••••••"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || true}
                   {...field}
                 />
               </FormControl>
@@ -49,7 +50,11 @@ export const ResetPasswordForm = () => {
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={isSubmitting} className="w-full">
+        <Button
+          type="submit"
+          disabled={isSubmitting || true}
+          className="w-full"
+        >
           Reset Password
         </Button>
       </form>

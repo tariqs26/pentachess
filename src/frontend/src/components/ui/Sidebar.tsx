@@ -57,12 +57,13 @@ const sidebarVariants = cva(
 export type SidebarProps = React.HTMLAttributes<HTMLElement> &
   VariantProps<typeof sidebarVariants>
 
-export function Sidebar({ className, ...props }: SidebarProps) {
+export const Sidebar = ({ className, ...props }: SidebarProps) => {
   const { expanded, setExpanded } = useSidebar()
 
   return (
     <>
       <button
+        type="button"
         onClick={() => setExpanded(!expanded)}
         className={cn(
           "fixed left-4 top-4 z-20 flex size-10 items-center justify-center rounded bg-accent text-secondary-foreground transition-all duration-300 hover:bg-accent/80",

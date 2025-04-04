@@ -2,7 +2,7 @@ import Image from "next/image"
 import { cn } from "@/lib/utils"
 import { PROMOTION_PIECES } from "../constants"
 import type { Piece, PieceColor } from "../types"
-import { makePiece } from "../utils"
+import { createPiece } from "../utils"
 
 type PawnPromotionModalProps = Readonly<{
   turn: PieceColor
@@ -26,7 +26,7 @@ export const PawnPromotionModal = ({
           Pawn
         </h2>
         <div className="flex flex-col gap-3">
-          {PROMOTION_PIECES.map((piece) => makePiece(piece, turn)).map(
+          {PROMOTION_PIECES.map((piece) => createPiece(piece, turn)).map(
             (piece) => (
               <button
                 key={piece.type}

@@ -1,10 +1,11 @@
 import { fireEvent, render } from "@testing-library/react"
 import { describe, expect, it } from "vitest"
+
 import { GameProvider } from "@/features/game/components/GameProvider"
 import { LocalGame } from "@/features/game/components/LocalGame"
 import type { GameState } from "@/features/game/types"
 import { createGameState } from "@/features/game/utils"
-import { makePiece } from "@/features/piece/utils"
+import { createPiece } from "@/features/piece/utils"
 import { getCellContainer } from "../board/utils"
 
 const renderGame = (state?: GameState) =>
@@ -78,7 +79,7 @@ describe("Game UI", () => {
   it("should display pawn promotion modal when pawn reaches promotion square", () => {
     const state = createGameState({ status: "playing" })
 
-    const piece = makePiece("pawn-cw", "w")
+    const piece = createPiece("pawn-cw", "w")
     const from = state.boardState.board[1][19]
     const to = state.boardState.board[2][31]
     state.promotionCoordinates = { from, to, piece }

@@ -5,7 +5,7 @@ import type { Piece } from "@/features/piece/types"
 import { isGameOver } from "../utils"
 import { useGame } from "./useGame"
 
-export function useOnlineGame(userId: string, username: string) {
+export const useOnlineGame = (userId: string, username: string) => {
   const { state, dispatch } = useGame()
   const [connected, setConnected] = useState(false)
 

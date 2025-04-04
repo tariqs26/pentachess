@@ -37,7 +37,7 @@ export const PreviousMoves = ({ player, moves }: PreviousMovesProps) => {
   const movesCount = Math.ceil(moves.length / 2)
 
   useEffect(() => {
-    if (endRef.current && endRef.current.scrollIntoView) {
+    if (endRef.current?.scrollIntoView) {
       endRef.current.scrollIntoView()
     }
   }, [movesCount])

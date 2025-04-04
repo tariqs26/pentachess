@@ -1,12 +1,12 @@
 import type { Metadata } from "next"
 import Image from "next/image"
-import { pieceMovementRules } from "./content"
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/Accordion"
+import { pieceMovementRules } from "./content"
 
 export const metadata = {
   title: "Rules and Regulations",

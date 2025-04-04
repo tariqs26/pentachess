@@ -1,9 +1,10 @@
 import { bench, describe } from "vitest"
-import { makePiece } from "@/features/piece/utils"
-import { createPromotionState, createTestPlayers, mockDispatch } from "./utils"
+import { createPiece } from "@/features/piece/utils"
+import { TEST_PLAYERS } from "./constants"
+import { createPromotionState, mockDispatch } from "./utils"
 
 describe("Game", () => {
-  const [player, opponent] = createTestPlayers()
+  const [player, opponent] = TEST_PLAYERS
   const duration = 10
 
   bench("START_GAME", () => {
@@ -20,7 +21,7 @@ describe("Game", () => {
 
   bench("PROMOTE_PAWN", () => {
     mockDispatch(
-      { type: "PROMOTE_PAWN", piece: makePiece("pawn-ccw", "w") },
+      { type: "PROMOTE_PAWN", piece: createPiece("pawn-ccw", "w") },
       state
     )
   })

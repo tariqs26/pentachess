@@ -1,26 +1,26 @@
 import type { Board } from "@/features/board/types"
-import { initializeBoard } from "@/features/board/utils"
-import { makePiece } from "@/features/piece/utils"
+import { createBoard } from "@/features/board/utils"
+import { createPiece } from "@/features/piece/utils"
 
 export const createBenchmarkBoard = () => {
-  const board = initializeBoard(false)
+  const board = createBoard(false)
 
-  board[2][2].piece = makePiece("king", "w")
-  board[2][1].piece = makePiece("rook", "w")
-  board[2][3].piece = makePiece("rook", "w")
-  board[1][0].piece = makePiece("rook", "b")
+  board[2][2].piece = createPiece("king", "w")
+  board[2][1].piece = createPiece("rook", "w")
+  board[2][3].piece = createPiece("rook", "w")
+  board[1][0].piece = createPiece("rook", "b")
 
   return board
 }
 
-export const createCheckmateBoard = (): Board => {
-  const board = initializeBoard(false)
+export const createCheckmateBoard = () => {
+  const board = createBoard(false)
 
-  board[2][9].piece = makePiece("queen", "b")
-  board[2][4].piece = makePiece("king", "b")
-  board[2][29].piece = makePiece("king", "w")
-  board[1][5].piece = makePiece("rook", "b")
-  board[2][40].piece = makePiece("pawn-cw", "w")
+  board[2][9].piece = createPiece("queen", "b")
+  board[2][4].piece = createPiece("king", "b")
+  board[2][29].piece = createPiece("king", "w")
+  board[1][5].piece = createPiece("rook", "b")
+  board[2][40].piece = createPiece("pawn-cw", "w")
 
   return board
 }
