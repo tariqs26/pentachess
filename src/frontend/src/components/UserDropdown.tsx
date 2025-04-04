@@ -35,7 +35,10 @@ export const UserDropdown = ({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="group inline-flex w-full items-center gap-2 rounded-md bg-background p-2 transition-colors hover:bg-background/80">
+        <button
+          type="button"
+          className="group inline-flex w-full items-center gap-2 rounded-md bg-background p-2 transition-colors hover:bg-background/80"
+        >
           {avatar}
           <div className="grid flex-1 text-left text-sm leading-tight">
             <span className="truncate font-semibold">{user.username}</span>
