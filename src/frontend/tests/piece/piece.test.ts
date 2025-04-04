@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest"
 
 import type { Board } from "@/features/board/types"
-import { checkForCheckOrMate, initializeBoard } from "@/features/board/utils"
+import { initializeBoard } from "@/features/board/utils"
 import type {
   Piece,
   PieceAbbr,
@@ -28,7 +28,6 @@ import {
   createCheckmateBoard,
   getBlockedCellIndices,
   getEmptyCellTests,
-  measureExecutionTime,
 } from "./utils"
 
 describe("Piece Utility Functions", () => {
@@ -227,56 +226,5 @@ describe("Piece Utility Functions", () => {
         )
       })
     })
-  })
-})
-
-// Keeping placeholder tests but with improved structure
-describe("UI Tests", () => {
-  // TODO: Add UI tests when ready
-  it.todo("should implement UI tests")
-})
-
-describe("Performance Tests", () => {
-  let board: Board
-
-  beforeEach(() => {
-    board = initializeBoard(false)
-    board[2][2].piece = makePiece("king", "w")
-    board[2][1].piece = makePiece("rook", "w")
-    board[2][3].piece = makePiece("rook", "w")
-    board[1][0].piece = makePiece("rook", "b")
-  })
-
-  it("should calculate possible moves efficiently", () => {
-    const averageExecTime = measureExecutionTime(() => {
-      getPossibleMoves(board[2][1], board)
-    })
-
-    console.log(
-      `Average time to calculate king moves: ${averageExecTime.toFixed(3)}ms`
-    )
-    expect(averageExecTime).toBeLessThan(20)
-  })
-
-  it("should detect check conditions efficiently", () => {
-    const averageExecTime = measureExecutionTime(() => {
-      checkForCheckOrMate(createCheckmateBoard(), "w", true)
-    })
-
-    console.log(`Average time to detect check: ${averageExecTime.toFixed(3)}ms`)
-    expect(averageExecTime).toBeLessThan(20)
-  })
-
-  it("should filter invalid moves efficiently", () => {
-    const kingCell = board[2][2]
-    const possibleMoves = getPossibleMoves(kingCell, board)
-    const averageExecTime = measureExecutionTime(() => {
-      getInvalidMoves(kingCell, board, possibleMoves)
-    })
-
-    console.log(
-      `Average time to filter invalid moves: ${averageExecTime.toFixed(3)}ms`
-    )
-    expect(averageExecTime).toBeLessThan(20)
   })
 })

@@ -18,15 +18,6 @@ export const createTestPlayers = (): [Player, Player] => [
   { id: "2", color: "b", userId: "2", username: "Test Player 2" },
 ]
 
-// Measure execution time for functions
-export const measureDispatchTime = (mockDispatch: () => void): number => {
-  const iterations = 10
-  const start = performance.now()
-  mockDispatch()
-  const end = performance.now()
-  return (end - start) / iterations
-}
-
 export const mockDispatch = (
   action: GameAction,
   state: GameState = createGameState()

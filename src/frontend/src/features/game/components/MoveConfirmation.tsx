@@ -38,10 +38,15 @@ export const MoveConfirmation = ({
         variant="destructive"
         size="icon"
         onClick={() => dispatch({ type: "CANCEL_MOVE" })}
+        data-testid="cancel-move"
       >
         <Undo2 className="!size-5" />
       </Button>
-      <Button size="icon" onClick={() => dispatch({ type: "CONFIRM_MOVE" })}>
+      <Button
+        size="icon"
+        onClick={() => dispatch({ type: "CONFIRM_MOVE" })}
+        data-testid="confirm-move"
+      >
         <Check className="!size-5" />
       </Button>
     </div>

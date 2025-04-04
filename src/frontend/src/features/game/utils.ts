@@ -10,7 +10,7 @@ import {
 import type { Piece, PieceColor } from "../piece/types"
 import type { GameStatus, GameState, Move } from "./types"
 
-export const createGameState = (): GameState => ({
+export const createGameState = (options?: Partial<GameState>): GameState => ({
   player: { id: "1", color: "w", userId: "1", username: "Player 1" },
   opponent: { id: "2", color: "b", userId: "2", username: "Player 2" },
   turn: "w",
@@ -20,6 +20,7 @@ export const createGameState = (): GameState => ({
   boardState: { board: initializeBoard() },
   previousMoves: [],
   capturedPieces: { w: [], b: [] },
+  ...options,
 })
 
 export const createMove = (

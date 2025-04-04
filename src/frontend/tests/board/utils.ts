@@ -1,4 +1,9 @@
 import { makeCell } from "@/features/board/cell"
+import {
+  sideLeft,
+  sideRotation,
+  sideTop,
+} from "@/features/board/components/Side"
 import { initializeBoard } from "@/features/board/utils"
 import type { Move } from "@/features/game/types"
 import { createMove } from "@/features/game/utils"
@@ -64,3 +69,28 @@ export const createRepeatingMoves = (count: number): Move[] => {
 
   return moves
 }
+
+export const getSideProps = (ring: number, side: number) => {
+  const rotation = sideRotation[ring][side]
+  const left = sideLeft[ring][side]
+  const top = sideTop[ring][side]
+
+  return {
+    rotate: `${rotation}deg`,
+    left: `${left}px`,
+    top: `${top}px`,
+  }
+}
+
+export const normalizeImagePath = (url: string) =>
+  decodeURI(url)
+    .replace(/^https?:\/\/[^/]+/, "")
+    .replace(/^\/_next\/image\?url=/, "")
+    .replace(/%2F/g, "/")
+    .replace(/&w=\d+&q=\d+/, "")
+
+export const getCell = (id: string, container: HTMLElement) =>
+  container.querySelector(`#cell-${id}`) as HTMLDivElement
+
+export const getCellContainer = (id: string, container: HTMLElement) =>
+  container.querySelector(`#cell-container-${id}`) as HTMLDivElement

@@ -11,7 +11,10 @@ export const Board = (props: BoardProps) => {
   const { state } = useGame()
 
   return (
-    <div className="relative mx-auto my-2 h-[600px] w-[572px]">
+    <div
+      className="relative mx-auto my-2 h-[600px] w-[572px]"
+      data-testid="board"
+    >
       {state.boardState.board.map((ring, i) => (
         <div
           key={i}

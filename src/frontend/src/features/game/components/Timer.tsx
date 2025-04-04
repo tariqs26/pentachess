@@ -15,6 +15,7 @@ export const Timer = ({ className, duration, disabled }: TimerProps) =>
         disabled && "opacity-50",
         className
       )}
+      data-testid="timer"
     >
       {displayTimeRemaining(duration)}
     </time>
