@@ -14,12 +14,17 @@ const initialState = createGameState()
 
 export const GameContext = createContext<GameContextType | null>(null)
 
-export const GameProvider = ({ children }: React.PropsWithChildren) => {
-  const [state, dispatch] = useReducer(gameReducer, initialState)
+export const GameProvider = (
+  props: React.PropsWithChildren<{ initialState?: GameState }>
+) => {
+  const [state, dispatch] = useReducer(
+    gameReducer,
+    props.initialState ?? initialState
+  )
 
   return (
     <GameContext.Provider value={{ state, dispatch }}>
-      {children}
+      {props.children}
     </GameContext.Provider>
   )
 }
