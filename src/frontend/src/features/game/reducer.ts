@@ -1,7 +1,7 @@
+import { resetBoard } from "../board/utils"
 import { canPromote, getInvalidMoves, getPossibleMoves } from "../piece/utils"
 import type { GameAction, GameState } from "./types"
 import { createGameState, moveHelper } from "./utils"
-import { resetBoard } from "../board/utils"
 
 export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
