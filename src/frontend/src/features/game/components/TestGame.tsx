@@ -11,7 +11,7 @@ import { GameEndModal } from "./GameEndModal"
 import { MoveConfirmation } from "./MoveConfirmation"
 import { PlayerCard } from "./PlayerCard"
 import { PreviousMoves } from "./PreviousMoves"
-import { ResetBoardModal } from "@/features/game/components/ResetBoardModal"
+import { ResetBoardButton } from "@/features/game/components/ResetBoardButton"
 import { Timer } from "./Timer"
 import { PIECE_DATA } from "@/features/piece/constants"
 import type { PieceType, PieceColor } from "@/features/piece/types"
@@ -192,14 +192,14 @@ export const TestGame = () => {
             />
           ) : (
             <div className="flex gap-2">
-              <ResetBoardModal
+              <ResetBoardButton
                 action="Clear"
                 handleReset={() => {
                   if (state.boardState.selectedCell === undefined)
                     dispatch({ type: "RESET_BOARD", entire: true })
                 }}
               />
-              <ResetBoardModal
+              <ResetBoardButton
                 action="Reset"
                 handleReset={() => {
                   if (state.boardState.selectedCell === undefined)
