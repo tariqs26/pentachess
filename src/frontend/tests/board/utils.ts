@@ -88,3 +88,9 @@ export const normalizeImagePath = (url: string) =>
     .replace(/^\/_next\/image\?url=/, "")
     .replace(/%2F/g, "/")
     .replace(/&w=\d+&q=\d+/, "")
+
+export const getCell = (id: string, container: HTMLElement) =>
+  container.querySelector(`#cell-${id}`) as HTMLDivElement
+
+export const getCellContainer = (id: string, container: HTMLElement) =>
+  container.querySelector(`#cell-container-${id}`) as HTMLDivElement

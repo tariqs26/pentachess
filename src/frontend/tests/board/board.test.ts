@@ -217,7 +217,6 @@ describe("Board Utility Functions", () => {
 
     it("should detect checkmate", () => {
       const board = createCheckmateBoard()
-
       const result = checkForCheckOrMate(board, "w")
       expect(result).toEqual(["w", true])
     })

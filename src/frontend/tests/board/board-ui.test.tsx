@@ -12,21 +12,19 @@ import {
 import { INITIAL_PIECES, PIECE_DATA } from "@/features/piece/constants"
 
 import { customRender } from "../setup"
-import { getSideProps, normalizeImagePath } from "./utils"
+import {
+  getSideProps,
+  normalizeImagePath,
+  getCell,
+  getCellContainer,
+} from "./utils"
 
-describe("Board UI Tests", () => {
+describe("Board UI", () => {
   it("should highlight a cell with orange background when clicked", () => {
     const board = customRender(<Board disabled={false} />)
-    const cellId = "a0"
-    const cellContainer = board.container.querySelector(
-      `#cell-container-${cellId}`
-    ) as HTMLDivElement
+    fireEvent.click(getCellContainer("a0", board.container))
+    const clickedCell = getCell("a0", board.container)
 
-    fireEvent.click(cellContainer)
-
-    const clickedCell = board.container.querySelector(
-      `#cell-${cellId}`
-    ) as HTMLDivElement
     expect(clickedCell.className).toContain("bg-orange-500")
   })
 
@@ -36,10 +34,7 @@ describe("Board UI Tests", () => {
       ".absolute.left-\\[45\\.2\\%\\].top-\\[49\\.5\\%\\]"
     )
 
-    // Check that there are 3 rings
     expect(rings.length).toBe(3)
-
-    // Verify each ring's positioning and structure
     rings.forEach((ring) => {
       expect(ring.className).toBe("absolute left-[45.2%] top-[49.5%]")
       expect(ring.children.length).toBe(10)
@@ -57,7 +52,7 @@ describe("Board UI Tests", () => {
       expect(sides.length).toBe(10)
 
       sides.forEach((side) => {
-        const [_, ringId, sideId] = side.id.split("-")
+        const [, ringId, sideId] = side.id.split("-")
 
         expect(side.id).toBe(`side-${ringIndex}-${sideId}`)
 
@@ -112,7 +107,7 @@ describe("Board UI Tests", () => {
 
   it("should ensure each piece displays the correct image", () => {
     const board = customRender(<Board disabled={false} />)
-    const pieceElements = board.container.querySelectorAll(`img`)
+    const pieceElements = board.container.querySelectorAll("img")
 
     pieceElements.forEach((pieceElement) => {
       const [color, pieceType] = pieceElement.alt.split(" ")
