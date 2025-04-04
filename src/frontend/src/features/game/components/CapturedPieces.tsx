@@ -2,7 +2,10 @@ import Image from "next/image"
 import type { Piece } from "@/features/piece/types"
 
 export const CapturedPieces = ({ pieces }: { pieces: Piece[] }) => (
-  <div className="flex h-[42px] items-center rounded-md border bg-accent p-2 shadow-sm">
+  <div
+    className="flex h-[42px] items-center rounded-md border bg-accent p-2 shadow-sm"
+    data-testid="captured-pieces"
+  >
     {pieces.map((piece, i) => (
       <Image
         key={i}
