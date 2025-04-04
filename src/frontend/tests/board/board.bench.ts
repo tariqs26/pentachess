@@ -1,24 +1,24 @@
 import { bench, describe } from "vitest"
-import { makeCell } from "@/features/board/cell"
-import { cloneBoard, initializeBoard } from "@/features/board/utils"
-import { makePiece } from "@/features/piece/utils"
+import { createCell } from "@/features/board/cell"
+import { cloneBoard, createBoard } from "@/features/board/utils"
+import { createPiece } from "@/features/piece/utils"
 import { mockDispatch } from "../game/utils"
 
 describe("Board", () => {
   bench("initializeBoard", () => {
-    initializeBoard()
+    createBoard()
   })
 })
 
 describe("Board", () => {
-  const board = initializeBoard(false)
+  const board = createBoard(false)
   bench("cloneBoard", () => {
     cloneBoard(board)
   })
 })
 
 describe("Board", () => {
-  const cell = makeCell(0, 0, 0)
+  const cell = createCell(0, 0, 0)
 
   bench("SET_SELECTED_CELL", () => {
     mockDispatch({ type: "SET_SELECTED_CELL", cell })
@@ -26,10 +26,10 @@ describe("Board", () => {
 })
 
 describe("Board", () => {
-  const board = initializeBoard(false)
+  const board = createBoard(false)
   const from = board[1][29]
   const to = board[1][28]
-  const piece = makePiece("berolina-pawn-cw", "w")
+  const piece = createPiece("berolina-pawn-cw", "w")
 
   const pendingMove = {
     from,

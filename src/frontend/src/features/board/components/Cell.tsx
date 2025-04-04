@@ -1,9 +1,9 @@
 import Image from "next/image"
 import { useGame } from "@/features/game/hooks/useGame"
 import { cn } from "@/lib/utils"
+import { cellMarginLeft, cellMarginTop, cellRotation } from "../cell"
 import type { Cell } from "../types"
 import { sideRotation } from "./Side"
-import { cellRotation, marginLeftStyle, marginTopStyle } from "../utils"
 
 const pieceRotation = (cell: Cell & { flipped?: boolean }) =>
   `calc(${-cellRotation(cell) - sideRotation[cell.x][cell.side] + (cell.flipped ? -180 : 0)}deg )`
@@ -89,8 +89,8 @@ export const CellComponent = (cell: CellProps) => {
           clipPath:
             "polygon(0% 41.2215%, 19.0983% 100%, 80.9017% 100%, 100% 41.2215%, 50% 77.5486%)",
           rotate: `${cellRotation(cell)}deg`,
-          marginLeft: `${marginLeftStyle(cell)}px`,
-          marginTop: `${marginTopStyle(cell)}px`,
+          marginLeft: `${cellMarginLeft(cell)}px`,
+          marginTop: `${cellMarginTop(cell)}px`,
         }}
       >
         <svg viewBox="0 0 100 100">

@@ -3,16 +3,16 @@ import { beforeEach, describe, expect, it } from "vitest"
 import {
   cellId,
   cloneCell,
+  createCell,
   getCCWEdge,
   getCWEdge,
   getSideEdge,
-  makeCell,
   setCellEdges,
   setCellVertices,
 } from "@/features/board/cell"
 import type { Board } from "@/features/board/types"
-import { initializeBoard } from "@/features/board/utils"
-import { makePiece } from "@/features/piece/utils"
+import { createBoard } from "@/features/board/utils"
+import { createPiece } from "@/features/piece/utils"
 
 import { CELL_TEST_CASES } from "./constants"
 
@@ -21,7 +21,7 @@ describe("Cell Utility Functions", () => {
   describe("makeCell", () => {
     CELL_TEST_CASES.forEach(({ ring, cell, angle, id, color }) => {
       it(`should create a cell with correct properties for ${id}`, () => {
-        const result = makeCell(ring, cell, angle)
+        const result = createCell(ring, cell, angle)
 
         expect(result.id).toBe(id)
         expect(result.color).toBe(color)
@@ -38,8 +38,8 @@ describe("Cell Utility Functions", () => {
   describe("cloneCell", () => {
     CELL_TEST_CASES.forEach(({ id, ring, cell, angle, color }) => {
       it(`should clone cell ${id} correctly`, () => {
-        const original = makeCell(ring, cell, angle)
-        original.piece = makePiece("pawn-cw", color)
+        const original = createCell(ring, cell, angle)
+        original.piece = createPiece("pawn-cw", color)
         original.edges = [
           [0, 1],
           [0, 2],
@@ -84,7 +84,7 @@ describe("Cell Utility Functions", () => {
     let board: Board
 
     beforeEach(() => {
-      board = initializeBoard()
+      board = createBoard()
     })
 
     describe("getCWEdge", () => {
@@ -145,13 +145,13 @@ describe("Cell Utility Functions", () => {
 
     describe("setCellEdges and setCellVertices", () => {
       it("should set cell edges correctly", () => {
-        const correctBoard = initializeBoard()
+        const correctBoard = createBoard()
         const testBoard: Board = [[], [], []]
 
         // Create cells with edges
         for (let ring = 0; ring < correctBoard.length; ring++) {
           for (let cell = 0; cell < correctBoard[ring].length; cell++) {
-            const newCell = makeCell(ring, cell, 0)
+            const newCell = createCell(ring, cell, 0)
             setCellEdges(newCell)
             testBoard[ring].push(newCell)
           }
@@ -168,13 +168,13 @@ describe("Cell Utility Functions", () => {
       })
 
       it("should set cell vertices correctly", () => {
-        const correctBoard = initializeBoard()
+        const correctBoard = createBoard()
         const testBoard: Board = [[], [], []]
 
         // Create cells with edges
         for (let ring = 0; ring < correctBoard.length; ring++) {
           for (let cell = 0; cell < correctBoard[ring].length; cell++) {
-            const newCell = makeCell(ring, cell, 0)
+            const newCell = createCell(ring, cell, 0)
             setCellEdges(newCell)
             testBoard[ring].push(newCell)
           }

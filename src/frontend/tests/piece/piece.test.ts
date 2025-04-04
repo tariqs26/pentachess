@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest"
 
 import type { Board } from "@/features/board/types"
-import { initializeBoard } from "@/features/board/utils"
+import { createBoard } from "@/features/board/utils"
 import type {
   Piece,
   PieceAbbr,
@@ -12,7 +12,7 @@ import {
   canPromote,
   getInvalidMoves,
   getPossibleMoves,
-  makePiece,
+  createPiece,
 } from "@/features/piece/utils"
 
 import {
@@ -49,7 +49,7 @@ describe("Piece Utility Functions", () => {
 
     testCases.forEach((description, i) => {
       it(description, () => {
-        const piece = makePiece(
+        const piece = createPiece(
           TEST_PIECE_TYPES[i],
           TEST_PIECE_COLORS[i][0] as PieceColor
         )
@@ -71,7 +71,7 @@ describe("Piece Utility Functions", () => {
       it(description, () => {
         squares.forEach((square) => {
           pieceTypes.forEach((pieceType) => {
-            expect(canPromote(makePiece(pieceType, color), square)).toBe(
+            expect(canPromote(createPiece(pieceType, color), square)).toBe(
               expectedResult
             )
           })
@@ -114,7 +114,7 @@ describe("Piece Utility Functions", () => {
     let board: Board
 
     beforeEach(() => {
-      board = initializeBoard()
+      board = createBoard()
     })
 
     describe("getPossibleMoves", () => {
