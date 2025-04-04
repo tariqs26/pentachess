@@ -83,7 +83,7 @@ describe("Game UI", () => {
     const from = state.boardState.board[1][19]
     const to = state.boardState.board[2][31]
     state.promotionCoordinates = { from, to, piece }
-    
+
     const game = renderGame(state)
 
     expect(game.getByTestId("pawn-promotion-modal")).toBeDefined()
