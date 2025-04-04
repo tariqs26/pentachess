@@ -1,4 +1,4 @@
-export default function CustomOnlineGamePage({
+export default function OnlineCustomGamePage({
   params,
 }: Readonly<{ params: { code: string } }>) {
   // TODO: Implement custom online game page
