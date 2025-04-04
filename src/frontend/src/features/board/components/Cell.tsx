@@ -56,6 +56,8 @@ export const CellComponent = (cell: CellProps) => {
   const { state, dispatch } = useGame()
   const { selectedCell, pendingMove } = state.boardState
 
+  const isTesting = state.status === "testing"
+
   const isCellSelected = selectedCell?.cell.id === cell.id
 
   const isAvailableMove = selectedCell?.availableMoves
@@ -79,6 +81,15 @@ export const CellComponent = (cell: CellProps) => {
 
   const handleCellClick = () => {
     if (cell.disabled) return
+    if (isTesting) {
+      dispatch({
+        type: "SET_PIECE",
+        move: {
+          to: cell,
+        },
+      })
+      return
+    }
 
     if (isCellSelected) {
       dispatch({ type: "SET_SELECTED_CELL", cell: null })

@@ -175,3 +175,17 @@ export function checkInsufficientMaterial(board: Board) {
   }
   return false
 }
+
+function clearBoard(board: Board) {
+  for (const ring of board) {
+    for (const cell of ring) {
+      cell.piece = null
+    }
+  }
+}
+
+export function resetBoard(board: Board, entire: boolean): Board {
+  clearBoard(board)
+  if (!entire) initializePieces(board)
+  return board
+}
