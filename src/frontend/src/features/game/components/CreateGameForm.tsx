@@ -61,6 +61,7 @@ export const CreateGameForm = ({ isOnline, startHandler }: CreateGameProps) => {
     if (!isOnline) {
       startHandler(duration)
     }
+    // TODO: implement create custom game functionality
   }
 
   return (
@@ -83,7 +84,7 @@ export const CreateGameForm = ({ isOnline, startHandler }: CreateGameProps) => {
                           field.value === color ? "default" : "secondary"
                         }
                         className="w-full"
-                        disabled={isSubmitting}
+                        disabled={isOnline || isSubmitting}
                         onClick={() => {
                           form.setValue("startingColor", color)
                         }}
@@ -119,7 +120,7 @@ export const CreateGameForm = ({ isOnline, startHandler }: CreateGameProps) => {
                         min={0}
                         max={59}
                         className="z-[2] rounded-r-none"
-                        disabled={isSubmitting}
+                        disabled={isOnline || isSubmitting}
                         {...field}
                       />
                     </FormControl>
@@ -143,7 +144,7 @@ export const CreateGameForm = ({ isOnline, startHandler }: CreateGameProps) => {
                         min={0}
                         max={59}
                         className="z-[2] rounded-r-none"
-                        disabled={isSubmitting}
+                        disabled={isOnline || isSubmitting}
                         {...field}
                       />
                     </FormControl>
@@ -168,7 +169,7 @@ export const CreateGameForm = ({ isOnline, startHandler }: CreateGameProps) => {
                   <Input
                     type="password"
                     placeholder="••••••••"
-                    disabled={isSubmitting}
+                    disabled={isOnline || isSubmitting}
                     {...field}
                   />
                 </FormControl>

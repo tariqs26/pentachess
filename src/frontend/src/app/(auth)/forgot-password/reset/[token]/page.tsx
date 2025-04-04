@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { notFound } from "next/navigation"
 import {
   Card,
   CardContent,
@@ -17,8 +18,10 @@ export default function ResetPasswordPage({
 }: {
   params: { token: string }
 }) {
-  // verify token here
-  console.log("token:", params.token)
+  // TODO: implement token verification
+  if (params.token !== "valid-token") {
+    notFound()
+  }
 
   return (
     <Card className="w-full max-w-sm">
