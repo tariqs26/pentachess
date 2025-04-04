@@ -18,7 +18,7 @@ import { CELL_TEST_CASES } from "./constants"
 
 describe("Cell Utility Functions", () => {
   // Cell creation and manipulation tests
-  describe("makeCell", () => {
+  describe("createCell", () => {
     CELL_TEST_CASES.forEach(({ ring, cell, angle, id, color }) => {
       it(`should create a cell with correct properties for ${id}`, () => {
         const result = createCell(ring, cell, angle)

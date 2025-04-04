@@ -1,4 +1,4 @@
-import { DECAGON_SIDES, RING_SIZES } from "@/features/board/constants"
+import { DECAGON_SIDES, RING_SIZES } from "./constants"
 import type { Board, Cell } from "./types"
 
 export const cellId = (x: number, y: number) => `${"cba"[x]}${y}`

@@ -1,5 +1,5 @@
-import { displayTimeRemaining } from "../utils"
 import { cn } from "@/lib/utils"
+import { displayTimeRemaining } from "../utils"
 
 type TimerProps = Readonly<{
   duration?: number

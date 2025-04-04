@@ -9,9 +9,9 @@ import {
   checkInsufficientMaterial,
   checkThreeMoveRepetition,
   cloneBoard,
+  createBoard,
   getKingCell,
   getSides,
-  createBoard,
 } from "@/features/board/utils"
 import type { Move } from "@/features/game/types"
 import { createMove } from "@/features/game/utils"
@@ -26,7 +26,7 @@ import {
 } from "./utils"
 
 describe("Board Utility Functions", () => {
-  describe("initializeBoard", () => {
+  describe("createBoard", () => {
     it("should initialize a board with correct structure and properties", () => {
       const board = createBoard()
 
@@ -244,7 +244,7 @@ describe("Board Utility Functions", () => {
     })
   })
 
-  describe("checkThreeMoveRep", () => {
+  describe("checkThreeMoveRepetition", () => {
     it("should detect three-move repetition", () => {
       // Create moves with 3 repetition cycles (sufficient for detection)
       const moves: Move[] = createRepeatingMoves(3)
@@ -277,7 +277,7 @@ describe("Board Utility Functions", () => {
     })
   })
 
-  describe("checkFiftyMoveNoCap", () => {
+  describe("checkFiftyMoveNoCapture", () => {
     it("should detect fifty moves with no captures", () => {
       const moves: Move[] = createMovesWithCapture(50, false)
       expect(checkFiftyMoveNoCapture(moves)).toBe(true)

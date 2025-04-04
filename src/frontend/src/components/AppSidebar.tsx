@@ -8,7 +8,6 @@ import { authClient } from "@/lib/auth-client"
 import { cn } from "@/lib/utils"
 import { ThemeToggle } from "./ThemeToggle"
 import { Button } from "./ui/Button"
-import { UserDropdown } from "./UserDropdown"
 import {
   Sidebar,
   SidebarContent,
@@ -19,6 +18,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "./ui/Sidebar"
+import { UserDropdown } from "./UserDropdown"
 
 // Navigation items
 const navItems = [

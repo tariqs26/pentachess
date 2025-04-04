@@ -1,6 +1,6 @@
 import { INITIAL_PIECES } from "../piece/constants"
 import type { Piece, PieceColor, PieceType } from "../piece/types"
-import { getPossibleMoves, createPiece } from "../piece/utils"
+import { createPiece, getPossibleMoves } from "../piece/utils"
 import { cloneCell, createCell, setCellEdges, setCellVertices } from "./cell"
 import type { Board, Cell } from "./types"
 

@@ -1,14 +1,14 @@
 import type { Board, Cell } from "../board/types"
 import {
+  checkFiftyMoveNoCapture,
   checkForCheckOrMate,
   checkForStalemate,
-  checkThreeMoveRepetition,
-  checkFiftyMoveNoCapture,
   checkInsufficientMaterial,
+  checkThreeMoveRepetition,
   createBoard,
 } from "../board/utils"
 import type { Piece, PieceColor } from "../piece/types"
-import type { GameStatus, GameState, Move } from "./types"
+import type { GameState, GameStatus, Move } from "./types"
 
 export const createGameState = (options?: Partial<GameState>): GameState => ({
   player: { id: "1", color: "w", userId: "1", username: "Player 1" },

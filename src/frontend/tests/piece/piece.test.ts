@@ -10,9 +10,9 @@ import type {
 } from "@/features/piece/types"
 import {
   canPromote,
+  createPiece,
   getInvalidMoves,
   getPossibleMoves,
-  createPiece,
 } from "@/features/piece/utils"
 
 import {
@@ -31,7 +31,7 @@ import {
 } from "./utils"
 
 describe("Piece Utility Functions", () => {
-  describe("makePiece", () => {
+  describe("createPiece", () => {
     const testCases = TEST_PIECE_TYPES.map(
       (type, i) =>
         `should create a ${TEST_PIECE_COLORS[i]} ${type} with correct properties`

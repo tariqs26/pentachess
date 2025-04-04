@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
-import { LocalGame } from "@/features/game/components/LocalGame"
 import { GameProvider } from "@/features/game/components/GameProvider"
+import { LocalGame } from "@/features/game/components/LocalGame"
 
 export const metadata: Metadata = {
   title: "Local Game",

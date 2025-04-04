@@ -2,10 +2,10 @@ import { fireEvent } from "@testing-library/react"
 import { describe, expect, it } from "vitest"
 
 import {
-  cellRotation,
-  createCell,
   cellMarginLeft,
   cellMarginTop,
+  cellRotation,
+  createCell,
 } from "@/features/board/cell"
 import { Board } from "@/features/board/components/Board"
 import { RING_SIZES } from "@/features/board/constants"

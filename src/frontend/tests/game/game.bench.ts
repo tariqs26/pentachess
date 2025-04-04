@@ -1,7 +1,7 @@
 import { bench, describe } from "vitest"
 import { createPiece } from "@/features/piece/utils"
-import { createPromotionState, mockDispatch } from "./utils"
 import { TEST_PLAYERS } from "./constants"
+import { createPromotionState, mockDispatch } from "./utils"
 
 describe("Game", () => {
   const [player, opponent] = TEST_PLAYERS

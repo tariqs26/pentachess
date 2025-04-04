@@ -1,4 +1,4 @@
-import { Player } from "@/features/game/types"
+import type { Player } from "@/features/game/types"
 
 export const TEST_TIMESTAMP = new Date("2025-01-01T00:00:00.000Z")
 

@@ -5,7 +5,7 @@ import { createPiece } from "@/features/piece/utils"
 import { mockDispatch } from "../game/utils"
 
 describe("Board", () => {
-  bench("initializeBoard", () => {
+  bench("createBoard", () => {
     createBoard()
   })
 })
