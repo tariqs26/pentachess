@@ -175,3 +175,13 @@ export const checkInsufficientMaterial = (board: Board) => {
   }
   return false
 }
+
+const clearBoard = (board: Board): void => {
+  board.forEach((ring) => ring.forEach((cell) => (cell.piece = null)))
+}
+
+export const resetBoard = (board: Board, entire: boolean): Board => {
+  clearBoard(board)
+  if (!entire) initializePieces(board)
+  return board
+}

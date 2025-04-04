@@ -26,6 +26,7 @@ export type GameStatus =
   | "resignation"
   | "time-expired"
   | "opponent-left"
+  | "testing"
 
 export type Player = {
   id: string
@@ -47,6 +48,7 @@ export type GameState = {
   disabled: boolean
   boardState: BoardState
   promotionCoordinates?: { from: Cell; to: Cell; piece: Piece }
+  testPiece?: Piece
 }
 
 export type SyncState = Omit<
@@ -63,4 +65,6 @@ export type GameAction =
   | { type: "END_GAME" }
   | { type: "RESET_GAME" }
   | { type: "SYNC_GAME"; state: SyncState }
+  | { type: "RESET_BOARD"; entire: boolean }
+  | { type: "SET_PIECE"; move: { to: Cell } }
   | BoardAction
