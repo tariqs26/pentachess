@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { BookText, Gamepad2, Trophy, Bug } from "lucide-react"
+import { BookText, Gamepad2, Trophy } from "lucide-react"
 
 import { authClient } from "@/lib/auth-client"
 import { cn } from "@/lib/utils"
@@ -36,11 +36,6 @@ const navItems = [
     title: "Rules",
     href: "/rules-and-regulations",
     icon: BookText,
-  },
-  {
-    title: "Testing Page",
-    href: "/game/testing",
-    icon: Bug,
   },
 ]
 

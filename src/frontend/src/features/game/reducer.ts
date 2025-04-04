@@ -1,4 +1,3 @@
-import { resetBoard } from "../board/utils"
 import { canPromote, getInvalidMoves, getPossibleMoves } from "../piece/utils"
 import type { GameAction, GameState } from "./types"
 import { createGameState, moveHelper } from "./utils"
@@ -201,28 +200,6 @@ export const gameReducer = (
     }
     case "SYNC_GAME": {
       return { ...state, ...action.state }
-    }
-    case "RESET_BOARD": {
-      const entire: boolean = action.entire
-      return {
-        ...state,
-        turn: "w",
-        boardState: {
-          ...state.boardState,
-          board: resetBoard(state.boardState.board, entire),
-        },
-      }
-    }
-    case "SET_PIECE": {
-      const { to } = action.move
-      if (to !== null && state.testPiece !== undefined)
-        state.boardState.board[to.x][to.y].piece = state.testPiece
-      if (to !== null && state.testPiece === undefined)
-        state.boardState.board[to.x][to.y].piece = null
-      return {
-        ...state,
-        boardState: { ...state.boardState },
-      }
     }
     default:
       return state
