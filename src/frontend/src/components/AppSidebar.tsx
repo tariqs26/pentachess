@@ -40,7 +40,7 @@ const navItems = [
   },
   {
     title: "Testing Page",
-    href: "/game/testing-page",
+    href: "/game/testing",
     icon: Bug,
   },
 ]
