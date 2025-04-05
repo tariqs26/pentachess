@@ -65,48 +65,50 @@ export const TestGame = () => {
   return (
     <div className="mx-auto flex min-h-screen items-center justify-center gap-x-2 p-6">
       <div className="flex rounded-md border bg-accent p-2 shadow">
-        {colors.map((color) => (
-          <div key={color}>
-            {pieces.map((piece) => (
-              <Image
-                key={piece + color}
-                alt={piece + color}
-                src={PIECE_DATA[piece].image[color]}
-                className={
-                  state.status === "testing" &&
-                  selectPiece !== null &&
-                  selectPiece !== "eraser" &&
-                  selectPiece.type === piece &&
-                  selectPiece.color === color
-                    ? "h-14 w-14 rounded-md border-4 border-green-500"
-                    : "h-14 w-14"
-                }
-                onClick={() => {
-                  if (
+        <div className="v-full flex min-w-max items-center justify-center">
+          {colors.map((color) => (
+            <div key={color}>
+              {pieces.map((piece) => (
+                <Image
+                  key={piece + color}
+                  alt={piece + color}
+                  src={PIECE_DATA[piece].image[color]}
+                  className={
+                    state.status === "testing" &&
                     selectPiece !== null &&
                     selectPiece !== "eraser" &&
                     selectPiece.type === piece &&
                     selectPiece.color === color
-                  ) {
-                    setSelectPiece(null)
-                    dispatch({
-                      type: "SET_STATUS",
-                      status: "playing",
-                    })
-                  } else if (state.boardState.selectedCell === undefined) {
-                    setSelectPiece({ type: piece, color })
-                    state.testPiece = makePiece(piece, color)
-                    dispatch({
-                      type: "SET_STATUS",
-                      status: "testing",
-                    })
+                      ? "h-14 w-14 rounded-md border-4 border-green-500"
+                      : "h-14 w-14"
                   }
-                }}
-              />
-            ))}
-          </div>
-        ))}
-        <div className="v-full flex items-center justify-center">
+                  onClick={() => {
+                    if (
+                      selectPiece !== null &&
+                      selectPiece !== "eraser" &&
+                      selectPiece.type === piece &&
+                      selectPiece.color === color
+                    ) {
+                      setSelectPiece(null)
+                      dispatch({
+                        type: "SET_STATUS",
+                        status: "playing",
+                      })
+                    } else if (state.boardState.selectedCell === undefined) {
+                      setSelectPiece({ type: piece, color })
+                      state.testPiece = makePiece(piece, color)
+                      dispatch({
+                        type: "SET_STATUS",
+                        status: "testing",
+                      })
+                    }
+                  }}
+                />
+              ))}
+            </div>
+          ))}
+        </div>
+        <div className="v-full flex min-w-max items-center justify-center">
           <Eraser
             className={
               state.status === "testing" && selectPiece === "eraser"
