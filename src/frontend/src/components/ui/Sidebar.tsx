@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils"
 
 type SidebarContextProps = {
   open: boolean
-  setOpen: (expanded: boolean) => void
+  setOpen: (open: boolean) => void
   toggleSidebar: () => void
 }
 
@@ -15,12 +15,12 @@ const SidebarContext = React.createContext<SidebarContextProps | null>(null)
 
 export const SidebarProvider = ({
   children,
-  defaultExpanded = true,
+  defaultOpen = true,
 }: {
   children: React.ReactNode
-  defaultExpanded?: boolean
+  defaultOpen?: boolean
 }) => {
-  const [open, setOpen] = React.useState(defaultExpanded)
+  const [open, setOpen] = React.useState(defaultOpen)
 
   const toggleSidebar = React.useCallback(
     () => setOpen((open) => !open),
@@ -57,7 +57,7 @@ export const Sidebar = ({ className, ...props }: SidebarProps) => {
           "fixed left-4 top-4 z-20 flex size-9 items-center justify-center rounded bg-accent text-secondary-foreground transition-all duration-300 hover:bg-accent/80",
           open && "left-[176px]"
         )}
-        aria-label={open ? "Collapse sidebar" : "Expand sidebar"}
+        aria-label={open ? "Open sidebar" : "Close sidebar"}
       >
         {open ? <ChevronLeft size={20} /> : <Menu size={20} />}
       </button>
