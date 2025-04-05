@@ -57,7 +57,7 @@ export const Sidebar = ({ className, ...props }: SidebarProps) => {
           "fixed left-4 top-4 z-20 flex size-9 items-center justify-center rounded bg-accent text-secondary-foreground transition-all duration-300 hover:bg-accent/80",
           open && "left-[176px]"
         )}
-        aria-label={open ? "Open sidebar" : "Close sidebar"}
+        aria-label={`${open ? "Close" : "Open"} sidebar`}
       >
         {open ? <ChevronLeft size={20} /> : <Menu size={20} />}
       </button>
