@@ -16,7 +16,6 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarRail,
 } from "./ui/Sidebar"
 import { UserDropdown } from "./UserDropdown"
 
@@ -86,7 +85,6 @@ export const AppSidebar = ({
           </Button>
         )}
       </div>
-      <SidebarRail />
     </Sidebar>
   )
 }
