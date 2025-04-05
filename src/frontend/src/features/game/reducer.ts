@@ -1,4 +1,8 @@
-import { resetBoard } from "../board/utils"
+import {
+  resetBoard,
+  checkForCheckOrMate,
+  checkForStalemate,
+} from "../board/utils"
 import { canPromote, getInvalidMoves, getPossibleMoves } from "../piece/utils"
 import type { GameAction, GameState } from "./types"
 import { createGameState, moveHelper } from "./utils"
@@ -204,6 +208,9 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       return {
         ...state,
         turn: "w",
+        previousMoves: [],
+        capturedPieces: { w: [], b: [] },
+        check: null,
         boardState: {
           ...state.boardState,
           board: resetBoard(state.boardState.board, entire),
@@ -212,12 +219,31 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     }
     case "SET_PIECE": {
       const { to } = action.move
+      if (state.boardState.board[to.x][to.y].piece?.type === "king")
+        return state
+      state.turn = state.testPiece ? state.testPiece.color : state.turn
       if (to !== null && state.testPiece !== undefined)
         state.boardState.board[to.x][to.y].piece = state.testPiece
       if (to !== null && state.testPiece === undefined)
         state.boardState.board[to.x][to.y].piece = null
+      const [checkedColor, isCheckmate] = checkForCheckOrMate(
+        state.boardState.board,
+        (state.turn = state.turn === "w" ? "b" : "w")
+      )
+      if (isCheckmate) state.status = "checkmate"
+      if (checkedColor !== null) {
+        state.turn = checkedColor
+        if (!isCheckmate) state.status = "playing"
+      } else if (
+        checkForStalemate(
+          state.boardState.board,
+          (state.turn = state.turn === "w" ? "b" : "w")
+        )
+      )
+        state.status = "draw-stalemate"
       return {
         ...state,
+        check: checkedColor,
         boardState: { ...state.boardState },
       }
     }

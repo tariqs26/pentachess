@@ -50,7 +50,6 @@ export const TestGame = () => {
     "knight",
     "rook",
     "queen",
-    "king",
   ]
   const colors: PieceColor[] = ["w", "b"]
   const [selectPiece, setSelectPiece] = useState<
@@ -74,6 +73,7 @@ export const TestGame = () => {
                   alt={piece + color}
                   src={PIECE_DATA[piece].image[color]}
                   className={
+                    state.check === null &&
                     state.status === "testing" &&
                     selectPiece !== null &&
                     selectPiece !== "eraser" &&
@@ -84,6 +84,7 @@ export const TestGame = () => {
                   }
                   onClick={() => {
                     if (
+                      state.check === null &&
                       selectPiece !== null &&
                       selectPiece !== "eraser" &&
                       selectPiece.type === piece &&
@@ -94,7 +95,10 @@ export const TestGame = () => {
                         type: "SET_STATUS",
                         status: "playing",
                       })
-                    } else if (state.boardState.selectedCell === undefined) {
+                    } else if (
+                      state.boardState.selectedCell === undefined &&
+                      state.check === null
+                    ) {
                       setSelectPiece({ type: piece, color })
                       state.testPiece = makePiece(piece, color)
                       dispatch({
@@ -111,18 +115,23 @@ export const TestGame = () => {
         <div className="v-full flex min-w-max items-center justify-center">
           <Eraser
             className={
-              state.status === "testing" && selectPiece === "eraser"
+              state.status === "testing" &&
+              selectPiece === "eraser" &&
+              state.check === null
                 ? "h-10 w-10 rounded-md border-4 border-green-500"
                 : "h-10 w-10"
             }
             onClick={() => {
-              if (selectPiece === "eraser") {
+              if (selectPiece === "eraser" && state.check === null) {
                 setSelectPiece(null)
                 dispatch({
                   type: "SET_STATUS",
                   status: "playing",
                 })
-              } else if (state.boardState.selectedCell === undefined) {
+              } else if (
+                state.boardState.selectedCell === undefined &&
+                state.check === null
+              ) {
                 setSelectPiece("eraser")
                 state.testPiece = undefined
                 dispatch({
@@ -187,9 +196,10 @@ export const TestGame = () => {
             <GameEndModal
               winner={state.winner}
               status={state.status}
-              onPlayAgain={() =>
-                dispatch({ type: "SET_STATUS", status: "waiting" })
-              }
+              onPlayAgain={() => {
+                dispatch({ type: "RESET_GAME" })
+                dispatch({ type: "START_GAME" })
+              }}
             />
           ) : (
             <div className="flex gap-2">
