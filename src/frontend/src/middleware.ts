@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { getSessionCookie } from "better-auth"
+import { getSessionCookie } from "better-auth/cookies"
 
 const PROTECTED_ROUTES = ["/game", "/account"]
 const AUTH_ROUTES = ["/login", "/register", "/forgot-password"]
