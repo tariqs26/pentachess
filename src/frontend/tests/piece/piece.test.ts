@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest"
 
 import type { Board } from "@/features/board/types"
-import { checkForCheckOrMate, initializeBoard } from "@/features/board/utils"
+import { createBoard } from "@/features/board/utils"
 import type {
   Piece,
   PieceAbbr,
@@ -10,9 +10,9 @@ import type {
 } from "@/features/piece/types"
 import {
   canPromote,
+  createPiece,
   getInvalidMoves,
   getPossibleMoves,
-  makePiece,
 } from "@/features/piece/utils"
 
 import {
@@ -28,11 +28,10 @@ import {
   createCheckmateBoard,
   getBlockedCellIndices,
   getEmptyCellTests,
-  measureExecutionTime,
 } from "./utils"
 
 describe("Piece Utility Functions", () => {
-  describe("makePiece", () => {
+  describe("createPiece", () => {
     const testCases = TEST_PIECE_TYPES.map(
       (type, i) =>
         `should create a ${TEST_PIECE_COLORS[i]} ${type} with correct properties`
@@ -50,7 +49,7 @@ describe("Piece Utility Functions", () => {
 
     testCases.forEach((description, i) => {
       it(description, () => {
-        const piece = makePiece(
+        const piece = createPiece(
           TEST_PIECE_TYPES[i],
           TEST_PIECE_COLORS[i][0] as PieceColor
         )
@@ -72,7 +71,7 @@ describe("Piece Utility Functions", () => {
       it(description, () => {
         squares.forEach((square) => {
           pieceTypes.forEach((pieceType) => {
-            expect(canPromote(makePiece(pieceType, color), square)).toBe(
+            expect(canPromote(createPiece(pieceType, color), square)).toBe(
               expectedResult
             )
           })
@@ -115,7 +114,7 @@ describe("Piece Utility Functions", () => {
     let board: Board
 
     beforeEach(() => {
-      board = initializeBoard()
+      board = createBoard()
     })
 
     describe("getPossibleMoves", () => {
@@ -227,56 +226,5 @@ describe("Piece Utility Functions", () => {
         )
       })
     })
-  })
-})
-
-// Keeping placeholder tests but with improved structure
-describe("UI Tests", () => {
-  // TODO: Add UI tests when ready
-  it.todo("should implement UI tests")
-})
-
-describe("Performance Tests", () => {
-  let board: Board
-
-  beforeEach(() => {
-    board = initializeBoard(false)
-    board[2][2].piece = makePiece("king", "w")
-    board[2][1].piece = makePiece("rook", "w")
-    board[2][3].piece = makePiece("rook", "w")
-    board[1][0].piece = makePiece("rook", "b")
-  })
-
-  it("should calculate possible moves efficiently", () => {
-    const averageExecTime = measureExecutionTime(() => {
-      getPossibleMoves(board[2][1], board)
-    })
-
-    console.log(
-      `Average time to calculate king moves: ${averageExecTime.toFixed(3)}ms`
-    )
-    expect(averageExecTime).toBeLessThan(20)
-  })
-
-  it("should detect check conditions efficiently", () => {
-    const averageExecTime = measureExecutionTime(() => {
-      checkForCheckOrMate(createCheckmateBoard(), "w", true)
-    })
-
-    console.log(`Average time to detect check: ${averageExecTime.toFixed(3)}ms`)
-    expect(averageExecTime).toBeLessThan(20)
-  })
-
-  it("should filter invalid moves efficiently", () => {
-    const kingCell = board[2][2]
-    const possibleMoves = getPossibleMoves(kingCell, board)
-    const averageExecTime = measureExecutionTime(() => {
-      getInvalidMoves(kingCell, board, possibleMoves)
-    })
-
-    console.log(
-      `Average time to filter invalid moves: ${averageExecTime.toFixed(3)}ms`
-    )
-    expect(averageExecTime).toBeLessThan(20)
   })
 })

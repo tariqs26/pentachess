@@ -1,10 +1,20 @@
 import { INITIAL_PIECES } from "../piece/constants"
 import type { Piece, PieceColor, PieceType } from "../piece/types"
-import { getPossibleMoves, makePiece } from "../piece/utils"
-import { cloneCell, makeCell, setCellEdges, setCellVertices } from "./cell"
+import { createPiece, getPossibleMoves } from "../piece/utils"
+import { cloneCell, createCell, setCellEdges, setCellVertices } from "./cell"
 import type { Board, Cell } from "./types"
 
-export function initializeBoard(initialPieces: boolean = true) {
+const initializePieces = (board: Board) => {
+  for (const [ring, tiles] of Object.entries(INITIAL_PIECES)) {
+    const x = Number.parseInt(ring)
+    for (const [tile, piece] of Object.entries(tiles)) {
+      const y = Number.parseInt(tile)
+      board[x][y].piece = createPiece(...piece)
+    }
+  }
+}
+
+export const createBoard = (initialPieces = true) => {
   const rings = [new Array(10), new Array(30), new Array(50)]
   const board: Board = [[], [], []]
 
@@ -14,7 +24,7 @@ export function initializeBoard(initialPieces: boolean = true) {
     let flipCounter = 0
 
     for (let tile = 0; tile < tiles.length; tile++) {
-      const cell = makeCell(ring, tile, angle)
+      const cell = createCell(ring, tile, angle)
       board[ring].push(cell)
 
       // inner ring (increment every cell by 36)
@@ -50,28 +60,16 @@ export function initializeBoard(initialPieces: boolean = true) {
   return board
 }
 
-function initializePieces(board: Board) {
-  for (const [ring, tiles] of Object.entries(INITIAL_PIECES)) {
-    const x = Number.parseInt(ring)
-    for (const [tile, piece] of Object.entries(tiles)) {
-      const y = Number.parseInt(tile)
-      board[x][y].piece = makePiece(...piece)
-    }
-  }
-}
+export const cloneBoard = (board: Board): Board =>
+  board.map((ring) => ring.map(cloneCell))
 
-export function cloneBoard(board: Board): Board {
-  return board.map((ring) => ring.map(cloneCell))
-}
-
-export function getSides<T>(arr: T[], size: number) {
-  return arr.reduce((acc: T[][], _, i) => {
+export const getSides = <T>(arr: T[], size: number) =>
+  arr.reduce((acc: T[][], _, i) => {
     if (i % size === 0) acc.push(arr.slice(i, i + size))
     return acc
   }, [])
-}
 
-export function getKingCell(board: Board, pieceColor?: PieceColor) {
+export const getKingCell = (board: Board, pieceColor?: PieceColor) => {
   for (const ring of board) {
     for (const cell of ring) {
       if (cell.piece?.type === "king" && cell.piece.color === pieceColor) {
@@ -83,11 +81,23 @@ export function getKingCell(board: Board, pieceColor?: PieceColor) {
   return null
 }
 
-export function checkForCheckOrMate(
+export const checkIfMovesExist = (board: Board, color: PieceColor) => {
+  for (const ring of board) {
+    for (const cell of ring) {
+      if (cell.piece !== null && cell.piece.color === color) {
+        const possibleMoves = getPossibleMoves(cell, board)
+        if (possibleMoves.size > 0) return false
+      }
+    }
+  }
+  return true
+}
+
+export const checkForCheckOrMate = (
   board: Board,
   color: PieceColor,
   checkForMate = true
-): [PieceColor | null, boolean] {
+): [PieceColor | null, boolean] => {
   const king = getKingCell(board, color)
   for (const ring of board) {
     for (const cell of ring) {
@@ -107,25 +117,12 @@ export function checkForCheckOrMate(
   return [null, false]
 }
 
-function checkIfMovesExist(board: Board, color: PieceColor) {
-  for (const ring of board) {
-    for (const cell of ring) {
-      if (cell.piece !== null && cell.piece.color === color) {
-        const possibleMoves = getPossibleMoves(cell, board)
-        if (possibleMoves.size > 0) return false
-      }
-    }
-  }
-  return true
-}
+export const checkForStalemate = (board: Board, color: PieceColor) =>
+  checkIfMovesExist(board, color)
 
-export function checkForStalemate(board: Board, color: PieceColor) {
-  return checkIfMovesExist(board, color)
-}
-
-export function checkThreeMoveRep(
+export const checkThreeMoveRepetition = (
   moves: { from: Cell; to: Cell; piece: Piece }[]
-) {
+) => {
   if (moves.length >= 12) {
     const lastTwelve = moves.slice(-12)
     for (let i = 0; i < 8; i++) {
@@ -142,7 +139,9 @@ export function checkThreeMoveRep(
   return false
 }
 
-export function checkFiftyMoveNoCap(moves: { to: Cell; piece: Piece }[]) {
+export const checkFiftyMoveNoCapture = (
+  moves: { to: Cell; piece: Piece }[]
+) => {
   if (moves.length >= 50) {
     const lastFifty = moves.slice(-50)
     for (const { to, piece } of lastFifty) {
@@ -153,9 +152,10 @@ export function checkFiftyMoveNoCap(moves: { to: Cell; piece: Piece }[]) {
   return false
 }
 
-export function checkInsufficientMaterial(board: Board) {
+export const checkInsufficientMaterial = (board: Board) => {
   const whitePieces = new Set<PieceType>()
   const blackPieces = new Set<PieceType>()
+
   for (const ring of board) {
     for (const cell of ring) {
       if (cell.piece) {

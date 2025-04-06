@@ -1,13 +1,13 @@
 "use client"
 
 import { useState } from "react"
-
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/Button"
+import { Checkbox } from "@/components/ui/Checkbox"
 import {
   Form,
   FormControl,
@@ -16,7 +16,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/Form"
-import { Checkbox } from "@/components/ui/Checkbox"
 import { Input } from "@/components/ui/Input"
 
 type CreateGameProps = Readonly<
@@ -62,6 +61,7 @@ export const CreateGameForm = ({ isOnline, startHandler }: CreateGameProps) => {
     if (!isOnline) {
       startHandler(duration)
     }
+    // TODO: implement create custom game functionality
   }
 
   return (
@@ -84,7 +84,7 @@ export const CreateGameForm = ({ isOnline, startHandler }: CreateGameProps) => {
                           field.value === color ? "default" : "secondary"
                         }
                         className="w-full"
-                        disabled={isSubmitting}
+                        disabled={isOnline || isSubmitting}
                         onClick={() => {
                           form.setValue("startingColor", color)
                         }}
@@ -120,7 +120,7 @@ export const CreateGameForm = ({ isOnline, startHandler }: CreateGameProps) => {
                         min={0}
                         max={59}
                         className="z-[2] rounded-r-none"
-                        disabled={isSubmitting}
+                        disabled={isOnline || isSubmitting}
                         {...field}
                       />
                     </FormControl>
@@ -144,7 +144,7 @@ export const CreateGameForm = ({ isOnline, startHandler }: CreateGameProps) => {
                         min={0}
                         max={59}
                         className="z-[2] rounded-r-none"
-                        disabled={isSubmitting}
+                        disabled={isOnline || isSubmitting}
                         {...field}
                       />
                     </FormControl>
@@ -169,7 +169,7 @@ export const CreateGameForm = ({ isOnline, startHandler }: CreateGameProps) => {
                   <Input
                     type="password"
                     placeholder="••••••••"
-                    disabled={isSubmitting}
+                    disabled={isOnline || isSubmitting}
                     {...field}
                   />
                 </FormControl>

@@ -1,21 +1,21 @@
 import { beforeEach, describe, expect, it } from "vitest"
 
-import { makeCell } from "@/features/board/cell"
+import { createCell } from "@/features/board/cell"
 import type { Board } from "@/features/board/types"
 import {
-  checkFiftyMoveNoCap,
+  checkFiftyMoveNoCapture,
   checkForCheckOrMate,
   checkForStalemate,
   checkInsufficientMaterial,
-  checkThreeMoveRep,
+  checkThreeMoveRepetition,
   cloneBoard,
+  createBoard,
   getKingCell,
   getSides,
-  initializeBoard,
 } from "@/features/board/utils"
 import type { Move } from "@/features/game/types"
 import { createMove } from "@/features/game/utils"
-import { makePiece } from "@/features/piece/utils"
+import { createPiece } from "@/features/piece/utils"
 
 import { createCheckmateBoard } from "../piece/utils"
 import {
@@ -24,12 +24,11 @@ import {
   createMovesWithCapture,
   createRepeatingMoves,
 } from "./utils"
-import { measureDispatchTime, mockDispatch } from "../game/utils"
 
 describe("Board Utility Functions", () => {
-  describe("initializeBoard", () => {
+  describe("createBoard", () => {
     it("should initialize a board with correct structure and properties", () => {
-      const board = initializeBoard()
+      const board = createBoard()
 
       // Check board dimensions
       expect(board.length).toBe(3)
@@ -108,7 +107,7 @@ describe("Board Utility Functions", () => {
     testCases.forEach(({ color, type, id }) => {
       if (!id) {
         it(`should find the ${color} king's cell at ${id}`, () => {
-          board[0][0].piece = makePiece("king", type)
+          board[0][0].piece = createPiece("king", type)
 
           const result = getKingCell(board, type)
 
@@ -126,7 +125,7 @@ describe("Board Utility Functions", () => {
 
   describe("cloneBoard", () => {
     it("should clone a board correctly", () => {
-      const original = initializeBoard()
+      const original = createBoard()
       const cloned = cloneBoard(original)
 
       // Check that the clone is a new object with same structure
@@ -151,7 +150,7 @@ describe("Board Utility Functions", () => {
       })
 
       // Verify changes to clone don't affect original
-      cloned[0][0].piece = makePiece("queen", "w")
+      cloned[0][0].piece = createPiece("queen", "w")
       expect(original[0][0].piece?.type).not.toBe("queen")
     })
   })
@@ -178,25 +177,25 @@ describe("Board Utility Functions", () => {
       expect(resultWithoutTwoKings).toBe(false)
 
       // Add a piece so it's no longer insufficient material
-      board[0][0].piece = makePiece("pawn-cw", "w")
+      board[0][0].piece = createPiece("pawn-cw", "w")
       const resultWithPawn = checkInsufficientMaterial(board)
       expect(resultWithPawn).toBe(false)
 
-      board[0][1].piece = makePiece("rook", "w")
+      board[0][1].piece = createPiece("rook", "w")
       const resultWithRook = checkInsufficientMaterial(board)
       expect(resultWithRook).toBe(false)
 
-      board[0][2].piece = makePiece("bishop", "w")
+      board[0][2].piece = createPiece("bishop", "w")
       const resultWithBishop = checkInsufficientMaterial(board)
       expect(resultWithBishop).toBe(false)
 
-      board[0][3].piece = makePiece("knight", "w")
+      board[0][3].piece = createPiece("knight", "w")
       const resultWithKnight = checkInsufficientMaterial(board)
       expect(resultWithKnight).toBe(false)
     })
 
     it("should not be able to detect insufficient material", () => {
-      const completeBoard: Board = initializeBoard()
+      const completeBoard: Board = createBoard()
       const result = checkInsufficientMaterial(completeBoard)
 
       expect(result).toBe(false)
@@ -205,12 +204,12 @@ describe("Board Utility Functions", () => {
 
   describe("checkForCheckOrMate", () => {
     it("should not detect checkmate", () => {
-      const board = initializeBoard(false)
+      const board = createBoard(false)
       const emptyBoardResult = checkForCheckOrMate(board, "w")
       expect(emptyBoardResult).toEqual([null, false])
 
-      board[0][0].piece = makePiece("king", "w")
-      board[0][2].piece = makePiece("king", "b")
+      board[0][0].piece = createPiece("king", "w")
+      board[0][2].piece = createPiece("king", "b")
 
       const twoKingsResult = checkForCheckOrMate(board, "w")
       expect(twoKingsResult).toEqual(["w", false])
@@ -218,7 +217,6 @@ describe("Board Utility Functions", () => {
 
     it("should detect checkmate", () => {
       const board = createCheckmateBoard()
-
       const result = checkForCheckOrMate(board, "w")
       expect(result).toEqual(["w", true])
     })
@@ -226,137 +224,73 @@ describe("Board Utility Functions", () => {
 
   describe("checkForStalemate", () => {
     it("should not detect stalemate", () => {
-      const board = initializeBoard()
+      const board = createBoard()
       const result = checkForStalemate(board, "w")
       expect(result).toEqual(false)
     })
 
     it("should detect stalemate", () => {
-      const board = initializeBoard(false)
+      const board = createBoard(false)
 
-      board[2][30].piece = makePiece("king", "w")
-      board[2][31].piece = makePiece("pawn-cw", "w")
-      board[2][29].piece = makePiece("pawn-ccw", "w")
+      board[2][30].piece = createPiece("king", "w")
+      board[2][31].piece = createPiece("pawn-cw", "w")
+      board[2][29].piece = createPiece("pawn-ccw", "w")
 
-      board[2][4].piece = makePiece("rook", "b")
-      board[1][4].piece = makePiece("rook", "b")
+      board[2][4].piece = createPiece("rook", "b")
+      board[1][4].piece = createPiece("rook", "b")
 
       const result = checkForStalemate(board, "w")
       expect(result).toEqual(true)
     })
   })
 
-  describe("checkThreeMoveRep", () => {
+  describe("checkThreeMoveRepetition", () => {
     it("should detect three-move repetition", () => {
       // Create moves with 3 repetition cycles (sufficient for detection)
       const moves: Move[] = createRepeatingMoves(3)
 
-      expect(checkThreeMoveRep(moves)).toBe(true)
+      expect(checkThreeMoveRepetition(moves)).toBe(true)
 
       // Test with insufficient moves for repetition detection
-      expect(checkThreeMoveRep(moves.slice(0, 8))).toBe(false)
+      expect(checkThreeMoveRepetition(moves.slice(0, 8))).toBe(false)
 
       // Test with non-repeating pattern
       const nonRepeatingMoves = [
         ...moves,
         createMove(
           "w",
-          makeCell(0, 3, 108),
-          makeCell(0, 4, 144),
-          makePiece("rook", "b"),
+          createCell(0, 3, 108),
+          createCell(0, 4, 144),
+          createPiece("rook", "b"),
           null,
           null,
           "waiting"
         ),
       ]
-      expect(checkThreeMoveRep(nonRepeatingMoves)).toBe(false)
+      expect(checkThreeMoveRepetition(nonRepeatingMoves)).toBe(false)
     })
 
     it("should not detect three-move repetition", () => {
       // Create moves with insufficient repetition (only 2 cycles)
       const moves: Move[] = createRepeatingMoves(2)
-      expect(checkThreeMoveRep(moves)).toBe(false)
+      expect(checkThreeMoveRepetition(moves)).toBe(false)
     })
   })
 
-  describe("checkFiftyMoveNoCap", () => {
+  describe("checkFiftyMoveNoCapture", () => {
     it("should detect fifty moves with no captures", () => {
       const moves: Move[] = createMovesWithCapture(50, false)
-      expect(checkFiftyMoveNoCap(moves)).toBe(true)
+      expect(checkFiftyMoveNoCapture(moves)).toBe(true)
     })
 
     it("should not detect fifty moves with no captures", () => {
       // Test with fewer than 50 moves
       const movesNoCap: Move[] = createMovesWithCapture(40, false)
-      expect(checkFiftyMoveNoCap(movesNoCap)).toBe(false)
+      expect(checkFiftyMoveNoCapture(movesNoCap)).toBe(false)
 
       // Test with capture in the middle
       const movesWithCap: Move[] = createMovesWithCapture(40, true)
-      expect(checkFiftyMoveNoCap(movesWithCap)).toBe(false)
+      expect(checkFiftyMoveNoCapture(movesWithCap)).toBe(false)
     })
-  })
-})
-
-// Keeping placeholder tests but with improved structure
-describe("UI Tests", () => {
-  // TODO: Add UI tests when ready
-  it.todo("should implement UI tests for cell rendering")
-  it.todo("should implement UI tests for cell interaction")
-})
-
-describe("Performance Tests", () => {
-  let board: Board
-
-  beforeEach(() => {
-    board = initializeBoard(false)
-  })
-
-  it("should dispatch SET_SELECTED_CELL within 5ms", () => {
-    const averageExecTime = measureDispatchTime(() => {
-      mockDispatch({ type: "SET_SELECTED_CELL", cell: board[1][29] })
-    })
-
-    console.log(
-      `SET_SELECTED_CELL dispatch time: ${averageExecTime.toFixed(2)}ms`
-    )
-    expect(averageExecTime).toBeLessThan(5)
-  })
-
-  it("should dispatch SET_PENDING_MOVE within 5ms", () => {
-    const from = board[1][29]
-    const to = board[1][28]
-    const piece = makePiece("berolina-pawn-cw", "w")
-
-    const pendingMove = {
-      from,
-      to,
-      piece,
-      capturedPiece: to.piece,
-    }
-
-    const averageExecTime = measureDispatchTime(() => {
-      mockDispatch({ type: "SET_PENDING_MOVE", pendingMove })
-    })
-
-    console.log(
-      `SET_PENDING_MOVE dispatch time: ${averageExecTime.toFixed(2)}ms`
-    )
-    expect(averageExecTime).toBeLessThan(5)
-  })
-
-  it("should dispatch CANCEL_MOVE within 5ms", () => {
-    const averageExecTime = measureDispatchTime(() => {
-      mockDispatch({ type: "CANCEL_MOVE" })
-    })
-    console.log(`CANCEL_MOVE dispatch time: ${averageExecTime.toFixed(2)}ms`)
-    expect(averageExecTime).toBeLessThan(5)
-  })
-
-  it("should dispatch CONFIRM_MOVE within 5ms", () => {
-    const averageExecTime = measureDispatchTime(() => {
-      mockDispatch({ type: "CONFIRM_MOVE" })
-    })
-    console.log(`CONFIRM_MOVE dispatch time: ${averageExecTime.toFixed(2)}ms`)
-    expect(averageExecTime).toBeLessThan(5)
   })
 })

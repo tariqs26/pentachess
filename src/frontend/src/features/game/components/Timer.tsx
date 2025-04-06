@@ -1,5 +1,5 @@
-import { displayTimeRemaining } from "../utils"
 import { cn } from "@/lib/utils"
+import { displayTimeRemaining } from "../utils"
 
 type TimerProps = Readonly<{
   duration?: number
@@ -15,6 +15,7 @@ export const Timer = ({ className, duration, disabled }: TimerProps) =>
         disabled && "opacity-50",
         className
       )}
+      data-testid="timer"
     >
       {displayTimeRemaining(duration)}
     </time>

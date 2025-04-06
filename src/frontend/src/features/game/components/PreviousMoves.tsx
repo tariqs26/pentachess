@@ -37,11 +37,16 @@ export const PreviousMoves = ({ player, moves }: PreviousMovesProps) => {
   const movesCount = Math.ceil(moves.length / 2)
 
   useEffect(() => {
-    endRef.current?.scrollIntoView()
+    if (endRef.current?.scrollIntoView) {
+      endRef.current.scrollIntoView()
+    }
   }, [movesCount])
 
   return (
-    <aside className="rounded-md border bg-accent pl-1 pt-3 text-xs font-medium shadow-sm">
+    <aside
+      className="rounded-md border bg-accent pl-1 pt-3 text-xs font-medium shadow-sm"
+      data-testid="previous-moves"
+    >
       <div
         className={cn(
           "grid h-[626px] w-[266px] grid-cols-[1fr_1fr_1fr] grid-rows-[24px_auto_0px] gap-2 overflow-auto scrollbar-thin",

@@ -2,7 +2,7 @@ import Image from "next/image"
 import { cn } from "@/lib/utils"
 import { PROMOTION_PIECES } from "../constants"
 import type { Piece, PieceColor } from "../types"
-import { makePiece } from "../utils"
+import { createPiece } from "../utils"
 
 type PawnPromotionModalProps = Readonly<{
   turn: PieceColor
@@ -15,7 +15,10 @@ export const PawnPromotionModal = ({
 }: PawnPromotionModalProps) => (
   <>
     <div className="absolute inset-0 z-10 bg-black/50" />
-    <div className="absolute inset-0 z-10 flex items-center justify-start">
+    <div
+      className="absolute inset-0 z-10 flex items-center justify-start"
+      data-testid="pawn-promotion-modal"
+    >
       <div className="ml-4 rounded-xl border bg-card p-4 text-center shadow-lg">
         <h2 className="mb-4 font-semibold leading-none tracking-tight">
           Promote
@@ -23,7 +26,7 @@ export const PawnPromotionModal = ({
           Pawn
         </h2>
         <div className="flex flex-col gap-3">
-          {PROMOTION_PIECES.map((piece) => makePiece(piece, turn)).map(
+          {PROMOTION_PIECES.map((piece) => createPiece(piece, turn)).map(
             (piece) => (
               <button
                 key={piece.type}

@@ -1,12 +1,12 @@
 import type { Metadata } from "next"
 import Image from "next/image"
-import { pieceMovementRules } from "./content"
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/Accordion"
+import { pieceMovementRules } from "./content"
 
 export const metadata = {
   title: "Rules and Regulations",
@@ -15,8 +15,8 @@ export const metadata = {
 
 export default function RulesAndRegulationsPage() {
   return (
-    <div className="mx-auto max-w-5xl space-y-6 p-6">
-      <h1 className="text-center text-3xl font-bold tracking-tight">
+    <div className="mx-auto max-w-5xl space-y-6 p-6 py-10">
+      <h1 className="mt-6 text-center text-3xl font-bold tracking-tight">
         {metadata.title}
       </h1>
       <p className="mb-4 text-center text-lg">

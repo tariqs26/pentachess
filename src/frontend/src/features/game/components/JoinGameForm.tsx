@@ -30,7 +30,8 @@ export const JoinGameForm = () => {
   const { isSubmitting } = form.formState
 
   const onSubmit = (values: JoinGameValues) => {
-    console.log("join game submitted:", values)
+    // TODO: implement join custom game functionality
+    console.info("join game submitted:", values)
   }
 
   return (
@@ -45,7 +46,7 @@ export const JoinGameForm = () => {
               <FormControl>
                 <Input
                   placeholder="Enter code"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || true}
                   {...field}
                 />
               </FormControl>
@@ -53,7 +54,7 @@ export const JoinGameForm = () => {
             </FormItem>
           )}
         />
-        <Button type="submit" disabled>
+        <Button type="submit" disabled={isSubmitting || true}>
           Join
         </Button>
       </form>

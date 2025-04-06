@@ -4,49 +4,40 @@ import { checkForCheckOrMate, cloneBoard } from "../board/utils"
 import { PIECE_DATA } from "./constants"
 import type { Piece, PieceColor, PieceType } from "./types"
 
-export function makePiece(type: PieceType, color: PieceColor): Piece {
-  return {
-    type,
-    abbr: PIECE_DATA[type].abbr,
-    color,
-    value: PIECE_DATA[type].value,
-    image: PIECE_DATA[type].image[color],
-    hasMoved: false,
-    canPromote: true,
-  }
-}
+export const createPiece = (type: PieceType, color: PieceColor): Piece => ({
+  type,
+  abbr: PIECE_DATA[type].abbr,
+  color,
+  value: PIECE_DATA[type].value,
+  image: PIECE_DATA[type].image[color],
+  hasMoved: false,
+  canPromote: true,
+})
 
-export function canPromote(piece: Piece, to: { x: number; y: number }) {
-  return (
-    (piece.type === "pawn-cw" ||
-      piece.type === "pawn-ccw" ||
-      piece.type === "berolina-pawn-cw" ||
-      piece.type === "berolina-pawn-ccw") &&
-    to.x === 2 &&
-    ((piece.color === "w" && to.y >= 25 && to.y <= 32) ||
-      (piece.color === "b" && to.y >= 0 && to.y <= 7)) &&
-    piece.canPromote
-  )
-}
+export const canPromote = (piece: Piece, to: { x: number; y: number }) =>
+  (piece.type === "pawn-cw" ||
+    piece.type === "pawn-ccw" ||
+    piece.type === "berolina-pawn-cw" ||
+    piece.type === "berolina-pawn-ccw") &&
+  to.x === 2 &&
+  ((piece.color === "w" && to.y >= 25 && to.y <= 32) ||
+    (piece.color === "b" && to.y >= 0 && to.y <= 7)) &&
+  piece.canPromote
 
-function isNotAlly(cellTo: Cell, currPiece: Piece) {
-  return cellTo.piece === null || cellTo.piece.color !== currPiece.color
-}
+const isNotAlly = (cellTo: Cell, currPiece: Piece) =>
+  cellTo.piece === null || cellTo.piece.color !== currPiece.color
 
-function isEnemy(cellTo: Cell, currPiece: Piece | null) {
-  return cellTo.piece !== null && cellTo.piece.color !== currPiece?.color
-}
+const isEnemy = (cellTo: Cell, currPiece: Piece | null) =>
+  cellTo.piece !== null && cellTo.piece.color !== currPiece?.color
 
-function isEmpty(cell: Cell) {
-  return cell.piece === null
-}
+const isEmpty = (cell: Cell) => cell.piece === null
 
-function getPawnTypeMoves(
+const getPawnTypeMoves = (
   possibleMoves: Set<Cell>,
   cell: Cell,
   board: Board,
   piece: Piece
-) {
+) => {
   const isPawn = piece.type[0] === "p"
   const isCW = piece.type.endsWith("-cw")
 
@@ -91,11 +82,35 @@ function getPawnTypeMoves(
   }
 }
 
-export function getPossibleMoves(
+const checkKingSafety = (
+  simulation: Cell,
+  board: Board,
+  possibleMoves: Set<Cell>
+) => {
+  const currentColor = simulation?.piece?.color
+
+  for (const move of Array.from(possibleMoves)) {
+    const clonedBoard = cloneBoard(board)
+    clonedBoard[move.x][move.y].piece = simulation.piece
+    clonedBoard[simulation.x][simulation.y].piece = null
+    let illegalMove = false
+    if (currentColor) {
+      // eslint-disable-next-line no-extra-semi
+      ;[, illegalMove] = checkForCheckOrMate(clonedBoard, currentColor, false)
+    }
+
+    if (illegalMove) {
+      possibleMoves.delete(move)
+    }
+  }
+  return possibleMoves
+}
+
+export const getPossibleMoves = (
   cell: Cell,
   board: Board,
   simulate = false
-): Set<Cell> {
+) => {
   let possibleMoves = new Set<Cell>()
 
   if (cell.piece === null) return possibleMoves
@@ -140,12 +155,12 @@ export function getPossibleMoves(
     }
     case "queen": {
       const rookMoves = getPossibleMoves(
-        { ...cell, piece: makePiece("rook", cell.piece.color) },
+        { ...cell, piece: createPiece("rook", cell.piece.color) },
         board,
         simulate
       )
       const bishopMoves = getPossibleMoves(
-        { ...cell, piece: makePiece("bishop", cell.piece.color) },
+        { ...cell, piece: createPiece("bishop", cell.piece.color) },
         board,
         simulate
       )
@@ -220,35 +235,11 @@ export function getPossibleMoves(
   return checkKingSafety(cell, board, possibleMoves)
 }
 
-function checkKingSafety(
-  simulation: Cell,
-  board: Board,
-  possibleMoves: Set<Cell>
-): Set<Cell> {
-  const currentColor = simulation?.piece?.color
-
-  for (const move of Array.from(possibleMoves)) {
-    const clonedBoard = cloneBoard(board)
-    clonedBoard[move.x][move.y].piece = simulation.piece
-    clonedBoard[simulation.x][simulation.y].piece = null
-    let illegalMove = false
-    if (currentColor) {
-      // eslint-disable-next-line no-extra-semi
-      ;[, illegalMove] = checkForCheckOrMate(clonedBoard, currentColor, false)
-    }
-
-    if (illegalMove) {
-      possibleMoves.delete(move)
-    }
-  }
-  return possibleMoves
-}
-
-export function getInvalidMoves(
+export const getInvalidMoves = (
   cell: Cell,
   board: Board,
   validMoves: Set<Cell>
-): Set<Cell> {
+) => {
   const invalidMoves = getPossibleMoves(cell, board, true)
 
   validMoves.forEach((move) => {

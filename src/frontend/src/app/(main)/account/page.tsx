@@ -22,8 +22,8 @@ export default async function AccountPage() {
   }
 
   return (
-    <div className="mx-auto max-w-5xl p-6">
-      <h1 className="mb-8 text-3xl font-bold tracking-tight">
+    <div className="mx-auto max-w-5xl px-6 py-10">
+      <h1 className="mb-8 mt-6 text-3xl font-bold tracking-tight">
         {metadata.title}
       </h1>
       <section className="space-y-8">

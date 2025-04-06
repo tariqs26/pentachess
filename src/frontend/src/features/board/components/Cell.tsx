@@ -1,51 +1,9 @@
 import Image from "next/image"
 import { useGame } from "@/features/game/hooks/useGame"
 import { cn } from "@/lib/utils"
+import { cellMarginLeft, cellMarginTop, cellRotation } from "../cell"
 import type { Cell } from "../types"
 import { sideRotation } from "./Side"
-
-const cellRotation = (cell: Cell) => {
-  if (cell.x === 0) return cell.y % 2 === 0 ? -70.5 : -109
-  if (cell.side % 2 !== 0) return cell.y % 2 === 0 ? -73.5 : -109.5
-  return cell.y % 2 === 0 ? -109.5 : -73.5
-}
-
-const marginLeftStyle = (cell: Cell) => {
-  // key = the ith cell in the side, value = margin value
-  const leftMarginsForRing1 = { 0: -70, 1: -69, 2: -69.5 }
-  const leftMarginsForRing2 = { 0: -70, 1: -69, 2: -69.5, 3: -69, 4: -69.5 }
-
-  if (cell.x === 1) {
-    const ithCell = (cell.y - cell.side * 3) as keyof typeof leftMarginsForRing1
-    return leftMarginsForRing1[ithCell]
-  }
-
-  if (cell.x === 2) {
-    const ithCell = (cell.y - cell.side * 5) as keyof typeof leftMarginsForRing2
-    return leftMarginsForRing2[ithCell]
-  }
-  // default margins for ring 0
-  return cell.side % 2 !== 0 ? -70.1 : -70.5
-}
-
-const marginTopStyle = (cell: Cell) => {
-  // key = the ith cell in the side, value = margin value
-  const topMarginsForRing1 = { 0: 0, 1: 4.5, 2: -1.5 }
-  const topMarginsForRing2 = { 0: 0, 1: 4.5, 2: -1.6, 3: 2.9, 4: -3.2 }
-
-  if (cell.x === 1) {
-    const ithCell = (cell.y - cell.side * 3) as keyof typeof topMarginsForRing1
-    return topMarginsForRing1[ithCell]
-  }
-
-  if (cell.x === 2) {
-    const ithCell = (cell.y - cell.side * 5) as keyof typeof topMarginsForRing2
-    return topMarginsForRing2[ithCell]
-  }
-
-  // default margins for ring 0
-  return cell.side % 2 !== 0 ? -30 : -10
-}
 
 const pieceRotation = (cell: Cell & { flipped?: boolean }) =>
   `calc(${-cellRotation(cell) - sideRotation[cell.x][cell.side] + (cell.flipped ? -180 : 0)}deg )`
@@ -131,8 +89,8 @@ export const CellComponent = (cell: CellProps) => {
           clipPath:
             "polygon(0% 41.2215%, 19.0983% 100%, 80.9017% 100%, 100% 41.2215%, 50% 77.5486%)",
           rotate: `${cellRotation(cell)}deg`,
-          marginLeft: `${marginLeftStyle(cell)}px`,
-          marginTop: `${marginTopStyle(cell)}px`,
+          marginLeft: `${cellMarginLeft(cell)}px`,
+          marginTop: `${cellMarginTop(cell)}px`,
         }}
       >
         <svg viewBox="0 0 100 100">

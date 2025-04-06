@@ -1,39 +1,41 @@
 "use client"
 
 import * as React from "react"
-import { createContext, useContext } from "react"
 import { Slot } from "@radix-ui/react-slot"
-import { cva, type VariantProps } from "class-variance-authority"
 import { ChevronLeft, Menu } from "lucide-react"
-
 import { cn } from "@/lib/utils"
 
 type SidebarContextProps = {
-  expanded: boolean
-  setExpanded: (expanded: boolean) => void
+  open: boolean
+  setOpen: (open: boolean) => void
+  toggleSidebar: () => void
 }
 
-const SidebarContext = createContext<SidebarContextProps | null>(null)
+const SidebarContext = React.createContext<SidebarContextProps | null>(null)
 
 export const SidebarProvider = ({
   children,
-  defaultExpanded = true,
+  defaultOpen = true,
 }: {
   children: React.ReactNode
-  defaultExpanded?: boolean
+  defaultOpen?: boolean
 }) => {
-  const [expanded, setExpanded] = React.useState(defaultExpanded)
+  const [open, setOpen] = React.useState(defaultOpen)
+
+  const toggleSidebar = React.useCallback(
+    () => setOpen((open) => !open),
+    [setOpen]
+  )
 
   return (
-    <SidebarContext.Provider value={{ expanded, setExpanded }}>
+    <SidebarContext.Provider value={{ open, setOpen, toggleSidebar }}>
       {children}
     </SidebarContext.Provider>
   )
 }
 
 export const useSidebar = () => {
-  const context = useContext(SidebarContext)
-
+  const context = React.useContext(SidebarContext)
   if (!context) {
     throw new Error("useSidebar must be used within a SidebarProvider")
   }
@@ -41,39 +43,30 @@ export const useSidebar = () => {
   return context
 }
 
-const sidebarVariants = cva(
-  "relative w-[180px] z-10 flex h-screen flex-col overflow-y-auto border-r bg-accent p-4 pt-2 transition-transform duration-300 ease-in-out",
-  {
-    variants: {
-      expanded: {
-        true: "translate-x-0",
-        false: "-translate-x-[180px]",
-      },
-    },
-    defaultVariants: { expanded: true },
-  }
-)
+export type SidebarProps = React.HTMLAttributes<HTMLElement>
 
-export type SidebarProps = React.HTMLAttributes<HTMLElement> &
-  VariantProps<typeof sidebarVariants>
-
-export function Sidebar({ className, ...props }: SidebarProps) {
-  const { expanded, setExpanded } = useSidebar()
+export const Sidebar = ({ className, ...props }: SidebarProps) => {
+  const { open, toggleSidebar } = useSidebar()
 
   return (
     <>
       <button
-        onClick={() => setExpanded(!expanded)}
+        type="button"
+        onClick={toggleSidebar}
         className={cn(
-          "fixed left-4 top-4 z-20 flex size-10 items-center justify-center rounded bg-accent text-secondary-foreground transition-all duration-300 hover:bg-accent/80",
-          expanded && "left-[176px]"
+          "fixed left-4 top-4 z-20 flex size-9 items-center justify-center rounded bg-accent text-secondary-foreground transition-all duration-300 hover:bg-accent/80",
+          open && "left-[176px]"
         )}
-        aria-label={expanded ? "Collapse sidebar" : "Expand sidebar"}
+        aria-label={`${open ? "Close" : "Open"} sidebar`}
       >
-        {expanded ? <ChevronLeft size={20} /> : <Menu size={20} />}
+        {open ? <ChevronLeft size={20} /> : <Menu size={20} />}
       </button>
       <aside
-        className={cn(sidebarVariants({ expanded, className }))}
+        className={cn(
+          "relative z-10 flex h-screen w-[180px] -translate-x-[180px] flex-col overflow-y-auto border-r bg-accent p-4 pt-2 transition-transform duration-300 ease-in-out",
+          open && "translate-x-0",
+          className
+        )}
         {...props}
       />
     </>
@@ -84,7 +77,7 @@ export const SidebarHeader = ({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => (
-  <div className={cn("mb-2 mt-3", className)} {...props} />
+  <div className={cn("mb-2 mt-2", className)} {...props} />
 )
 
 export const SidebarContent = ({
@@ -115,15 +108,16 @@ export type SidebarMenuButtonProps =
     size?: "default" | "lg"
   }
 
-export const SidebarMenuButton = React.forwardRef<
-  HTMLButtonElement,
-  SidebarMenuButtonProps
->(({ className, asChild = false, size = "default", ...props }, ref) => {
+export const SidebarMenuButton = ({
+  className,
+  asChild = false,
+  size = "default",
+  ...props
+}: SidebarMenuButtonProps) => {
   const Comp = asChild ? Slot : "button"
 
   return (
     <Comp
-      ref={ref}
       className={cn(
         "flex w-full cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors hover:bg-background/50",
         size === "lg" && "py-3",
@@ -132,82 +126,19 @@ export const SidebarMenuButton = React.forwardRef<
       {...props}
     />
   )
-})
-SidebarMenuButton.displayName = "SidebarMenuButton"
-
-export const SidebarMenuSub = ({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLUListElement>) => (
-  <ul className={cn("mt-1 space-y-1", className)} {...props} />
-)
-
-export const SidebarMenuSubItem = ({
-  ...props
-}: React.HTMLAttributes<HTMLLIElement>) => <li {...props} />
-
-export type SidebarMenuSubButtonProps =
-  React.ButtonHTMLAttributes<HTMLButtonElement> & {
-    asChild?: boolean
-    isActive?: boolean
-  }
-
-export const SidebarMenuSubButton = React.forwardRef<
-  HTMLButtonElement,
-  SidebarMenuSubButtonProps
->(({ className, asChild = false, isActive = false, ...props }, ref) => {
-  const Comp = asChild ? Slot : "button"
-
-  return (
-    <Comp
-      ref={ref}
-      className={cn(
-        "flex w-full cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors hover:bg-background/50",
-        isActive && "bg-background/50 font-medium",
-        className
-      )}
-      {...props}
-    />
-  )
-})
-SidebarMenuSubButton.displayName = "SidebarMenuSubButton"
-
-export const SidebarRail = ({
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) => <div {...props} />
-
-export const SidebarTrigger = ({
-  className,
-  ...props
-}: React.ButtonHTMLAttributes<HTMLButtonElement>) => {
-  const { expanded, setExpanded } = useSidebar()
-
-  return (
-    <button
-      onClick={() => setExpanded(!expanded)}
-      className={cn(
-        "flex h-8 w-8 items-center justify-center rounded transition-colors hover:bg-accent",
-        className
-      )}
-      aria-label={expanded ? "Collapse sidebar" : "Expand sidebar"}
-      {...props}
-    >
-      <Menu size={18} />
-    </button>
-  )
 }
 
 export const SidebarInset = ({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => {
-  const { expanded } = useSidebar()
+  const { open } = useSidebar()
 
   return (
     <div
       className={cn(
         "flex flex-1 flex-col transition-all duration-300",
-        expanded && "ml-[180px]",
+        open && "ml-[180px]",
         className
       )}
       {...props}

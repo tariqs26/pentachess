@@ -1,9 +1,9 @@
 import { useGame } from "@/features/game/hooks/useGame"
+import { cn } from "@/lib/utils"
 import { DECAGON_SIDES } from "../constants"
 import { getSides } from "../utils"
 import { CellComponent } from "./Cell"
 import { Side } from "./Side"
-import { cn } from "@/lib/utils"
 
 type BoardProps = Readonly<{ disabled: boolean; flipped?: boolean }>
 
@@ -11,7 +11,10 @@ export const Board = (props: BoardProps) => {
   const { state } = useGame()
 
   return (
-    <div className="relative mx-auto my-2 h-[600px] w-[572px]">
+    <div
+      className="relative mx-auto my-2 h-[600px] w-[572px]"
+      data-testid="board"
+    >
       {state.boardState.board.map((ring, i) => (
         <div
           key={i}

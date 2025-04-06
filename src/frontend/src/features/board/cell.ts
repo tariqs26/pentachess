@@ -1,11 +1,9 @@
-import { DECAGON_SIDES, RING_SIZES } from "@/features/board/constants"
+import { DECAGON_SIDES, RING_SIZES } from "./constants"
 import type { Board, Cell } from "./types"
 
-export function cellId(x: number, y: number) {
-  return `${"cba"[x]}${y}`
-}
+export const cellId = (x: number, y: number) => `${"cba"[x]}${y}`
 
-export function makeCell(x: number, y: number, angle: number): Cell {
+export const createCell = (x: number, y: number, angle: number): Cell => {
   const id = cellId(x, y)
   const color = y % 2 === 0 ? "b" : "w"
   const side = Math.floor(y / (RING_SIZES[x] / DECAGON_SIDES))
@@ -13,7 +11,7 @@ export function makeCell(x: number, y: number, angle: number): Cell {
   return { id, color, x, y, side, angle, piece: null, edges: [], vertices: [] }
 }
 
-export function setCellEdges({ x, y, edges }: Cell) {
+export const setCellEdges = ({ x, y, edges }: Cell) => {
   // saved in the form of [next (ccw), prev (cw), side]
   if (x === 0) {
     // inner ring - only 1 type of cell
@@ -52,7 +50,10 @@ export function setCellEdges({ x, y, edges }: Cell) {
   }
 }
 
-export function setCellVertices({ x, y, edges, vertices }: Cell, board: Board) {
+export const setCellVertices = (
+  { x, y, edges, vertices }: Cell,
+  board: Board
+) => {
   if (x === 0) {
     // inner ring - only 1 type of cell
     // type 1 inner vertices
@@ -147,22 +148,60 @@ export function setCellVertices({ x, y, edges, vertices }: Cell, board: Board) {
   }
 }
 
-export function cloneCell(cell: Cell): Cell {
-  return {
-    ...cell,
-    edges: cell.edges.map((edge) => [...edge]),
-    vertices: cell.vertices.map((vertex) => [...vertex]),
+export const cloneCell = (cell: Cell): Cell => ({
+  ...cell,
+  edges: cell.edges.map((edge) => [...edge]),
+  vertices: cell.vertices.map((vertex) => [...vertex]),
+})
+
+export const getSideEdge = (cell: Cell, board: Board) =>
+  board[cell.edges[2][0]][cell.edges[2][1]]
+
+export const getCWEdge = (cell: Cell, board: Board) =>
+  board[cell.edges[1][0]][cell.edges[1][1]]
+
+export const getCCWEdge = (cell: Cell, board: Board) =>
+  board[cell.edges[0][0]][cell.edges[0][1]]
+
+export const cellRotation = (cell: Cell) => {
+  if (cell.x === 0) return cell.y % 2 === 0 ? -70.5 : -109
+  if (cell.side % 2 !== 0) return cell.y % 2 === 0 ? -73.5 : -109.5
+  return cell.y % 2 === 0 ? -109.5 : -73.5
+}
+
+export const cellMarginLeft = (cell: Cell) => {
+  // key = the ith cell in the side, value = margin value
+  const leftMarginsForRing1 = { 0: -70, 1: -69, 2: -69.5 }
+  const leftMarginsForRing2 = { 0: -70, 1: -69, 2: -69.5, 3: -69, 4: -69.5 }
+
+  if (cell.x === 1) {
+    const ithCell = (cell.y - cell.side * 3) as keyof typeof leftMarginsForRing1
+    return leftMarginsForRing1[ithCell]
   }
+
+  if (cell.x === 2) {
+    const ithCell = (cell.y - cell.side * 5) as keyof typeof leftMarginsForRing2
+    return leftMarginsForRing2[ithCell]
+  }
+  // default margins for ring 0
+  return cell.side % 2 !== 0 ? -70.1 : -70.5
 }
 
-export function getSideEdge(cell: Cell, board: Board) {
-  return board[cell.edges[2][0]][cell.edges[2][1]]
-}
+export const cellMarginTop = (cell: Cell) => {
+  // key = the ith cell in the side, value = margin value
+  const topMarginsForRing1 = { 0: 0, 1: 4.5, 2: -1.5 }
+  const topMarginsForRing2 = { 0: 0, 1: 4.5, 2: -1.6, 3: 2.9, 4: -3.2 }
 
-export function getCWEdge(cell: Cell, board: Board) {
-  return board[cell.edges[1][0]][cell.edges[1][1]]
-}
+  if (cell.x === 1) {
+    const ithCell = (cell.y - cell.side * 3) as keyof typeof topMarginsForRing1
+    return topMarginsForRing1[ithCell]
+  }
 
-export function getCCWEdge(cell: Cell, board: Board) {
-  return board[cell.edges[0][0]][cell.edges[0][1]]
+  if (cell.x === 2) {
+    const ithCell = (cell.y - cell.side * 5) as keyof typeof topMarginsForRing2
+    return topMarginsForRing2[ithCell]
+  }
+
+  // default margins for ring 0
+  return cell.side % 2 !== 0 ? -30 : -10
 }

@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/Button"
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -24,6 +25,7 @@ export const ForgotPasswordForm = () => {
   const { isSubmitting } = form.formState
 
   const handleSubmit = (values: ForgotPasswordValues) => {
+    // TODO: implement forgot password functionality
     console.info("forgot password submitted:", values)
   }
 
@@ -40,15 +42,22 @@ export const ForgotPasswordForm = () => {
                 <Input
                   autoComplete="email"
                   placeholder="someone@example.com"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || true}
                   {...field}
                 />
               </FormControl>
               <FormMessage />
+              <FormDescription>
+                This feature is under development, and is currently unavailable.
+              </FormDescription>
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={isSubmitting} className="w-full">
+        <Button
+          type="submit"
+          disabled={isSubmitting || true}
+          className="w-full"
+        >
           Send Reset Email
         </Button>
         <p className="text-center text-sm">

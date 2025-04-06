@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from "next/server"
-import { getSessionCookie } from "better-auth"
+import { type NextRequest, NextResponse } from "next/server"
+import { getSessionCookie } from "better-auth/cookies"
 
 const PROTECTED_ROUTES = ["/game", "/account"]
 const AUTH_ROUTES = ["/login", "/register", "/forgot-password"]
@@ -13,7 +13,9 @@ export async function middleware(request: NextRequest) {
     AUTH_ROUTES.some((path) => requestUrl.pathname.startsWith(path))
   ) {
     return NextResponse.redirect(new URL("/", requestUrl))
-  } else if (
+  }
+
+  if (
     !sessionCookie &&
     !requestUrl.pathname.startsWith("/game/local") &&
     PROTECTED_ROUTES.some((path) => requestUrl.pathname.startsWith(path))

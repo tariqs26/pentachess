@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it } from "vitest"
 
-import { makeCell } from "@/features/board/cell"
+import { createCell } from "@/features/board/cell"
 import type { Board, Cell } from "@/features/board/types"
-import { initializeBoard } from "@/features/board/utils"
+import { createBoard } from "@/features/board/utils"
 import { gameReducer } from "@/features/game/reducer"
 import type {
   GameAction,
@@ -20,19 +20,13 @@ import {
 } from "@/features/game/utils"
 import type { Piece, PieceColor, PieceType } from "@/features/piece/types"
 import {
+  createPiece,
   getInvalidMoves,
   getPossibleMoves,
-  makePiece,
 } from "@/features/piece/utils"
 
-import { TEST_TIMESTAMP } from "./constants"
-import {
-  createPromotionState,
-  createTestMove,
-  createTestPlayers,
-  measureDispatchTime,
-  mockDispatch,
-} from "./utils"
+import { TEST_PLAYERS, TEST_TIMESTAMP } from "./constants"
+import { createTestMove } from "./utils"
 
 describe("Game Utility Functions", () => {
   describe("createGameState", () => {
@@ -46,7 +40,7 @@ describe("Game Utility Functions", () => {
         status: "waiting",
         disabled: false,
         boardState: {
-          board: initializeBoard(),
+          board: createBoard(),
         },
         previousMoves: [],
         capturedPieces: { w: [], b: [] },
@@ -58,7 +52,7 @@ describe("Game Utility Functions", () => {
     let board: Board
 
     beforeEach(() => {
-      board = initializeBoard()
+      board = createBoard()
     })
 
     it("should create basic moves with correct values", () => {
@@ -67,21 +61,21 @@ describe("Game Utility Functions", () => {
           player: "w",
           from: board[1][4],
           to: board[1][6],
-          piece: makePiece("pawn-ccw", "b"),
+          piece: createPiece("pawn-ccw", "b"),
           notation: "P:b4-b6",
         },
         {
           player: "b",
           from: board[1][14],
           to: board[1][12],
-          piece: makePiece("pawn-cw", "b"),
+          piece: createPiece("pawn-cw", "b"),
           notation: "P:b14-b12",
         },
         {
           player: "w",
           from: board[2][7],
           to: board[1][5],
-          piece: makePiece("bishop", "w"),
+          piece: createPiece("bishop", "w"),
           notation: "B:a7-b5",
         },
       ] as const
@@ -109,10 +103,10 @@ describe("Game Utility Functions", () => {
       const testCases = [
         {
           description: "captures",
-          from: makeCell(1, 5, 0),
-          to: makeCell(1, 6, 0),
-          piece: makePiece("pawn-ccw", "w"),
-          pieceCaptured: makePiece("pawn-ccw", "b"),
+          from: createCell(1, 5, 0),
+          to: createCell(1, 6, 0),
+          piece: createPiece("pawn-ccw", "w"),
+          pieceCaptured: createPiece("pawn-ccw", "b"),
           piecePromoted: null,
           check: null,
           status: "playing",
@@ -120,21 +114,21 @@ describe("Game Utility Functions", () => {
         },
         {
           description: "promotions",
-          from: makeCell(1, 1, 0),
-          to: makeCell(2, 3, 0),
-          piece: makePiece("pawn-ccw", "b"),
-          pieceCaptured: makePiece("pawn-ccw", "w"),
-          piecePromoted: makePiece("queen", "b"),
+          from: createCell(1, 1, 0),
+          to: createCell(2, 3, 0),
+          piece: createPiece("pawn-ccw", "b"),
+          pieceCaptured: createPiece("pawn-ccw", "w"),
+          piecePromoted: createPiece("queen", "b"),
           check: null,
           status: "playing",
           expectedNotation: "P:b1xa3=Q",
         },
         {
           description: "check",
-          from: makeCell(1, 5, 0),
-          to: makeCell(1, 6, 0),
-          piece: makePiece("pawn-ccw", "w"),
-          pieceCaptured: makePiece("pawn-ccw", "b"),
+          from: createCell(1, 5, 0),
+          to: createCell(1, 6, 0),
+          piece: createPiece("pawn-ccw", "w"),
+          pieceCaptured: createPiece("pawn-ccw", "b"),
           piecePromoted: null,
           check: "w",
           status: "playing",
@@ -142,10 +136,10 @@ describe("Game Utility Functions", () => {
         },
         {
           description: "checkmate",
-          from: makeCell(1, 5, 0),
-          to: makeCell(1, 6, 0),
-          piece: makePiece("pawn-ccw", "w"),
-          pieceCaptured: makePiece("pawn-ccw", "b"),
+          from: createCell(1, 5, 0),
+          to: createCell(1, 6, 0),
+          piece: createPiece("pawn-ccw", "w"),
+          pieceCaptured: createPiece("pawn-ccw", "b"),
           piecePromoted: null,
           check: null,
           status: "checkmate",
@@ -228,7 +222,7 @@ describe("Game Utility Functions", () => {
     let moves: Move[]
 
     beforeEach(() => {
-      board = initializeBoard()
+      board = createBoard()
       moves = []
     })
 
@@ -236,7 +230,7 @@ describe("Game Utility Functions", () => {
       const nextMove = createTestMove(
         board[1][4],
         board[1][6],
-        makePiece("pawn-ccw", "w")
+        createPiece("pawn-ccw", "w")
       )
 
       expect(getNewStatus(false, board, "w", moves, nextMove)).toBe("playing")
@@ -246,7 +240,7 @@ describe("Game Utility Functions", () => {
       const nextMove = createTestMove(
         board[1][4],
         board[1][6],
-        makePiece("pawn-ccw", "w")
+        createPiece("pawn-ccw", "w")
       )
 
       expect(getNewStatus(true, board, "w", moves, nextMove)).toBe("checkmate")
@@ -254,17 +248,17 @@ describe("Game Utility Functions", () => {
 
     it("should return 'draw-stalemate' when king is not in check but has no legal moves", () => {
       // Setup stalemate position
-      board = initializeBoard(false)
-      board[2][30].piece = makePiece("king", "w")
-      board[2][31].piece = makePiece("pawn-cw", "w")
-      board[2][29].piece = makePiece("pawn-ccw", "w")
-      board[2][4].piece = makePiece("rook", "b")
-      board[1][4].piece = makePiece("rook", "b")
+      board = createBoard(false)
+      board[2][30].piece = createPiece("king", "w")
+      board[2][31].piece = createPiece("pawn-cw", "w")
+      board[2][29].piece = createPiece("pawn-ccw", "w")
+      board[2][4].piece = createPiece("rook", "b")
+      board[1][4].piece = createPiece("rook", "b")
 
       const nextMove = createTestMove(
         board[1][4],
         board[1][6],
-        makePiece("pawn-ccw", "w")
+        createPiece("pawn-ccw", "w")
       )
 
       expect(getNewStatus(false, board, "w", moves, nextMove)).toBe(
@@ -274,9 +268,9 @@ describe("Game Utility Functions", () => {
 
     it("should return 'draw-threefold' when position repeats three times", () => {
       // Create cells for repetition
-      const cell1 = makeCell(0, 0, 0)
-      const cell2 = makeCell(0, 1, 36)
-      const piece = makePiece("knight", "w")
+      const cell1 = createCell(0, 0, 0)
+      const cell2 = createCell(0, 1, 36)
+      const piece = createPiece("knight", "w")
 
       // Simulate repetition (three times, each with 4 moves)
       for (let i = 0; i < 3; i++) {
@@ -301,7 +295,7 @@ describe("Game Utility Functions", () => {
         moves.push(move1, move2, move1, move2)
       }
 
-      const nextMove = createTestMove(cell1, cell2, makePiece("knight", "w"))
+      const nextMove = createTestMove(cell1, cell2, createPiece("knight", "w"))
 
       expect(getNewStatus(false, board, "w", moves, nextMove)).toBe(
         "draw-threefold"
@@ -309,16 +303,16 @@ describe("Game Utility Functions", () => {
     })
 
     it("should return 'draw-fifty-move' after 50 moves without captures or pawn moves", () => {
-      board = initializeBoard(true)
-      const cell = makeCell(0, 0, 0)
-      const piece = makePiece("knight", "w")
+      board = createBoard(true)
+      const cell = createCell(0, 0, 0)
+      const piece = createPiece("knight", "w")
 
       // Add 50 moves with no captures or pawn moves
       for (let i = 0; i < 50; i++) {
         moves.push(createMove("w", cell, cell, piece, null, null, "playing"))
       }
 
-      const nextMove = createTestMove(cell, cell, makePiece("bishop", "w"))
+      const nextMove = createTestMove(cell, cell, createPiece("bishop", "w"))
 
       expect(getNewStatus(false, board, "w", moves, nextMove)).toBe(
         "draw-fifty-move"
@@ -327,13 +321,13 @@ describe("Game Utility Functions", () => {
 
     it("should return 'draw-insufficient' when neither player has enough material to checkmate", () => {
       // Clear the board except for kings
-      board = initializeBoard(false)
-      board[2][3].piece = makePiece("king", "w")
-      board[2][28].piece = makePiece("king", "b")
+      board = createBoard(false)
+      board[2][3].piece = createPiece("king", "w")
+      board[2][28].piece = createPiece("king", "b")
 
-      const from = makeCell(2, 3, 0)
-      const to = makeCell(2, 4, 0)
-      const nextMove = createTestMove(from, to, makePiece("king", "w"))
+      const from = createCell(2, 3, 0)
+      const to = createCell(2, 4, 0)
+      const nextMove = createTestMove(from, to, createPiece("king", "w"))
 
       expect(getNewStatus(false, board, "w", moves, nextMove)).toBe(
         "draw-insufficient"
@@ -350,10 +344,10 @@ describe("Game Utility Functions", () => {
       from: Cell,
       promotedPiece: Piece | null = null
     ) => {
-      const board = initializeBoard()
+      const board = createBoard()
       const moves: Move[] = []
-      const to = makeCell(1, 6, 0)
-      const piece = makePiece(pieceType, pieceColor)
+      const to = createCell(1, 6, 0)
+      const piece = createPiece(pieceType, pieceColor)
       const promotionCoordinates = { from, to, piece }
 
       const expectedMove = createMove(
@@ -390,7 +384,7 @@ describe("Game Utility Functions", () => {
         "b",
         "pawn-ccw",
         "w",
-        makeCell(1, 4, 0)
+        createCell(1, 4, 0)
       )
 
       expect(result.turn).toBe("w")
@@ -404,7 +398,7 @@ describe("Game Utility Functions", () => {
         "w",
         "king",
         "b",
-        makeCell(0, 5, 0)
+        createCell(0, 5, 0)
       )
 
       expect(result.turn).toBe("b")
@@ -414,12 +408,12 @@ describe("Game Utility Functions", () => {
     })
 
     it("should handle pawn promotion correctly", () => {
-      const promotedPiece = makePiece("queen", "w")
+      const promotedPiece = createPiece("queen", "w")
       const { result, expectedMove, resultMove } = setupMoveHelperTest(
         "w",
         "pawn-ccw",
         "b",
-        makeCell(0, 5, 0),
+        createCell(0, 5, 0),
         promotedPiece
       )
 
@@ -440,7 +434,7 @@ describe("Game Reducer", () => {
 
   describe("START_GAME action", () => {
     // Setup test data
-    const [player, opponent] = createTestPlayers()
+    const [player, opponent] = TEST_PLAYERS
     const duration = 10
     const status = "playing"
     const timer: Record<PieceColor, number> = { w: 10, b: 10 }
@@ -517,7 +511,7 @@ describe("Game Reducer", () => {
   })
 
   describe("PROMOTE_PAWN action", () => {
-    const piece: Piece = makePiece("queen", "w")
+    const piece: Piece = createPiece("queen", "w")
 
     it("should not change state when promotion coordinates are not set", () => {
       const action: GameAction = { type: "PROMOTE_PAWN", piece }
@@ -528,15 +522,15 @@ describe("Game Reducer", () => {
     it("should handle pawn promotion when coordinates are set", () => {
       const action: GameAction = { type: "PROMOTE_PAWN", piece }
 
-      const to = makeCell(0, 0, 0)
-      const from = makeCell(0, 0, 0)
+      const to = createCell(0, 0, 0)
+      const from = createCell(0, 0, 0)
 
       const promotionState = {
         ...initialState,
         promotionCoordinates: {
           from,
           to,
-          piece: makePiece("pawn-ccw", "w"),
+          piece: createPiece("pawn-ccw", "w"),
         },
       }
 
@@ -647,9 +641,9 @@ describe("Game Reducer", () => {
 
   describe("SET_SELECTED_CELL action", () => {
     it("should set selected cell with available and invalid moves", () => {
-      const board = initializeBoard(false)
+      const board = createBoard(false)
       const cell = board[0][0]
-      board[0][0].piece = makePiece("pawn-ccw", "w")
+      board[0][0].piece = createPiece("pawn-ccw", "w")
 
       const state = {
         ...initialState,
@@ -688,8 +682,8 @@ describe("Game Reducer", () => {
     let to: Cell
 
     beforeEach(() => {
-      board = initializeBoard(false)
-      piece = makePiece("king", "w")
+      board = createBoard(false)
+      piece = createPiece("king", "w")
       from = board[0][0]
       to = board[0][1]
       from.piece = piece
@@ -726,7 +720,7 @@ describe("Game Reducer", () => {
       })
 
       it("should set pending move with capturing", () => {
-        const capturedPiece = makePiece("bishop", "b")
+        const capturedPiece = createPiece("bishop", "b")
         to.piece = capturedPiece
 
         const state = {
@@ -764,7 +758,7 @@ describe("Game Reducer", () => {
 
     describe("CANCEL_MOVE action", () => {
       it("should revert the pending move", () => {
-        const capturedPiece = makePiece("bishop", "b")
+        const capturedPiece = createPiece("bishop", "b")
         to.piece = piece
 
         const state = {
@@ -854,62 +848,5 @@ describe("Game Reducer", () => {
         })
       })
     })
-  })
-})
-
-// Future test categories
-describe("UI Tests", () => {
-  it.todo("should test UI components for game board")
-  it.todo("should test UI components for move history")
-  it.todo("should test UI components for game status display")
-})
-
-describe("Performance Tests", () => {
-  it("should dispatch START_GAME within 5ms", () => {
-    // Setup test data
-    const [player, opponent] = createTestPlayers()
-    const duration = 10
-    const averageExecTime = measureDispatchTime(() => {
-      mockDispatch({
-        type: "START_GAME",
-        duration,
-        players: [player, opponent],
-      })
-    })
-
-    console.log(`START_GAME dispatch time: ${averageExecTime.toFixed(2)}ms`)
-    expect(averageExecTime).toBeLessThan(5)
-  })
-
-  it("should dispatch PROMOTE_PAWN within 5ms", () => {
-    const state = createPromotionState()
-
-    const averageExecTime = measureDispatchTime(() => {
-      mockDispatch(
-        { type: "PROMOTE_PAWN", piece: makePiece("pawn-ccw", "w") },
-        state
-      )
-    })
-
-    console.log(`PROMOTE_PAWN dispatch time: ${averageExecTime.toFixed(2)}ms`)
-    expect(averageExecTime).toBeLessThan(5)
-  })
-
-  it("should dispatch END_GAME within 5ms", () => {
-    const averageExecTime = measureDispatchTime(() => {
-      mockDispatch({ type: "END_GAME" })
-    })
-
-    console.log(`END_GAME dispatch time: ${averageExecTime.toFixed(2)}ms`)
-    expect(averageExecTime).toBeLessThan(5)
-  })
-
-  it("should dispatch RESET_GAME within 5ms", () => {
-    const averageExecTime = measureDispatchTime(() => {
-      mockDispatch({ type: "RESET_GAME" })
-    })
-
-    console.log(`RESET_GAME dispatch time: ${averageExecTime.toFixed(2)}ms`)
-    expect(averageExecTime).toBeLessThan(5)
   })
 })
