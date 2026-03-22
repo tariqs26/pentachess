@@ -13,11 +13,12 @@ export const metadata = {
   title: "Reset Password",
 } satisfies Metadata
 
-export default function ResetPasswordPage({
-  params,
-}: {
-  params: { token: string }
-}) {
+export default async function ResetPasswordPage(
+  props: Readonly<{
+    params: Promise<{ token: string }>
+  }>
+) {
+  const params = await props.params
   // TODO: implement token verification
   if (params.token !== "valid-token") {
     notFound()

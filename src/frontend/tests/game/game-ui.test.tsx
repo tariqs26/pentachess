@@ -28,9 +28,7 @@ describe("Game UI", () => {
     expect(game.getAllByTestId("timer").length).toBe(2)
     expect(game.getByTestId("previous-moves")).toBeDefined()
     expect(game.getByText("Resign")).toBeDefined()
-    expect(
-      game.container.querySelector("div[data-testid='board']")
-    ).toBeDefined()
+    expect(game.getByTestId("board")).toBeDefined()
   })
 
   it("should display game end modal when game is over", () => {

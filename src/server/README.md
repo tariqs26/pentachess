@@ -3,7 +3,6 @@
 ## Getting Started
 
 1. **Prerequisites**
-
    - Ensure you have [Node.js](https://nodejs.org/en/download/) (20.18.0 or higher) installed on your machine.
 
 2. **Install dependencies**

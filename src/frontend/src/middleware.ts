@@ -1,4 +1,8 @@
-import { type NextRequest, NextResponse } from "next/server"
+import {
+  NextResponse,
+  type MiddlewareConfig,
+  type NextRequest,
+} from "next/server"
 import { getSessionCookie } from "better-auth/cookies"
 
 const PROTECTED_ROUTES = ["/game", "/account"]
@@ -28,7 +32,7 @@ export async function middleware(request: NextRequest) {
   return NextResponse.next()
 }
 
-export const config = {
+export const config: MiddlewareConfig = {
   matcher: [
     "/game/:path*",
     "/account",

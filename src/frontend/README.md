@@ -3,7 +3,6 @@
 ## Getting Started
 
 1. **Prerequisites**
-
    - Ensure you have [Node.js](https://nodejs.org/en/download/) (20.18.0 or higher) installed on your machine.
    - For setting up the database locally, you will need [Docker](https://www.docker.com/products/docker-desktop) installed.
 

@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 }
 
 export default async function OnlineGamePage() {
-  const session = await auth.api.getSession({ headers: headers() })
+  const session = await auth.api.getSession({ headers: await headers() })
 
   if (!session) {
     return <div>Not authenticated</div>
