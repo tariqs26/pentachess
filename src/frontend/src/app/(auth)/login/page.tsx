@@ -13,9 +13,10 @@ export const metadata: Metadata = {
   description: "Log in to your PentaChess account",
 }
 
-export default function LoginPage({
-  searchParams,
-}: Readonly<{ searchParams: { from?: string } }>) {
+export default async function LoginPage(
+  props: Readonly<{ searchParams: Promise<{ from?: string }> }>
+) {
+  const searchParams = await props.searchParams
   return (
     <Card className="w-full max-w-sm">
       <CardHeader>
