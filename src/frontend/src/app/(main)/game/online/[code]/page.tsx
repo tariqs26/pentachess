@@ -1,6 +1,7 @@
-export default function OnlineCustomGamePage({
-  params,
-}: Readonly<{ params: { code: string } }>) {
+export default async function OnlineCustomGamePage(
+  props: Readonly<{ params: Promise<{ code: string }> }>
+) {
+  const params = await props.params
   // TODO: Implement custom online game page
   return (
     <div className="mx-auto grid min-h-screen max-w-5xl place-items-center p-6">
