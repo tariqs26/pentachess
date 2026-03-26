@@ -33,7 +33,7 @@ export const pieceMovementRules = [
       "Similar to the pawn but with reversed move and capture. It is also marked for clockwise or counterclockwise direction. It cannot, however, move two cells forward on its first move.",
     details: [
       "The Berolina pawn moves as the pawn captures.",
-      "Capturures as the pawn moves and can also be promoted.",
+      "Captures as the pawn moves and can also be promoted.",
     ],
     images: [berolina1, berolina2],
   },
